@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.suhui.modules.publish.mapper.PublishPositionEntityMapper">
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="org.suhui.modules.publish.entity.PublishPositionEntity" id="positionMap">
+        <result property="positionId" column="position_id"/>
+        <result property="positionName" column="position_name"/>
+        <result property="experience" column="experience"/>
+        <result property="education" column="education"/>
+        <result property="salaryLow" column="salary_low"/>
+        <result property="salaryTall" column="salary_tall"/>
+        <result property="month" column="month"/>
+        <result property="performance" column="performance"/>
+        <result property="positionDesc" column="position_desc"/>
+        <result property="workPlace" column="work_place"/>
+    </resultMap>
+    <!--添加职位-->
+    <insert id="save">
+        insert into zp_publish_position(position_name,experience,education,salary_low,salary_tall,month,performance,position_desc,work_place) values (
+         #{ positionName},#{ experience},#{ education},#{ salaryLow},#{ salaryTall},#{ month},#{ performance},#{ positionDesc},#{ workPlace})
+    </insert>
+    <!--修改职位-->
+    <!--  修改用户部门code -->
+    <update id="update">
+        update zp_publish_position
+        <set>
+        <if test="positionName != null and positionName != ''">
+             position_name = #{positionName},
+        </if>
+        <if test="experience != null and experience != ''">
+             experience = #{experience},
+        </if>
+        <if test="education != null and education != ''">
+             education = #{education},
+        </if>
+        <if test="salaryLow != null and salaryLow != ''">
+            salary_low = #{salaryLow},
+        </if>
+        <if test="salaryTall != null and salaryTall != ''">
+            salary_tall = #{salaryTall},
+        </if>
+        <if test="month != null and month != ''">
+            month = #{month},
+        </if>
+        <if test="performance != null and performance != ''">
+             performance = #{performance},
+        </if>
+        <if test="positionDesc != null and positionDesc != ''">
+             position_desc = #{positionDesc},
+        </if>
+        <if test="workPlace != null and workPlace != ''">
+             work_place = #{workPlace}
+        </if>
+        where position_id = #{positionId}
+        </set>
+    </update>
+    <!--查询职位-->
+    <select id="find" resultType="org.suhui.modules.publish.entity.PublishPositionEntity">
+        select * from zp_publish_position t
+        <include refid="where1"/>
+    </select>
+    <sql id="where1">
+        <where>
+            <if test="positionId != null and positionId != ''">
+                and t.position_id = #{positionId}
+            </if>
+            <if test="positionName != null and positionName != ''">
+                and t.position_name = #{positionName}
+            </if>
+            <if test="experience != null and experience != ''">
+                and t.experience = #{experience}
+            </if>
+            <if test="education != null and education != ''">
+                and t.education = #{education}
+            </if>
+            <if test="salaryTall != null and salaryTall != ''">
+                and t.salary_low &lt;= #{salaryTall}
+            </if>
+            <if test="salaryLow != null and salaryLow != ''">
+                and t.salary_tall &gt;= #{salaryLow}
+            </if>
+            <if test="month != null and month != ''">
+                and t.month = #{month}
+            </if>
+            <if test="performance != null and performance != ''">
+                and t.performance = #{performance}
+            </if>
+            <if test="positionDesc != null and positionDesc != ''">
+                and t.position_desc = #{positionDesc}
+            </if>
+            <if test="workPlace != null and workPlace != ''">
+                and t.work_place = #{workPlace}
+            </if>
+        </where>
+    </sql>
+</mapper>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8"/>
+    <title>客户端</title>
+
+    <link rel="stylesheet" href="./layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="./layui/css/layui.mobile.css" media="all" />
+    <script src="./jquery.min.js"></script>
+    <script src="./layui/layui.all.js"></script>
+    <script src="./layui/layui.js"></script>
+
+
+    <style>
+        .threed{
+            text-align: center;
+            color: mediumorchid;
+            -webkit-text-stroke: 1px black;
+            letter-spacing: 0.04em;
+            background-color: white;
+        }
+    </style>
+
+</head>
+<body>
+<div class="layui-row">
+    <h1  class="threed">WebSocket客户端</h1>
+    <div class="layui-col-md8 layui-col-md-offset2" style="margin-top: 20px">
+        <h1>客户端</h1>
+        <div class="layui-card">
+            <div class="layui-card-body">
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">请输入昵称</label>
+                    <div class="layui-input-inline" style="width: 300px">
+                        <input id="username" type="text" name="title" required  lay-verify="required" placeholder="请输入昵称" autocomplete="off" class="layui-input">
+                    </div>
+                    <button class="layui-btn"  onclick="connect()">连接</button>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">接收者</label>
+                    <div class="layui-input-inline" style="width: 300px">
+                        <input id="receiveUser" type="text" name="title" required  lay-verify="required" placeholder="请输入要发送人的昵称" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">请发送内容</label>
+                    <div class="layui-input-inline" style="width: 300px">
+                        <input id="writeMsg" type="text" name="title" required  lay-verify="required" placeholder="请输入要发送的内容" autocomplete="off" class="layui-input">
+                    </div>
+                    <button class="layui-btn"  onclick="sendMsg()">发送</button>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="layui-card" style="margin-top: 100px">
+            <div class="layui-card-header">
+                <h1>操作详情</h1>
+            </div>
+
+            <div id="content" class="layui-card-body">
+                <h3 align="center" style="color: #007DDB;margin-top: 20px;margin-bottom: 20px">这里将显示操作信息</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var ws = null;
+    var username = $("#username").val()
+    function connect(){
+        username = $("#username").val()
+        if(username!=null){
+            $("#content").html('');
+            if ('WebSocket' in window){
+                //ws = new WebSocket("ws://www.niezhiliang.com:8086/socketServer/"+$("#username").val());
+                ws = new WebSocket("ws://192.168.1.109:2222/websocket/websocket/"+$("#username").val());
+            }
+            else if ('MozWebSocket' in window){
+                //ws = new MozWebSocket("ws://www.niezhiliang.com:8086/socketServer/"+$("#username").val());
+                ws = new MozWebSocket("ws://192.168.1.109:2222/websocket/websocket/"+$("#username").val());
+            }
+            else{
+                alert("该浏览器不支持websocket");
+            }
+
+
+            ws.onmessage = function(evt) {
+                var content = $("#content").html();
+                $("#content").html(content+'<div style="text-align: right;margin-bottom: 8px">\n' +
+                    '                        <p><q style="color: mediumorchid">服务端:</q><span>'+evt.data+ '</span></p>\n' +
+                    '                    </div>\n' +
+                    '                    <br/>');
+            };
+
+            ws.onclose = function(evt) {
+                var content = $("#content").html();
+                $("#content").html(content+'<div style="margin-bottom: 8px">\n' +
+                    '                        <p><q style="color: coral">客户端:</q><span>连接中断</span></p>\n' +
+                    '                    </div>\n' +
+                    '                    <br/>');
+            };
+
+            ws.onopen = function(evt) {
+                $("#content").html('<div style="margin-bottom: 8px">\n' +
+                    '                        <p><q style="color: coral">客户端:</q><span>连接成功...</span></p>\n' +
+                    '                    </div>\n' +
+                    '                    <br/>');
+            };
+        }else{
+            alert("请输入您的昵称");
+        }
+    }
+
+    // function sendMsg() {
+    //     ws.send($("#writeMsg").val());
+    //     var content = $("#content").html();
+    //     $("#content").html(content+'<div>\n' +
+    //         '                        <p><q style="color: coral">客户端:</q><span>'+$("#writeMsg").val()+ '</span></p>\n' +
+    //         '                    </div>\n' +
+    //         '                    <br/>');
+    // }
+
+
+    function sendMsg(){
+        // var user = [];
+        // $("input[name='check']:checked").each(function(i){//把所有被选中的复选框的值存入数组
+        //     user =user+$(this).attr("title")+","
+        // });
+        // console.log(user)
+        //
+        // if (user.length > 0) {
+        //     user = user.substr(0, user.length - 1);
+        // } else {
+        //     console.log("未选中发送人")
+        //     var content = $("#content").html();
+        //     $("#content").html(content+'<div style="margin-bottom: 8px">\n' +
+        //         '                        <p><q style="color: red">'+'系统提示:请在多选框中选择要发送的用户'+ '</span></p>\n' +
+        //         '                    </div>\n' +
+        //         '                    <br/>');
+        //     return
+        // }
+
+        var msg = $("#writeMsg").val();
+        if(msg!=null){
+            $.ajax({
+                method: 'GET',
+                url: '/websocket/sendmsg.do',
+                data: {
+                    "username": $("#receiveUser").val(),
+                    "msg": msg
+                },
+                success:function(data) {
+                    var content = $("#content").html();
+                    $("#content").html(content+'<div style="margin-bottom: 8px">\n' +
+                        '                        <p><q style="color: #eb7350">'+'服务器推送  '+msg+' -->'+ '</span></p>\n' +
+                        '                    </div>\n' +
+                        '                    <br/>');
+                    console.log(data);
+                }
+            })
+        }else{
+            alert("请填写要发送的用户昵称或者发送内容");
+        }
+    }
+</script>
+</body>
+</html>

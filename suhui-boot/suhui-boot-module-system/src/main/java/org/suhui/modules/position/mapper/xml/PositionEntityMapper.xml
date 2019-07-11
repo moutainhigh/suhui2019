@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.suhui.modules.position.mapper.PositionEntityMapper">
+
+    <!-- 查询所有 -->
+    <select id="getPositionList" resultType="org.suhui.modules.position.entity.PositionEntity">
+		select * from `position`
+	</select>
+
+    <!-- 根据id查询 -->
+    <select id="getPositionListById" resultType="org.suhui.modules.position.entity.PositionEntity">
+		select * from `position` where parent_id = #{id}
+	</select>
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.suhui.modules.industry.mapper.IndustryEntityMapper">
+
+    <!-- 查询所有 -->
+    <select id="getIndustryList" resultType="org.suhui.modules.industry.entity.IndustryEntity">
+		select * from industry
+	</select>
+
+    <!-- 根据id查询 -->
+    <select id="getIndustryListById" resultType="org.suhui.modules.industry.entity.IndustryEntity">
+		select * from industry where parent_id = #{id}
+	</select>
+</mapper>
