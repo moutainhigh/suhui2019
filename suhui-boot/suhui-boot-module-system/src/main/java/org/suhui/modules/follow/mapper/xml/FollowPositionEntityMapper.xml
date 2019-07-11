@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.suhui.modules.follow.mapper.FollowPositionEntityMapper">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="org.suhui.modules.follow.entity.FollowPositionEntity" id="followMap">
+        <result property="userId" column="user_id"/>
+        <result property="positionId" column="position_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+    <!-- 添加关注 -->
+    <insert id="save" parameterType="org.suhui.modules.follow.entity.FollowPositionEntity">
+        insert into zp_follow_position(user_id,position_id) values (
+         #{ userId},#{ positionId})
+    </insert>
+
+    <!-- 查询关注 -->
+    <select id="find" resultType="org.suhui.modules.follow.entity.FollowPositionEntity">
+        select * from zp_follow_position t
+        <include refid="where"/>
+    </select>
+    <sql id="where">
+        <where>
+            <if test="userId != null and userId != ''">
+                and t.user_id = #{userId}
+            </if>
+            <if test="positionId != null and positionId != ''">
+                and t.position_id = #{positionId}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                and t.create_time = #{createTime}
+            </if>
+        </where>
+        order by create_time desc
+    </sql>
+
+    <!-- 取消关注 -->
+    <delete id="delete">
+        delete from zp_follow_position
+        <where>
+            <if test="userId != null and userId != ''">
+                and user_id = #{userId}
+            </if>
+            <if test="positionId != null and positionId != ''">
+                and position_id = #{positionId}
+            </if>
+        </where>
+    </delete>
+</mapper>
