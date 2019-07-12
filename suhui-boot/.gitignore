@@ -1,0 +1,12 @@
+# Common ignored files from the projects
+**.iml
+**.class
+**.ipr
+**.iws
+**/.idea/
+**/target/
+**/.DS_Store
+**/logs/
+**/dist/
+**.log
+**/build/

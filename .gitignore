@@ -1,0 +1,11 @@
+**.iml
+**.class
+**.ipr
+**.iws
+**/.idea/
+**/target/
+**/.DS_Store
+**/logs/
+**/dist/
+**.log
+**/build/
