@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 3333
   servlet:
     context-path: /jeecg-boot
     compression:
@@ -15,7 +15,7 @@ management:
 spring:
   mail:
     host: smtphz.qiye.163.com
-    username: dongang1@dagjkj.com
+    username: 87955852@qq.com
     password: 2018DONGang
     properties:
       mail: 
@@ -85,10 +85,13 @@ spring:
         connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
       datasource:
         master:
-          url: jdbc:mysql://127.0.0.1:3366/jeecg-boot?characterEncoding=UTF-8&useUnicode=true&useSSL=false
-          username: root
-          password: hqkk_root
-          driver-class-name: com.mysql.jdbc.Driver
+          url: jdbc:mysql://database-3.cxhkpui4avwq.us-east-1.rds.amazonaws.com:3306/suhui?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
+          username: admin
+          password: suhuiTest
+          #url: jdbc:mysql://192.168.1.109:3366/jeecg-boot?characterEncoding=UTF-8&useUnicode=true&useSSL=false
+          #username: root
+          #password: hqkk_root
+          #driver-class-name: com.mysql.jdbc.Driver
           # 多数据源配置
           #multi-datasource1:
           #url: jdbc:mysql://localhost:3306/jeecg-boot2?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true
@@ -98,7 +101,7 @@ spring:
   #redis 配置
   redis:
     database: 0
-    host: 127.0.0.1
+    host: 192.168.1.109
     lettuce:
       pool:
         max-active: 8   #最大连接数据库连接数,设 0 为没有限制
