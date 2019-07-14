@@ -91,4 +91,7 @@ public interface ISysUserService extends IService<SysUser> {
 
 
 	SysUser getByPhone(String phone) ;
+
+
+	SysUser getByEmail(String phone) ;
 }

@@ -135,4 +135,7 @@ public class SysUser implements Serializable {
     private String activitiSync;
 
 
+    private String payPassword ;
+
+
 }

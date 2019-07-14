@@ -34,4 +34,9 @@
 		select * from sys_user where phone=#{phone}
 	</select>
 
+
+	<!-- 根据角色Id查询 -->
+	<select id="getByEmail" resultType="org.suhui.modules.system.entity.SysUser">
+		select * from sys_user where email=#{email}
+	</select>
 </mapper>

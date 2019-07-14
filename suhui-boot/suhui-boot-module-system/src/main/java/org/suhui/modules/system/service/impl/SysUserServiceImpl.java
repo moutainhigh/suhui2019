@@ -193,4 +193,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	public SysUser getByPhone( String phone) {
 		return userMapper.getByPhone(phone);
 	}
+
+	// 根据角色Id查询
+	@Override
+	public SysUser getByEmail( String phone) {
+		return userMapper.getByEmail(phone);
+	}
+
 }

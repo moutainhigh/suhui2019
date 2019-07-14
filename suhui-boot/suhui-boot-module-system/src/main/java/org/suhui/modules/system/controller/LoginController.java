@@ -142,7 +142,7 @@ public class LoginController {
 
 	/**
 	 * 获取验证码
-	 * @param username
+	 * @param params
 	 * @return
 	 */
 	@RequestMapping(value = "/sms" , method = RequestMethod.POST)
