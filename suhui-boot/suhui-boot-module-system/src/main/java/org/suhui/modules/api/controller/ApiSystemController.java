@@ -2,28 +2,18 @@ package org.suhui.modules.api.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.suhui.common.api.vo.Result;
 import org.suhui.common.constant.CommonConstant;
 import org.suhui.common.system.api.ISysBaseAPI;
-import org.suhui.common.system.util.JwtUtil;
-import org.suhui.common.system.vo.LoginUser;
 import org.suhui.common.util.PasswordUtil;
 import org.suhui.common.util.RedisUtil;
-import org.suhui.common.util.oConvertUtils;
-import org.suhui.modules.shiro.vo.DefContants;
-import org.suhui.modules.system.entity.SysDepart;
 import org.suhui.modules.system.entity.SysUser;
 import org.suhui.modules.system.service.ISysDepartService;
 import org.suhui.modules.system.service.ISysLogService;
@@ -35,11 +25,9 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-import java.net.URLEncoder;
-import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -62,6 +50,8 @@ public class ApiSystemController {
 	@Autowired
     private ISysDepartService sysDepartService;
 
+	@Value(value = "${jeecg.path.upload}")
+	private String uploadpath;
 	/**
 	 * 获取验证码
 	 * @param params
@@ -152,6 +142,57 @@ public class ApiSystemController {
 		result.success("发送验证码成功");
 		result.setCode(CommonConstant.SC_OK_200);
 		return result ;
+	}
+
+
+	/**
+	 * 上传个人图像
+	 * @param
+	 * @return
+	 */
+	@RequestMapping(value = "/upload-img" , method = RequestMethod.POST)
+	public Result<?> uploadImg(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params) {
+		Result<?> result = new Result<>();
+		try {
+			String ctxPath = uploadpath;
+			String fileName = null;
+			String bizPath = "files";
+			String nowday = new SimpleDateFormat("yyyyMMdd").format(new Date());
+			File file = new File(ctxPath + File.separator + bizPath + File.separator + nowday);
+			if (!file.exists()) {
+				file.mkdirs();// 创建文件根目录
+			}
+			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+			MultipartFile mf = multipartRequest.getFile("file");// 获取上传文件对象
+			String orgName = mf.getOriginalFilename();// 获取文件名
+			fileName = orgName.substring(0, orgName.lastIndexOf(".")) + "_" + System.currentTimeMillis() + orgName.substring(orgName.indexOf("."));
+			String savePath = file.getPath() + File.separator + fileName;
+			File savefile = new File(savePath);
+			FileCopyUtils.copy(mf.getBytes(), savefile);
+			String dbpath = bizPath + File.separator + nowday + File.separator + fileName;
+			if (dbpath.contains("\\")) {
+				dbpath = dbpath.replace("\\", "/");
+			}
+			String id = params.get("id")+"" ;
+			SysUser sysUser = sysUserService.getById(id) ;
+
+			if(sysUser==null) {
+
+				result.success("has no user");
+				result.setCode(0);
+			}else{
+				sysUser.setAvatar(dbpath) ;
+				sysUserService.updateById(sysUser) ;
+				result.success("update avatar success!");
+				result.setCode(CommonConstant.SC_OK_200);
+			}
+
+		} catch (IOException e) {
+			result.setSuccess(false);
+			result.setMessage(e.getMessage());
+			log.error(e.getMessage(), e);
+		}
+		return result;
 	}
 
 }
