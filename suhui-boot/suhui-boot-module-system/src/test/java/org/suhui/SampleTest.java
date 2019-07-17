@@ -1,9 +1,13 @@
 package org.suhui;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.yunpian.sdk.YunpianClient;
+import com.yunpian.sdk.model.Result;
+import com.yunpian.sdk.model.SmsSingleSend;
 import org.suhui.modules.demo.mock.MockController;
 import org.suhui.modules.demo.test.entity.JeecgDemo;
 import org.suhui.modules.demo.test.mapper.JeecgDemoMapper;
@@ -15,53 +19,36 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
 public class SampleTest {
 
-	@Resource
-	private JeecgDemoMapper jeecgDemoMapper;
-	@Resource
-	private IJeecgDemoService jeecgDemoService;
-	@Resource
-	private ISysDataLogService sysDataLogService;
-	@Resource
-	private MockController mock;
+//    @Resource
+//    private JeecgDemoMapper jeecgDemoMapper;
+//    @Resource
+//    private IJeecgDemoService jeecgDemoService;
+//    @Resource
+//    private ISysDataLogService sysDataLogService;
+//    @Resource
+//    private MockController mock;
 
-	@Test
-	public void testSelect() {
-		System.out.println(("----- selectAll method test ------"));
-		List<JeecgDemo> userList = jeecgDemoMapper.selectList(null);
-		Assert.assertEquals(5, userList.size());
-		userList.forEach(System.out::println);
-	}
+    @Test
+    public void testSMS() {
+        //初始化clnt,使用单例方式
+        YunpianClient clnt = new YunpianClient("apikey").init();
 
-	@Test
-	public void testXmlSql() {
-		System.out.println(("----- selectAll method test ------"));
-		List<JeecgDemo> userList = jeecgDemoMapper.getDemoByName("Sandy12");
-		userList.forEach(System.out::println);
-	}
+        //发送短信API
+        Map<String, String> param = clnt.newParam(2);
+        param.put(YunpianClient.MOBILE, "15098899951");
+        param.put(YunpianClient.TEXT, "【云片网】您的验证码是1234");
+        Result<SmsSingleSend> r = clnt.sms().single_send(param);
+        //获取返回结果，返回码:r.getCode(),返回码描述:r.getMsg(),API结果:r.getData(),其他说明:r.getDetail(),调用异常:r.getThrowable()
 
-	/**
-	 * 测试事务
-	 */
-	@Test
-	public void testTran() {
-		jeecgDemoService.testTran();
-	}
-	
-	//author:lvdandan-----date：20190315---for:添加数据日志测试----
-	/**
-	 * 测试数据日志添加
-	 */
-	@Test
-	public void testDataLogSave() {
-		System.out.println(("----- datalog test ------"));
-		String tableName = "jeecg_demo";
-		String dataId = "4028ef81550c1a7901550c1cd6e70001";
-		String dataContent = mock.sysDataLogJson();
-		sysDataLogService.addDataLog(tableName, dataId, dataContent);
-	}
-	//author:lvdandan-----date：20190315---for:添加数据日志测试----
+        //账户:clnt.user().* 签名:clnt.sign().* 模版:clnt.tpl().* 短信:clnt.sms().* 语音:clnt.voice().* 流量:clnt.flow().* 隐私通话:clnt.call().*
+
+        //释放clnt
+        clnt.close();
+    }
+
+
 }
