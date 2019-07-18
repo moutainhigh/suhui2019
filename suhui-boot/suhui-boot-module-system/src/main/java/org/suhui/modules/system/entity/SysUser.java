@@ -104,6 +104,15 @@ public class SysUser implements Serializable {
     @Dict(dicCode = "user_status")
     private Integer status;
 
+
+    /**
+     * 审核状态(1：通过  2：不通过 ）
+     */
+    @Excel(name = "审核状态", width = 15,dicCode="user_status")
+    @Dict(dicCode = "check_status")
+    private Integer checkStatus;
+
+
     /**
      * 删除状态（0，正常，1已删除）
      */
