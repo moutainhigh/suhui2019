@@ -1,20 +1,17 @@
 package org.suhui.modules.system.entity;
 
-import java.util.Date;
-
-import org.suhui.common.aspect.annotation.Dict;
-import org.jeecgframework.poi.excel.annotation.Excel;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.io.Serializable;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.jeecgframework.poi.excel.annotation.Excel;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.suhui.common.aspect.annotation.Dict;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -136,6 +133,14 @@ public class SysUser implements Serializable {
 
 
     private String payPassword ;
+
+
+    private java.math.BigDecimal rmbAmount;
+
+    private java.math.BigDecimal usAmount;
+
+    private java.math.BigDecimal phAmount;
+
 
 
 }
