@@ -75,6 +75,12 @@ public class ApiUserController {
 		String email = params.get("email")+"" ;
 		String smsCodeParam =  params.get("smsCode")+"" ;
 
+		String areaCode = params.get("areaCode") +"" ;
+		if(areaCode == null || areaCode.equals("")||areaCode.equals("null")){
+			result.error500("please choose area code for your phone !");
+			return result ;
+		}
+
 		String codeVaue = "" ;
 		if(!phone.equals("null")&&!phone.equals("")){
 			codeVaue = phone ;
@@ -100,6 +106,8 @@ public class ApiUserController {
 		sysUser.setPhone(phone) ;
 		sysUser.setUsername(username) ;
 		sysUser.setEmail(email) ;
+
+		sysUser.setAreaCode(areaCode) ;
 
 		sysUser.setCreateTime(new Date());//设置创建时间
 		String salt = oConvertUtils.randomGen(8);

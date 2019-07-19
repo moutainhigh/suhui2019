@@ -146,5 +146,7 @@ public class SysUser implements Serializable {
 
     private String payPassword ;
 
+    private String areaCode ; // 区号
+
 
 }

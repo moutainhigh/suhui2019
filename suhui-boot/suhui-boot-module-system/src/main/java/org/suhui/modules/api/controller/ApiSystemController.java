@@ -1,8 +1,6 @@
 package org.suhui.modules.api.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.yunpian.sdk.YunpianClient;
-import com.yunpian.sdk.model.SmsSingleSend;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +18,7 @@ import org.suhui.modules.system.entity.SysUser;
 import org.suhui.modules.system.service.ISysDepartService;
 import org.suhui.modules.system.service.ISysLogService;
 import org.suhui.modules.system.service.ISysUserService;
+import org.suhui.modules.utils.SmsUtil;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -70,34 +69,37 @@ public class ApiSystemController {
 		JSONObject obj = new JSONObject();
 
 		Random random = new Random();
-		int x = random.nextInt(8999);
-		x = x+1000;
+		int x = random.nextInt(899999);
+		x = x+100000;
 		System.out.println(x+"");
 
 		String phone = params.get("phone")+"" ;
+		String areaCode = params.get("areaCode") + "" ;
 		HttpSession session = request.getSession();
 		session.setAttribute("smsCode_"+phone ,x);
 		session.setMaxInactiveInterval(300);
+		String rtn ="" ;
+		//  areaCode 发送类型：1：国内  2：国际
+		if(areaCode.equals("+86")){
+			rtn = 	SmsUtil.sendSms(phone,x+"" , 1);
+		}else{
+			rtn = SmsUtil.sendSms(areaCode+phone,x+"" , 2);
+		}
+		//obj.put("smsCode", x+"");
+		JSONObject object = JSONObject.parseObject(rtn) ;
+		String status = (String)object.get("status") ;
+		if(status.equals("success")){
+			result.setResult(obj);
+			result.success("发送验证码成功");
+			result.setCode(CommonConstant.SC_OK_200);
+			return result ;
+		}else{
+			result.setResult(obj);
+			result.success("验证码发送失败");
+			result.setCode(0);
+			return result ;
+		}
 
-		//初始化clnt,使用单例方式
-		YunpianClient clnt = new YunpianClient("apikey").init();
-
-		//发送短信API
-		Map<String, String> param = clnt.newParam(2);
-		param.put(YunpianClient.MOBILE, phone);
-		param.put(YunpianClient.TEXT, "【云片网】您的验证码是"+x);
-		com.yunpian.sdk.model.Result<SmsSingleSend> r = clnt.sms().single_send(param);
-		//获取返回结果，返回码:r.getCode(),返回码描述:r.getMsg(),API结果:r.getData(),其他说明:r.getDetail(),调用异常:r.getThrowable()
-
-		//账户:clnt.user().* 签名:clnt.sign().* 模版:clnt.tpl().* 短信:clnt.sms().* 语音:clnt.voice().* 流量:clnt.flow().* 隐私通话:clnt.call().*
-
-		//释放clnt
-		//clnt.close();
-		obj.put("smsCode", x+"");
-		result.setResult(obj);
-		result.success("发送验证码成功");
-		result.setCode(CommonConstant.SC_OK_200);
-		return result ;
 	}
 
 	/**

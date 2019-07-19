@@ -36,6 +36,7 @@ public class SmsUtil {
      * API 请求接口配置
      */
     private static final String URL="https://api.mysubmail.com/message/send";
+    private static final String URLOverSea="https://api.mysubmail.com/internationalsms/send";
     private static final int chinaType=1;
     private static final int InternationalType=2;
     /**
@@ -50,7 +51,7 @@ public class SmsUtil {
      * @param code  验证码
      * @param type 发送类型：1：国内  2：国际
      */
-    public static void sendSMs(String to,String code,int type) {
+    public static String sendSms(String to,String code,int type) {
         TreeMap<String, Object> requestData = new TreeMap<String, Object>();
         /**
          * --------------------------------参数配置------------------------------------
@@ -70,14 +71,16 @@ public class SmsUtil {
          */
         String appid = "";
         String appkey = "";
-        String content = "【速汇】您的验证码是："+code+"，请在5分钟内输入";
+        String content ="" ;
         String signtype = "md5";
         if(type==1){
+            content = "【速汇】您的验证码是："+code+"，请在5分钟内输入";
             appid = "38296";
             appkey = "073dcf59947691dbccfb0c5f53d2fde2";
         }else{
             appid = "60757";
             appkey = "31b6b7fd4208b407120895d8f959623a";
+            content = "【Suhui】Your verification code is "+code+". Please enter within 5 minutes.";
         }
         /**
          *  ---------------------------------------------------------------------------
@@ -119,7 +122,13 @@ public class SmsUtil {
          * 成功返回 status: success,其中 fee 参数为短信费用 ，credits 参数为剩余短信余额
          * 详细的 API 错误日志请访问 SUBMAIL 官网 → 开发文档 → DEBUG → API 错误代码
          */
-        HttpPost httpPost = new HttpPost(URL);
+        HttpPost httpPost = null ;
+        if(type==1){
+            httpPost = new HttpPost(URL);
+        }else{
+            httpPost = new HttpPost(URLOverSea);
+        }
+
         httpPost.addHeader("charset", "UTF-8");
         httpPost.setEntity(builder.build());
         try{
@@ -129,12 +138,14 @@ public class SmsUtil {
             if(httpEntity != null){
                 String jsonStr = EntityUtils.toString(httpEntity, "UTF-8");
                 System.out.println(jsonStr);
+                return jsonStr ;
             }
         }catch(ClientProtocolException e){
             e.printStackTrace();
         }catch(IOException e){
             e.printStackTrace();
         }
+        return null ;
     }
     /**
      * 获取时间戳
