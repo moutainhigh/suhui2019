@@ -225,4 +225,37 @@ public class ApiLoginUserController {
 	}
 
 
+
+	/**
+	 * 身份证名和身份证号码校验
+	 * @param params
+	 * @return
+	 */
+	@RequestMapping(value = "/check-role", method = RequestMethod.POST)
+	public Result<JSONObject> checkRole(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
+
+		Result<JSONObject> result = new Result<JSONObject>();
+		JSONObject obj = new JSONObject();
+		String id = params.get("id")+"" ;
+		String state = params.get("state")+"" ;
+
+		SysUser sysUser = sysUserService.getById(id) ;
+
+		if(sysUser==null) {
+			result.setResult(obj);
+			result.success("has no user");
+			result.setCode(0);
+		}else{
+			// 审核状态(1：通过  2：不通过 ）
+			sysUser.setCheckStatus(Integer.parseInt(state)) ;
+
+			sysUserService.updateById(sysUser) ;
+			result.setResult(obj);
+			result.success("update check role success!");
+			result.setCode(CommonConstant.SC_OK_200);
+		}
+
+		return result ;
+	}
+
 }

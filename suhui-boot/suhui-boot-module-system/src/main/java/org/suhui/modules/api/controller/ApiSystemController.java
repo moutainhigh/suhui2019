@@ -18,6 +18,7 @@ import org.suhui.modules.system.entity.SysUser;
 import org.suhui.modules.system.service.ISysDepartService;
 import org.suhui.modules.system.service.ISysLogService;
 import org.suhui.modules.system.service.ISysUserService;
+import org.suhui.modules.utils.SmsUtil;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -27,6 +28,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -52,6 +55,8 @@ public class ApiSystemController {
 
 	@Value(value = "${jeecg.path.upload}")
 	private String uploadpath;
+
+
 	/**
 	 * 获取验证码
 	 * @param params
@@ -69,15 +74,32 @@ public class ApiSystemController {
 		System.out.println(x+"");
 
 		String phone = params.get("phone")+"" ;
+		String areaCode = params.get("areaCode") + "" ;
 		HttpSession session = request.getSession();
 		session.setAttribute("smsCode_"+phone ,x);
 		session.setMaxInactiveInterval(300);
+		String rtn ="" ;
+		//  areaCode 发送类型：1：国内  2：国际
+		if(areaCode.equals("+86")){
+			rtn = 	SmsUtil.sendSms(phone,x+"" , 1);
+		}else{
+			rtn = SmsUtil.sendSms(areaCode+phone,x+"" , 2);
+		}
+		//obj.put("smsCode", x+"");
+		JSONObject object = JSONObject.parseObject(rtn) ;
+		String status = (String)object.get("status") ;
+		if(status.equals("success")){
+			result.setResult(obj);
+			result.success("发送验证码成功");
+			result.setCode(CommonConstant.SC_OK_200);
+			return result ;
+		}else{
+			result.setResult(obj);
+			result.success("验证码发送失败");
+			result.setCode(0);
+			return result ;
+		}
 
-		obj.put("smsCode", x+"");
-		result.setResult(obj);
-		result.success("发送验证码成功");
-		result.setCode(CommonConstant.SC_OK_200);
-		return result ;
 	}
 
 	/**
