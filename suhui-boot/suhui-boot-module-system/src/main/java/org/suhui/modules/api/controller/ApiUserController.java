@@ -44,7 +44,7 @@ import java.util.*;
  * @since 2018-12-17
  */
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/user")
 @Api(tags="用户登录")
 @Slf4j
 public class ApiUserController {
@@ -297,4 +297,33 @@ public class ApiUserController {
 	}
 
 
+	/**
+	 * 找回密码-重设密码
+	 * @param params
+	 * @return
+	 */
+	@RequestMapping(value = "/deleteByPhone", method = RequestMethod.POST)
+	public Result<JSONObject> deleteByPhone(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
+
+		Result<JSONObject> result = new Result<JSONObject>();
+		JSONObject obj = new JSONObject();
+		String phone = params.get("phone") + "";
+
+		SysUser sysUser = sysUserService.getByPhone(phone);
+
+
+
+		if (sysUser == null) {
+
+			result.success("phone is not used!");
+			result.setCode(CommonConstant.SC_OK_200);
+		} else {
+			sysUserService.removeById(sysUser.getId()) ;
+
+			result.success("delete success!");
+			result.setCode(0);
+		}
+
+		return result ;
+	}
 }
