@@ -82,8 +82,8 @@ public class ShiroConfig {
 
 		filterChainDefinitionMap.put("/sys/loginByPhone", "anon"); //通过手机登陆
 
-		filterChainDefinitionMap.put("/api/v1/system/**", "anon"); //短信验证接口
-		filterChainDefinitionMap.put("/api/v1/user/**", "anon"); //短信验证接口
+		filterChainDefinitionMap.put("/api/system/**", "anon"); //短信验证接口
+		filterChainDefinitionMap.put("/api/user/**", "anon"); //短信验证接口
 
 		filterChainDefinitionMap.put("/api/userbind/**", "anon"); //绑定银行卡
 		filterChainDefinitionMap.put("/api/exchange/**", "anon"); //换汇
