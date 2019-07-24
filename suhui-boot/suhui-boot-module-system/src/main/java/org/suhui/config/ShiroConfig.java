@@ -87,6 +87,7 @@ public class ShiroConfig {
 
 		filterChainDefinitionMap.put("/api/userbind/**", "anon"); //绑定银行卡
 		filterChainDefinitionMap.put("/api/exchange/**", "anon"); //换汇
+		filterChainDefinitionMap.put("/api/pay/**", "anon"); //充值
 
 		
 		// 添加自己的过滤器并且取名为jwt
