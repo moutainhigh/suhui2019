@@ -38,7 +38,7 @@ import java.util.*;
  * @since 2018-12-17
  */
 @RestController
-@RequestMapping("/api/v1/system")
+@RequestMapping("/api/system")
 @Api(tags="用户登录")
 @Slf4j
 public class ApiSystemController {
@@ -216,5 +216,8 @@ public class ApiSystemController {
 		}
 		return result;
 	}
+
+
+
 
 }
