@@ -38,7 +38,7 @@ import java.util.*;
  * @since 2018-12-17
  */
 @RestController
-@RequestMapping("/api/system")
+@RequestMapping("/old/api/system")
 @Api(tags="用户登录")
 @Slf4j
 public class ApiSystemController {
@@ -124,11 +124,11 @@ public class ApiSystemController {
 		//设置发送邮件的基本参数
 		//发送邮件服务器
 		properties.setProperty("mail.transport.protocol", "smtp");//使用的协议
-		properties.setProperty("mail.smtp.host", "smtp.gmail.com");
-		properties.setProperty("mail.smtp.port", "465");//端口
-		properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		properties.setProperty("mail.smtp.host", "cloud.mysubmail.com");
+		properties.setProperty("mail.smtp.port", "25");//端口
+//		properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		properties.setProperty("mail.smtp.auth", "true");
-		properties.setProperty("mail.smtp.ssl.enable", "true");
+//		properties.setProperty("mail.smtp.ssl.enable", "true");
 
 
 		//设置发送邮件的账号和密码

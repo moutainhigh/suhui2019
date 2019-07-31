@@ -44,7 +44,7 @@ import java.util.*;
  * @since 2018-12-17
  */
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/old/api/user")
 @Api(tags="用户登录")
 @Slf4j
 public class ApiUserController {
