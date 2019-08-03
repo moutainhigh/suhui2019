@@ -1,5 +1,6 @@
 package org.suhui.modules.suhui.suhui.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.suhui.modules.suhui.suhui.entity.PayUserLogin;
 import org.suhui.modules.suhui.suhui.mapper.PayUserLoginMapper;
 import org.suhui.modules.suhui.suhui.service.IPayUserLoginService;
@@ -16,4 +17,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 @Service
 public class PayUserLoginServiceImpl extends ServiceImpl<PayUserLoginMapper, PayUserLogin> implements IPayUserLoginService {
 
+    @Autowired
+    private PayUserLoginMapper payUserLoginMapper ;
+
+    @Override
+    public PayUserLogin getUserByPhone(String phone) {
+        return payUserLoginMapper.getUserByPhone(phone);
+    }
 }

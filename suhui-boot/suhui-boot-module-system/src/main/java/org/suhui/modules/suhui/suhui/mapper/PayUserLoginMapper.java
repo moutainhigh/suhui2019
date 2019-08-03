@@ -14,4 +14,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface PayUserLoginMapper extends BaseMapper<PayUserLogin> {
 
+    /**
+     * 通过用户账号查询用户信息
+     * @param username
+     * @return
+     */
+    public PayUserLogin getUserByPhone(@Param("phone") String phone);
 }

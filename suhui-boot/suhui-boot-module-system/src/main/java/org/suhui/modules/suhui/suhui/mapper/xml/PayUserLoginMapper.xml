@@ -2,4 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.suhui.modules.suhui.suhui.mapper.PayUserLoginMapper">
 
+    <!-- 根据用户名查询 -->
+    <select id="getUserByPhone" resultType="org.suhui.modules.suhui.suhui.entity.PayUserLogin">
+		select * from  pay_user_login  where login_name = #{phone}
+	</select>
 </mapper>

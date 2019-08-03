@@ -28,10 +28,10 @@ import org.springframework.context.annotation.DependsOn;
 
 @Configuration
 public class ShiroConfig {
-	
+
 	/**
-	 * Filter Chain定义说明 
-	 * 
+	 * Filter Chain定义说明
+	 *
 	 * 1、一个URL可以配置多个Filter，使用逗号分隔
 	 * 2、当设置多个过滤器时，全部验证通过，才视为通过
 	 * 3、部分过滤器可指定参数，如perms，roles
@@ -68,7 +68,7 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/swagger**/**", "anon");
 		filterChainDefinitionMap.put("/webjars/**", "anon");
 		filterChainDefinitionMap.put("/v2/**", "anon");
-		
+
 		//性能监控
 		filterChainDefinitionMap.put("/actuator/metrics/**", "anon");
 		filterChainDefinitionMap.put("/actuator/httptrace/**", "anon");
@@ -89,7 +89,7 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/api/exchange/**", "anon"); //换汇
 		filterChainDefinitionMap.put("/api/pay/**", "anon"); //充值
 
-		
+
 		// 添加自己的过滤器并且取名为jwt
 		Map<String, Filter> filterMap = new HashMap<String, Filter>(1);
 		filterMap.put("jwt", new JwtFilter());

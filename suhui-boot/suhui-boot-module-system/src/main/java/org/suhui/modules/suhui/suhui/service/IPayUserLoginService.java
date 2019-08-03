@@ -11,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IPayUserLoginService extends IService<PayUserLogin> {
 
+    public PayUserLogin getUserByPhone(String username);
 }

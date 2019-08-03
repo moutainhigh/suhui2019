@@ -1,7 +1,6 @@
 package org.suhui.modules.shiro.authc;
 
-import java.util.Set;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -10,6 +9,10 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 import org.suhui.common.constant.CommonConstant;
 import org.suhui.common.system.util.JwtUtil;
 import org.suhui.common.system.vo.LoginUser;
@@ -17,14 +20,8 @@ import org.suhui.common.util.RedisUtil;
 import org.suhui.common.util.oConvertUtils;
 import org.suhui.modules.system.entity.SysUser;
 import org.suhui.modules.system.service.ISysUserService;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
-import org.suhui.modules.suhui.suhui.service.* ;
-import org.suhui.modules.suhui.suhui.entity.* ;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.Set;
 
 /**
  * @Description: 用户登录鉴权和获取用户授权
@@ -34,15 +31,11 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Component
 @Slf4j
-public class ShiroRealm extends AuthorizingRealm {
+public class ShiroRealmOld extends AuthorizingRealm {
 
 	@Autowired
 	@Lazy
 	private ISysUserService sysUserService;
-
-	@Autowired
-	@Lazy
-	private IPayUserLoginService iPayUserLoginService ;
 
 	@Autowired
 	@Lazy
@@ -117,21 +110,7 @@ public class ShiroRealm extends AuthorizingRealm {
 		LoginUser loginUser = new LoginUser();
 		SysUser sysUser = sysUserService.getUserByName(username);
 		if (sysUser == null) {
-
-			PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(username) ;
-
-			if (!jwtTokenRefresh(token, username, payUserLogin.getPassword())) {
-				throw new AuthenticationException("Token失效，请重新登录!");
-			}
-
-			// 判断用户状态
-			if (payUserLogin.getStatus() == 2) {
-				throw new AuthenticationException("账号无效,请联系管理员!");
-			}
-			BeanUtils.copyProperties(payUserLogin, loginUser);
-			return loginUser;
-
-//			throw new AuthenticationException("用户不存在!");
+			throw new AuthenticationException("用户不存在!");
 		}
 
 		// 校验token是否超时失效 & 或者账号密码是否错误

@@ -65,14 +65,6 @@ public class PayUserLogin {
 	@ApiModelProperty(value = "areacode")
 	private String areacode ;
 
-	public String getSalt() {
-		return salt;
-	}
-
-	public void setSalt(String salt) {
-		this.salt = salt;
-	}
-
 	public Integer getId() {
 		return id;
 	}
@@ -135,5 +127,21 @@ public class PayUserLogin {
 
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+
+	public String getAreacode() {
+		return areacode;
+	}
+
+	public void setAreacode(String areacode) {
+		this.areacode = areacode;
 	}
 }
