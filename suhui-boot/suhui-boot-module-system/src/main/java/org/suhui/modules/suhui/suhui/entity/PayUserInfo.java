@@ -29,7 +29,7 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 public class PayUserInfo {
     
 	/**id*/
-	@TableId(type = IdType.UUID)
+	@TableId(type = IdType.AUTO)
     @ApiModelProperty(value = "id")
 	private Integer id;
 	/**用户编号*/
@@ -97,4 +97,159 @@ public class PayUserInfo {
 	@Excel(name = "会员级别 1-普通会员 2-青铜 3-白银 4-黄金 5-钻石", width = 15)
     @ApiModelProperty(value = "会员级别 1-普通会员 2-青铜 3-白银 4-黄金 5-钻石")
 	private Integer userLevel;
+
+	@ApiModelProperty(value = "picture")
+	private String picture ; // 图片
+
+	public String getPicture() {
+		return picture;
+	}
+
+	public void setPicture(String picture) {
+		this.picture = picture;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getUserNo() {
+		return userNo;
+	}
+
+	public void setUserNo(String userNo) {
+		this.userNo = userNo;
+	}
+
+	public Integer getUserType() {
+		return userType;
+	}
+
+	public void setUserType(Integer userType) {
+		this.userType = userType;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public Integer getCardType() {
+		return cardType;
+	}
+
+	public void setCardType(Integer cardType) {
+		this.cardType = cardType;
+	}
+
+	public String getCardNo() {
+		return cardNo;
+	}
+
+	public void setCardNo(String cardNo) {
+		this.cardNo = cardNo;
+	}
+
+	public String getCountryNo() {
+		return countryNo;
+	}
+
+	public void setCountryNo(String countryNo) {
+		this.countryNo = countryNo;
+	}
+
+	public String getPhoneNo() {
+		return phoneNo;
+	}
+
+	public void setPhoneNo(String phoneNo) {
+		this.phoneNo = phoneNo;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Integer getSex() {
+		return sex;
+	}
+
+	public void setSex(Integer sex) {
+		this.sex = sex;
+	}
+
+	public String getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
+	}
+
+	public Integer getCardCheck() {
+		return cardCheck;
+	}
+
+	public void setCardCheck(Integer cardCheck) {
+		this.cardCheck = cardCheck;
+	}
+
+	public Integer getPhoneCheck() {
+		return phoneCheck;
+	}
+
+	public void setPhoneCheck(Integer phoneCheck) {
+		this.phoneCheck = phoneCheck;
+	}
+
+	public Integer getEmailCheck() {
+		return emailCheck;
+	}
+
+	public void setEmailCheck(Integer emailCheck) {
+		this.emailCheck = emailCheck;
+	}
+
+	public Date getRegisterTime() {
+		return registerTime;
+	}
+
+	public void setRegisterTime(Date registerTime) {
+		this.registerTime = registerTime;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public Integer getUserLevel() {
+		return userLevel;
+	}
+
+	public void setUserLevel(Integer userLevel) {
+		this.userLevel = userLevel;
+	}
 }

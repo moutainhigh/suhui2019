@@ -37,7 +37,7 @@ public class Result<T> implements Serializable {
 	 */
 	@ApiModelProperty(value = "返回代码")
 	private Integer code = 0;
-	
+
 	/**
 	 * 返回数据对象 data
 	 */
