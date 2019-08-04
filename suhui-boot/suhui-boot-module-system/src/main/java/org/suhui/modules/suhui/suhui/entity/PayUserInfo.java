@@ -101,6 +101,28 @@ public class PayUserInfo {
 	@ApiModelProperty(value = "picture")
 	private String picture ; // 图片
 
+	@ApiModelProperty(value = "salt")
+	private String salt ;
+
+	@ApiModelProperty(value = "pay_password")
+	private String payPassword ;
+
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+
+	public String getPayPassword() {
+		return payPassword;
+	}
+
+	public void setPayPassword(String payPassword) {
+		this.payPassword = payPassword;
+	}
+
 	public String getPicture() {
 		return picture;
 	}

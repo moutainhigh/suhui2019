@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.suhui.common.api.vo.Result;
 import org.suhui.common.constant.CommonConstant;
 import org.suhui.common.util.PasswordUtil;
+import org.suhui.common.util.oConvertUtils;
 import org.suhui.modules.suhui.suhui.service.IPayUserInfoService;
 import org.suhui.modules.suhui.suhui.entity.* ;
 import org.suhui.modules.suhui.suhui.service.IPayUserLoginService;
@@ -138,4 +139,180 @@ public class AppLoginUserApiController {
 
         return result ;
     }
+
+
+    /**
+     * 设置支付密码
+     * @param params
+     * @return
+     */
+    @RequestMapping(value = "/set_paypassword", method = RequestMethod.POST)
+    public Result<JSONObject> setPaypassword(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
+
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+        String id = params.get("id")+"" ;
+        PayUserLogin payUserLogin = iPayUserLoginService.getById(id) ;
+        if(payUserLogin == null){
+            result.setResult(obj);
+            result.success("has no user");
+            result.setCode(0);
+            return result ;
+        }
+        String userno = payUserLogin.getUserNo() ;
+        Integer usertype = payUserLogin.getUserType() ;
+
+        String paypwd = params.get("paypwd")+"" ;
+
+        PayUserInfo payUserInfo = new PayUserInfo() ;
+        payUserInfo.setUserNo(userno);
+        payUserInfo.setUserType(usertype);
+        PayUserInfo payUserInfoDb = iPayUserInfoService.getUserByObj(payUserInfo) ;
+
+
+        if(payUserInfoDb==null) {
+            result.setResult(obj);
+            result.success("has no user");
+            result.setCode(0);
+        }else{
+
+            String salt = payUserInfoDb.getSalt() ;
+            if(salt == null || salt.equals("")){
+                salt = oConvertUtils.randomGen(8);
+            }
+
+            String payPasswordEncode = PasswordUtil.encrypt(payUserInfoDb.getPhoneNo(), paypwd+"", salt);
+            payUserInfoDb.setPayPassword(payPasswordEncode) ;
+            payUserInfoDb.setSalt(salt);
+            iPayUserInfoService.updateById(payUserInfoDb) ;
+
+            result.setResult(obj);
+            result.success("update pay password success!");
+            result.setCode(CommonConstant.SC_OK_200);
+        }
+
+        return result ;
+    }
+
+
+    /**
+     * 修改支付密码
+     * @param params
+     * @return
+     */
+    @RequestMapping(value = "/set-new-paypassword", method = RequestMethod.POST)
+    public Result<JSONObject> setNewPaypassword(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
+
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+
+        String id = params.get("id")+"" ;
+        PayUserLogin payUserLogin = iPayUserLoginService.getById(id) ;
+        if(payUserLogin == null){
+            result.setResult(obj);
+            result.success("has no user");
+            result.setCode(0);
+            return result ;
+        }
+        String userno = payUserLogin.getUserNo() ;
+        Integer usertype = payUserLogin.getUserType() ;
+
+        String paypwd = params.get("paypwd")+"" ;
+        String oldpaypwd =  params.get("oldpaypwd")+"" ; // old pay password
+
+        PayUserInfo payUserInfo = new PayUserInfo() ;
+        payUserInfo.setUserNo(userno);
+        payUserInfo.setUserType(usertype);
+        PayUserInfo payUserInfoDb = iPayUserInfoService.getUserByObj(payUserInfo) ;
+
+
+        String salt = payUserInfoDb.getSalt() ;
+        String paypassword = payUserInfoDb.getPayPassword() ;
+        String oldpaypwdEncode = PasswordUtil.encrypt(payUserInfoDb.getPhoneNo(), oldpaypwd+"", salt);
+
+        if(!oldpaypwdEncode.equals(paypassword)){
+            result.error500("old pay password is not right , please check it!");
+            return result ;
+        }
+
+        if(payUserInfoDb==null) {
+            result.setResult(obj);
+            result.success("has no user");
+            result.setCode(0);
+        }else{
+            String payPasswordEncode = PasswordUtil.encrypt(payUserInfoDb.getPhoneNo(), paypwd+"", salt);
+            payUserInfoDb.setPayPassword(payPasswordEncode) ;
+
+            iPayUserInfoService.updateById(payUserInfoDb) ;
+
+            result.setResult(obj);
+            result.success("update pay password success!");
+            result.setCode(CommonConstant.SC_OK_200);
+
+        }
+
+        return result ;
+    }
+
+
+
+    /**
+     * 修改资料
+     * @param params
+     * @return
+     */
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public Result<JSONObject> update(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
+
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+        String id = params.get("id")+"" ;
+        String userName = params.get("userName")+"" ; //用户真实姓名
+        String cardType = params.get("cardType")+"" ;//证件类型 1-身份证 2-军官证 3-护照
+        String cardNo = params.get("cardNo")+"" ; //证件号码
+        String phoneNo = params.get("phoneNo")+"" ;
+        String email = params.get("email")+"" ;
+        String sex = params.get("sex")+"" ;
+        String birthday = params.get("birthday")+"" ;
+
+        PayUserLogin payUserLogin = iPayUserLoginService.getById(id) ;
+        if(payUserLogin == null){
+            result.setResult(obj);
+            result.success("has no user");
+            result.setCode(0);
+            return result ;
+        }
+        String userno = payUserLogin.getUserNo() ;
+        Integer usertype = payUserLogin.getUserType() ;
+
+        String paypwd = params.get("paypwd")+"" ;
+        String oldpaypwd =  params.get("oldpaypwd")+"" ; // old pay password
+
+        PayUserInfo payUserInfo = new PayUserInfo() ;
+        payUserInfo.setUserNo(userno);
+        payUserInfo.setUserType(usertype);
+        PayUserInfo payUserInfoDb = iPayUserInfoService.getUserByObj(payUserInfo) ;
+
+        if(payUserInfoDb==null) {
+            result.setResult(obj);
+            result.success("has no user");
+            result.setCode(0);
+        }else{
+            payUserInfoDb.setUserName(userName); ; //real name
+            payUserInfoDb.setCardType(Integer.parseInt(cardType));
+            payUserInfoDb.setCardNo(cardNo);
+            payUserInfoDb.setPhoneNo(phoneNo);
+            payUserInfoDb.setEmail(email);
+            payUserInfoDb.setSex(Integer.parseInt(sex)) ;
+            payUserInfoDb.setBirthday(birthday);
+
+            iPayUserInfoService.updateById(payUserInfoDb) ;
+            result.setResult(obj);
+            result.success("update pay password success!");
+            result.setCode(CommonConstant.SC_OK_200);
+        }
+
+        return result ;
+    }
+
 }
