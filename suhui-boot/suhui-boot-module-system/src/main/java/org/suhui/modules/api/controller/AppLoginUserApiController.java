@@ -1,5 +1,6 @@
 package org.suhui.modules.api.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.suhui.modules.system.entity.SysUser;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -270,7 +272,7 @@ public class AppLoginUserApiController {
         String userName = params.get("userName")+"" ; //用户真实姓名
         String cardType = params.get("cardType")+"" ;//证件类型 1-身份证 2-军官证 3-护照
         String cardNo = params.get("cardNo")+"" ; //证件号码
-        String phoneNo = params.get("phoneNo")+"" ;
+//        String phoneNo = params.get("phoneNo")+"" ;
         String email = params.get("email")+"" ;
         String sex = params.get("sex")+"" ;
         String birthday = params.get("birthday")+"" ;
@@ -301,18 +303,70 @@ public class AppLoginUserApiController {
             payUserInfoDb.setUserName(userName); ; //real name
             payUserInfoDb.setCardType(Integer.parseInt(cardType));
             payUserInfoDb.setCardNo(cardNo);
-            payUserInfoDb.setPhoneNo(phoneNo);
+//            payUserInfoDb.setPhoneNo(phoneNo);
             payUserInfoDb.setEmail(email);
             payUserInfoDb.setSex(Integer.parseInt(sex)) ;
             payUserInfoDb.setBirthday(birthday);
 
             iPayUserInfoService.updateById(payUserInfoDb) ;
             result.setResult(obj);
-            result.success("update pay password success!");
+            result.success("update userinfo success!");
             result.setCode(CommonConstant.SC_OK_200);
         }
 
         return result ;
     }
+
+
+    /**
+     * 查看个人资料
+     * @param params
+     * @return
+     */
+    @RequestMapping(value = "/get-info", method = RequestMethod.POST)
+    public Result<JSONObject> getInfo(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
+
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+        String id = params.get("id")+"" ;
+
+        PayUserLogin payUserLogin = iPayUserLoginService.getById(id) ;
+        if(payUserLogin == null){
+            result.setResult(obj);
+            result.success("has no user");
+            result.setCode(0);
+            return result ;
+        }
+        String userno = payUserLogin.getUserNo() ;
+        Integer usertype = payUserLogin.getUserType() ;
+
+        PayUserInfo payUserInfo = new PayUserInfo() ;
+        payUserInfo.setUserNo(userno);
+        payUserInfo.setUserType(usertype);
+        PayUserInfo payUserInfoDb = iPayUserInfoService.getUserByObj(payUserInfo) ;
+
+        if(payUserInfoDb==null) {
+            result.setResult(obj);
+            result.success("has no user");
+            result.setCode(0);
+        }else{
+            Map map = new HashMap() ;
+            map.put("userName" ,payUserInfoDb.getUserName()) ;
+            map.put("cardType" ,payUserInfoDb.getCardType()) ;
+            map.put("cardNo" ,payUserInfoDb.getCardNo()) ;
+            map.put("phoneNo" ,payUserInfoDb.getPhoneNo()) ;
+            map.put("email" ,payUserInfoDb.getEmail()) ;
+            map.put("sex" ,payUserInfoDb.getSex()) ;
+            map.put("birthday" ,payUserInfoDb.getBirthday()) ;
+
+            obj.put("userinfo" , map) ;
+            result.setResult(obj);
+            result.success("get userinfo success");
+            result.setCode(CommonConstant.SC_OK_200);
+        }
+
+        return result ;
+    }
+
 
 }
