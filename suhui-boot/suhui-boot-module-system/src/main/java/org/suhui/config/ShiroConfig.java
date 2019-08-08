@@ -89,6 +89,9 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/api/exchange/**", "anon"); //换汇
 		filterChainDefinitionMap.put("/api/pay/**", "anon"); //充值
 
+		filterChainDefinitionMap.put("/pays/notifyPay", "anon"); //支付通知
+		filterChainDefinitionMap.put("/pays/returnPay", "anon"); //支付返回接口
+
 
 		// 添加自己的过滤器并且取名为jwt
 		Map<String, Filter> filterMap = new HashMap<String, Filter>(1);
