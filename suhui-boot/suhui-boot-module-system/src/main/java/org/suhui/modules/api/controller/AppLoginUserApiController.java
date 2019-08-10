@@ -259,7 +259,7 @@ public class AppLoginUserApiController {
 
 
     /**
-     * 修改资料
+     * 修改资料  修改账号 信息
      * @param params
      * @return
      */
@@ -269,6 +269,7 @@ public class AppLoginUserApiController {
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
         String id = params.get("id")+"" ;
+
         String userName = params.get("userName")+"" ; //用户真实姓名
         String cardType = params.get("cardType")+"" ;//证件类型 1-身份证 2-军官证 3-护照
         String cardNo = params.get("cardNo")+"" ; //证件号码
@@ -276,6 +277,12 @@ public class AppLoginUserApiController {
         String email = params.get("email")+"" ;
         String sex = params.get("sex")+"" ;
         String birthday = params.get("birthday")+"" ;
+
+        String cardCheck = params.get("cardCheck")+"" ;
+        String phoneCheck = params.get("phoneCheck")+"" ;
+        String emailCheck = params.get("emailCheck")+"" ;
+
+        String userLevel = params.get("userLevel")+"" ;
 
         PayUserLogin payUserLogin = iPayUserLoginService.getById(id) ;
         if(payUserLogin == null){
@@ -307,6 +314,31 @@ public class AppLoginUserApiController {
             payUserInfoDb.setEmail(email);
             payUserInfoDb.setSex(Integer.parseInt(sex)) ;
             payUserInfoDb.setBirthday(birthday);
+            // 设置check
+            if(emailCheck == null || emailCheck.equals("")){
+
+            }else{
+                payUserInfoDb.setEmailCheck(Integer.parseInt(emailCheck));
+            }
+
+            if(phoneCheck == null || phoneCheck.equals("")){
+
+            }else{
+                payUserInfoDb.setPhoneCheck(Integer.parseInt(phoneCheck));
+            }
+
+            if(cardCheck == null || cardCheck.equals("")){
+
+            }else{
+                payUserInfoDb.setCardCheck(Integer.parseInt(cardCheck));
+            }
+            // 设置用户等级  会员级别 1-普通会员 2-青铜 3-白银 4-黄金 5-钻石
+            if(userLevel == null || userLevel.equals("")){
+
+            }else{
+                payUserInfoDb.setUserLevel(Integer.parseInt(userLevel));
+            }
+
 
             iPayUserInfoService.updateById(payUserInfoDb) ;
             result.setResult(obj);

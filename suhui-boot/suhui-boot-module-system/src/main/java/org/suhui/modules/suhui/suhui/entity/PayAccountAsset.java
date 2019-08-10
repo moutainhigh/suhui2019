@@ -29,13 +29,13 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 public class PayAccountAsset {
     
 	/**id*/
-	@TableId(type = IdType.UUID)
+	@TableId(type = IdType.AUTO)
     @ApiModelProperty(value = "id")
 	private Integer id;
 	/**身份编号*/
 	@Excel(name = "身份编号", width = 15)
     @ApiModelProperty(value = "身份编号")
-	private Integer identityNo;
+	private String identityNo;
 	/**账户编号*/
 	@Excel(name = "账户编号", width = 15)
     @ApiModelProperty(value = "账户编号")

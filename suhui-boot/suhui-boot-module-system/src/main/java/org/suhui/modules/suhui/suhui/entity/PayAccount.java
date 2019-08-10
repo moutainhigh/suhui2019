@@ -29,7 +29,7 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 public class PayAccount {
     
 	/**id*/
-	@TableId(type = IdType.UUID)
+	@TableId(type = IdType.AUTO)
     @ApiModelProperty(value = "id")
 	private Integer id;
 	/**账户编号*/
@@ -47,7 +47,7 @@ public class PayAccount {
 	/**身份编号*/
 	@Excel(name = "身份编号", width = 15)
     @ApiModelProperty(value = "身份编号")
-	private Integer identityNo;
+	private String identityNo;
 	/**身份类型 1-个人身份 2-企业身份*/
 	@Excel(name = "身份类型 1-个人身份 2-企业身份", width = 15)
     @ApiModelProperty(value = "身份类型 1-个人身份 2-企业身份")

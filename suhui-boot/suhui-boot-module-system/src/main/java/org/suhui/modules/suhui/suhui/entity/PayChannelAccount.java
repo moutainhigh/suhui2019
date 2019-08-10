@@ -29,7 +29,7 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 public class PayChannelAccount {
     
 	/**自增ID*/
-	@TableId(type = IdType.UUID)
+	@TableId(type = IdType.AUTO)
     @ApiModelProperty(value = "自增ID")
 	private Integer id;
 	/**渠道账号编号*/
