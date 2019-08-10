@@ -35,7 +35,7 @@ public class PayIdentityChannelAccount {
 	/**身份编号*/
 	@Excel(name = "身份编号", width = 15)
     @ApiModelProperty(value = "身份编号")
-	private Integer identityNo;
+	private String identityNo;
 	/**身份类型 1-个人身份 2-企业身份*/
 	@Excel(name = "身份类型 1-个人身份 2-企业身份", width = 15)
     @ApiModelProperty(value = "身份类型 1-个人身份 2-企业身份")
