@@ -13,4 +13,6 @@ import org.suhui.modules.suhui.suhui.entity.PayUserLogin;
 public interface IPayUserInfoService extends IService<PayUserInfo> {
 
     public PayUserInfo getUserByObj(PayUserInfo payUserInfo);
+
+
 }

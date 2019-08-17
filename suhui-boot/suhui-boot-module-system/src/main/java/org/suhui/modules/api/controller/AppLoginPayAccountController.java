@@ -24,8 +24,7 @@ import org.suhui.modules.system.entity.SysUser;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author scott
@@ -102,11 +101,21 @@ public class AppLoginPayAccountController {
         payAccount.setIsFrozen(Integer.parseInt(isfrozen)) ;
         payAccount.setStatus(Integer.parseInt(status)) ;
         payAccount.setRemark(remark) ;
+        payAccount.setAccountTypeCode(Integer.parseInt(accounttypecode)) ;
 
         try{
+
+            Map map = new HashMap() ;
+            map.put("user_no" ,userno);
+            map.put("user_type" ,usertype);
+            Map<String, Object> identityMap = iPayIdentityInfoService.getIdentityInfoByUserNo(map) ;
+            if(identityMap == null){
+                iPayIdentityInfoService.save(payIdentityInfo) ;
+            }else{
+                payAccount.setIdentityNo(identityMap.get("identity_no")+"") ;
+            }
             /**  保存 支付账号信息  和身份信息 */
             iPayAccountService.save(payAccount) ;
-            iPayIdentityInfoService.save(payIdentityInfo) ;
         }catch (Exception e){
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -138,7 +147,7 @@ public class AppLoginPayAccountController {
         String remark = params.get("remark")+"" ;
 
         String identitytype = params.get("identitytype")+"" ;
-        String accounttypecode = params.get("accounttypecode")+"" ; //账户类型编码
+//        String accounttypecode = params.get("accounttypecode")+"" ; //账户类型编码  账户的类型是不能修改的。
         String accountname = params.get("accountname")+"" ;//账户名称
 
         String isallowrecharge = params.get("isallowrecharge")+"" ; //是否允许充值
@@ -164,6 +173,7 @@ public class AppLoginPayAccountController {
         payAccount.setIsFrozen(Integer.parseInt(isfrozen)) ;
         payAccount.setStatus(Integer.parseInt(status)) ;
         payAccount.setRemark(remark) ;
+//        payAccount.setAccountTypeCode(Integer.parseInt(accounttypecode)) ;
 
         try{
             /**  保存 支付账号信息  和身份信息 */
@@ -182,4 +192,30 @@ public class AppLoginPayAccountController {
         return result ;
     }
 
+    /**
+     * 账号查询  -- 根据usertype 和 userno
+     * @param params
+     * @return
+     */
+    @RequestMapping(value = "/getPayAccountMoneyByUserNo", method = RequestMethod.POST)
+    @Transactional
+    public Result<JSONObject> getPayAccountMoneyByUserNo(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
+        //用户退出逻辑
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+
+        String userno = params.get("userno")+"" ; //账号user_no
+        String usertype = params.get("usertype")+"" ; //账号类型  user_type
+        Map map = new HashMap() ;
+        map.put("userno" , userno) ;
+        map.put("usertype" , usertype) ;
+
+        List<Map<String,String>> accountList = iPayAccountService.getPayAccountMoneyByUserNo(map) ;
+
+        obj.put("data" ,accountList) ;
+        result.setResult(obj);
+        result.success("success");
+        result.setCode(CommonConstant.SC_OK_200);
+        return result ;
+    }
 }
