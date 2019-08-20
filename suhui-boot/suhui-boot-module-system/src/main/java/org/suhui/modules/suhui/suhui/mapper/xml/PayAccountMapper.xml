@@ -28,6 +28,10 @@
             AND pii.identity_type = pa.identity_type
             AND pii.user_no = #{userno}
             AND pii.user_type = #{usertype}
+            <if test="accounttypecode!=null and accounttypecode!=''">
+                AND pa.account_type_code = #{accounttypecode}
+            </if>
+
 	</select>
 
 
@@ -58,32 +62,33 @@
 
             AND pii.user_no = #{userno}
             AND pii.user_type = #{usertype}
+
+            <if test="accounttypecode!=null and accounttypecode!=''">
+                AND pa.account_type_code = #{accounttypecode}
+            </if>
+
 	</select>
 
+
     <select id="getPayAccountAssetByUserNo" resultType="map" parameterType="map">
-            SELECT
-                ppa.id,
-                paa.identity_no,
-                paa.account_type_code,
-                paa.available_amount,
-                paa.frozen_amount,
-                paa.currency_code,
-                paa.remark,
-                paa.create_time,
-                paa.update_time
-            FROM
-                pay_account_asset paa,
-                pay_account pa,
-                pay_identity_info pii,
-                pay_identity_channel_account pica
-            WHERE
-                pii.identity_no = pa.identity_no
-            AND pii.identity_type = pa.identity_type
-            AND paa.account_no = pa.account_no
-            AND paa.account_type_code = pa.account_type_code
-            AND pica.identity_no = pii.identity_no
-            AND pica.identity_type = pii.identity_type
-            AND pii.user_no = #{userno}
-            AND pii.user_type = #{usertype}
-	</select>
+        SELECT
+            id,
+            identity_no,
+            account_no,
+            account_type_code,
+            available_amount,
+            frozen_amount,
+            currency_code,
+            remark
+        FROM
+        pay_account_asset paa
+        WHERE
+        paa.account_no = #{account_no}
+
+        <if test="account_type_code!=null and account_type_code!=''">
+            AND pa.account_type_code = #{account_type_code}
+        </if>
+    </select>
+
+
 </mapper>

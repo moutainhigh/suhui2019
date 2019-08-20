@@ -206,16 +206,26 @@ public class AppLoginPayAccountController {
 
         String userno = params.get("userno")+"" ; //账号user_no
         String usertype = params.get("usertype")+"" ; //账号类型  user_type
+        String accounttypecode = params.get("accounttypecode") +"";  // 如果是查询列表的话  可以不传此参数
         Map map = new HashMap() ;
         map.put("userno" , userno) ;
         map.put("usertype" , usertype) ;
+        map.put("accounttypecode" , accounttypecode) ;
 
         List<Map<String,String>> accountList = iPayAccountService.getPayAccountMoneyByUserNo(map) ;
 
-        obj.put("data" ,accountList) ;
-        result.setResult(obj);
-        result.success("success");
-        result.setCode(CommonConstant.SC_OK_200);
+        if(accountList.size() > 0){
+            obj.put("data" ,accountList) ;
+            result.setResult(obj);
+            result.success("success");
+            result.setCode(CommonConstant.SC_OK_200);
+        }else{
+            obj.put("data" ,"has no pay account") ;
+            result.setResult(obj);
+            result.success("failure");
+            result.setCode(-1);
+        }
+
         return result ;
     }
 }

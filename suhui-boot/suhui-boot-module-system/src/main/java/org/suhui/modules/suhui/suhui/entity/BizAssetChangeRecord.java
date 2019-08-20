@@ -59,7 +59,7 @@ public class BizAssetChangeRecord {
 	/**身份编号*/
 	@Excel(name = "身份编号", width = 15)
     @ApiModelProperty(value = "身份编号")
-	private Integer identityNo;
+	private String identityNo;
 	/**变更类型 1-增加 2-减少 4-冻结 5-解冻*/
 	@Excel(name = "变更类型 1-增加 2-减少 4-冻结 5-解冻", width = 15)
     @ApiModelProperty(value = "变更类型 1-增加 2-减少 4-冻结 5-解冻")

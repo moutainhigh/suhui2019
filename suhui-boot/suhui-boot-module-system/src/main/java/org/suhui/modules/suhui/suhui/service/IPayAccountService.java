@@ -35,4 +35,6 @@ public interface IPayAccountService extends IService<PayAccount> {
      * @return
      */
     public Map<String,String> getPayAccountAssetByUserNo(Map<String,String> map ) ;
+
+
 }
