@@ -47,11 +47,11 @@ public class PayAccountAsset {
 	/**可用金额*/
 	@Excel(name = "可用金额", width = 15)
     @ApiModelProperty(value = "可用金额")
-	private Integer availableAmount;
+	private long availableAmount;
 	/**冻结金额*/
 	@Excel(name = "冻结金额", width = 15)
     @ApiModelProperty(value = "冻结金额")
-	private Integer frozenAmount;
+	private long frozenAmount;
 	/**货币单位 1-人民币*/
 	@Excel(name = "货币单位 1-人民币", width = 15)
     @ApiModelProperty(value = "货币单位 1-人民币")

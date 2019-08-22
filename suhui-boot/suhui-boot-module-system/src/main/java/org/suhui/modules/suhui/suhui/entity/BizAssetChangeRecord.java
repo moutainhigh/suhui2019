@@ -69,21 +69,21 @@ public class BizAssetChangeRecord {
     @ApiModelProperty(value = "变更金额")
 	private Integer changeAmount;
 	/**变更前冻结金额*/
-	@Excel(name = "变更前冻结金额", width = 15)
+	@Excel(name = "变更前冻结金额", width = 20)
     @ApiModelProperty(value = "变更前冻结金额")
-	private Integer frozenAmountBefore;
+	private long frozenAmountBefore;
 	/**变更前可用金额*/
-	@Excel(name = "变更前可用金额", width = 15)
+	@Excel(name = "变更前可用金额", width = 20)
     @ApiModelProperty(value = "变更前可用金额")
-	private Integer availableAmountBefore;
+	private long availableAmountBefore;
 	/**变更后冻结金额*/
-	@Excel(name = "变更后冻结金额", width = 15)
+	@Excel(name = "变更后冻结金额", width = 20)
     @ApiModelProperty(value = "变更后冻结金额")
-	private Integer frozenAmountAfter;
+	private long frozenAmountAfter;
 	/**变更后可用金额*/
-	@Excel(name = "变更后可用金额", width = 15)
+	@Excel(name = "变更后可用金额", width = 20)
     @ApiModelProperty(value = "变更后可用金额")
-	private Integer availableAmountAfter;
+	private long availableAmountAfter;
 	/**变更时间*/
     @ApiModelProperty(value = "变更时间")
 	private Date changeTime;

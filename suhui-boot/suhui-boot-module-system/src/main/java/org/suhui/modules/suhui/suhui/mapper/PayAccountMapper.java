@@ -23,4 +23,6 @@ public interface PayAccountMapper extends BaseMapper<PayAccount> {
 
     public Map<String,String> getPayAccountAssetByUserNo(Map<String,String> map);
 
+    public Map<String,String> getPayIdentityChannelAccountByUserNo(Map<String,String> map);
+
 }

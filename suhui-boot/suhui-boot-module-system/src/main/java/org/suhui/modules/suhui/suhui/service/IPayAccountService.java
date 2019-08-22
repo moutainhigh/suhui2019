@@ -36,5 +36,12 @@ public interface IPayAccountService extends IService<PayAccount> {
      */
     public Map<String,String> getPayAccountAssetByUserNo(Map<String,String> map ) ;
 
+    /**
+     * 根据userNo userType 获取 身份信息下 支付通道。
+     * @param map
+     * @return
+     */
+    public Map<String,String> getPayIdentityChannelAccountByUserNo(Map<String,String> map ) ;
+
 
 }

@@ -86,8 +86,22 @@
         paa.account_no = #{account_no}
 
         <if test="account_type_code!=null and account_type_code!=''">
-            AND pa.account_type_code = #{account_type_code}
+            AND paa.account_type_code = #{account_type_code}
         </if>
+    </select>
+
+    <select id="getPayIdentityChannelAccountByUserNo" resultType="map" parameterType="map">
+        SELECT
+            pica.channel_account_no
+        FROM
+            pay_identity_channel_account pica,
+            pay_identity_info pii
+        WHERE
+            pii.identity_no = pica.identity_no
+        AND pii.identity_type = pica.identity_type
+        AND pii.user_no = #{userno}
+        AND pii.user_type =#{usertype}
+        AND pica.channel_type = #{channel_type}
     </select>
 
 

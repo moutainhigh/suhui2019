@@ -39,4 +39,14 @@ public class PayAccountServiceImpl extends ServiceImpl<PayAccountMapper, PayAcco
     public Map<String,String> getPayAccountAssetByUserNo(Map<String,String> map ) {
         return payAccountMapper.getPayAccountAssetByUserNo(map);
     }
+
+    /**
+     * 通过 用户id 获取 身份信息下的支付通道
+     * @param map
+     * @return
+     */
+    @Override
+    public Map<String,String> getPayIdentityChannelAccountByUserNo(Map<String,String> map ) {
+        return payAccountMapper.getPayIdentityChannelAccountByUserNo(map);
+    }
 }
