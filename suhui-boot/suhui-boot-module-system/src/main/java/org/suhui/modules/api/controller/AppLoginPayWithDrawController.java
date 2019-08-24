@@ -26,14 +26,15 @@ import java.util.Map;
 import java.util.Random;
 
 /**
+ * 体现操作
  * @Author scott
  * @since 2018-12-17
  */
 @RestController
-@RequestMapping("/api/login/payCharge")
-@Api(tags="账户操作")
+@RequestMapping("/api/login/payWithDraw")
+@Api(tags="账户操作 ")
 @Slf4j
-public class AppLoginPayChargeController {
+public class AppLoginPayWithDrawController {
 
     @Autowired
     private IPayAccountService iPayAccountService ;
@@ -52,12 +53,15 @@ public class AppLoginPayChargeController {
 
     @Autowired
     private IBizAssetChangeRecordService iBizAssetChangeRecordService ;
+
+    @Autowired
+    private IBizWithDrawOrderService iBizWithDrawOrderService ;
     /**
      *  账号充值
      * @param params
      * @return
      */
-    @RequestMapping(value = "/recharge", method = RequestMethod.POST)
+    @RequestMapping(value = "/withdraw", method = RequestMethod.POST)
     @Transactional
     public Result<JSONObject> recharge(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
         //用户退出逻辑
@@ -69,16 +73,16 @@ public class AppLoginPayChargeController {
         Double chargeMoney = Double.parseDouble( params.get("charge_money")+"") ;
 //        String user_pay_account = params.get("user_pay_account")  +""; //客户付款的支付账号:支付宝账号或者微信账号或者银行卡号
         String user_pay_account = "" ;
-        String device_type = params.get("device_type")+"" ;// 支付设备来源类型 （1-android；2-ios；3-web; 4-h5）
-        String city_code = params.get("city_code")  +"";
+//        String device_type = params.get("device_type")+"" ;// 支付设备来源类型 （1-android；2-ios；3-web; 4-h5）
+//        String city_code = params.get("city_code")  +"";
         String remark = params.get("remark") +"";
         String channel_type = params.get("channel_type")+"" ;//支付渠道 与支付渠道账户表的channel_type一致  渠道类型 1-支付宝 2-微信 3-招行 4-XX银行
-        String recharge_type = params.get("recharge_type")+"";  //充值类型 1-在线充值 2-线下充值(由操作员在运营后台手动充值)
-        Double discount_amount = Double.parseDouble(params.get("discount_amount")+"") ;
-        String discount_info = params.get("discount_info")+ "" ;
+        String withdraw_channel_type = params.get("withdraw_channel_type")+"";  //充值类型 1-在线充值 2-线下充值(由操作员在运营后台手动充值)
+//        Double discount_amount = Double.parseDouble(params.get("discount_amount")+"") ;
+//        String discount_info = params.get("discount_info")+ "" ;
         String status = params.get("status")+"" ;
         String is_refund = params.get("is_refund") +"" ; //是否退款过（0-否 1-是）
-        int discountAmountInt = (int)(discount_amount*100) ;
+//        int discountAmountInt = (int)(discount_amount*10000) ;
         int chargeMoneyInt = (int)(chargeMoney*100) ;
         Map map = new HashMap() ;
         map.put("userno" , userno) ;
@@ -108,35 +112,27 @@ public class AppLoginPayChargeController {
             String trade_no = UUIDGenerator.generate() ;//业务交易流水号(各业务保持唯一)
 //            String biz_recharge_no =  UUIDGenerator.generate()
             //由支付系统生成的唯一流水号  通过日期和水机数生成
-            String biz_recharge_no =  "R"+y+ sdf.format(new Date())+'0'+x;
+            String biz_withdraw_no =  "W"+y+ sdf.format(new Date())+'0'+x;
 
-            BizRechargeOrder bizRechargeOrder = new BizRechargeOrder() ;
-            bizRechargeOrder.setTradeNo(trade_no) ;
-            bizRechargeOrder.setBizRechargeNo(biz_recharge_no) ;
-            bizRechargeOrder.setUserNo(userno) ;
-            bizRechargeOrder.setUserType(Integer.parseInt(usertype) ) ;
-            bizRechargeOrder.setAccountType(Integer.parseInt(accounttypecode)) ;
+            BizWithDrawOrder bizWithDrawOrder = new BizWithDrawOrder() ;
+            bizWithDrawOrder.setTradeNo(trade_no) ;
+            bizWithDrawOrder.setBizWithdrawNo(biz_withdraw_no) ;
+            bizWithDrawOrder.setUserNo(userno) ;
+            bizWithDrawOrder.setUserType(Integer.parseInt(usertype) ) ;
+            bizWithDrawOrder.setAccountType(Integer.parseInt(accounttypecode)) ;
 
-            bizRechargeOrder.setRechargeType(Integer.parseInt(recharge_type)) ;
-            bizRechargeOrder.setChannelType(Integer.parseInt(channel_type)) ;
-            bizRechargeOrder.setAmount(chargeMoneyInt) ; // 设置充值金额
-            bizRechargeOrder.setDiscountAmount(discountAmountInt) ;
-            bizRechargeOrder.setDiscountInfo(discount_info) ;
+            bizWithDrawOrder.setWithdrawChannelType(Integer.parseInt(withdraw_channel_type)) ; //提现渠道类型
+            bizWithDrawOrder.setAmount(chargeMoneyInt) ; // 设置充值金额
 
-            bizRechargeOrder.setStatus(Integer.parseInt(status)) ;
-            bizRechargeOrder.setDeviceType(Integer.parseInt(device_type)) ;
-            bizRechargeOrder.setRemark(remark) ;
-            bizRechargeOrder.setUserPayAccount(user_pay_account) ;
-            bizRechargeOrder.setCityCode(city_code) ;
-
-            bizRechargeOrder.setIsRefund(Integer.parseInt(is_refund)) ;
-//  充值交易表 信息录入
-            iBizRechargeOrderService.save(bizRechargeOrder) ;
-
+            bizWithDrawOrder.setStatus(Integer.parseInt(status)) ;
+            bizWithDrawOrder.setUserChannelInfo("") ;// json 格式数据
+            bizWithDrawOrder.setResultInfo("") ;// json 格式数据
+            bizWithDrawOrder.setRemark(remark) ;
+            iBizWithDrawOrderService.save(bizWithDrawOrder) ;
 
             Map payaccount = iPayAccountService.getPayAccountByUserNo(map) ;
     //        是否允许充值  0 表示允许充值 1 表示不允许
-            String is_allow_recharge = payaccount.get("is_allow_recharge")+"" ;
+            String is_allow_recharge = payaccount.get("is_allow_withdraw")+"" ;
             if(is_allow_recharge.equals("0")){ // 允许充值情况
                 String account_no = payaccount.get("account_no") +"";
                 String identity_no = payaccount.get("identity_no")+"" ;
@@ -147,7 +143,7 @@ public class AppLoginPayChargeController {
                 Map<String,Object> mapAssetDb = iPayAccountService.getPayAccountAssetByUserNo(mapAsset) ;
                 long available_amount_before = Long.parseLong(mapAssetDb.get("available_amount")+"")  ; // 可用金额
                 long frozen_amount_before =  Long.parseLong(mapAssetDb.get("frozen_amount")+"") ;// 冻结金额
-                long available_amount = available_amount_before;
+                long available_amount = available_amount_before - chargeMoneyInt; // 体现的话 账户金额会减少
                 long frozen_amount = frozen_amount_before+ chargeMoneyInt ;
 
                 PayAccountAsset payAccountAsset = new PayAccountAsset() ;
@@ -160,9 +156,9 @@ public class AppLoginPayChargeController {
                 String biz_freeze_no = UUIDGenerator.generate() ;
                 BizFreezeOrder bizFreezeOrder = new BizFreezeOrder() ;
                 bizFreezeOrder.setTradeNo(trade_no) ;
-                bizFreezeOrder.setTotalFreezeAmount(chargeMoneyInt) ; //  设置充值冻结金额
+                bizFreezeOrder.setTotalFreezeAmount(chargeMoneyInt) ; //  设置体现冻结金额
                 bizFreezeOrder.setBizFreezeNo(biz_freeze_no)  ;
-                bizFreezeOrder.setFreezeType("2") ; //冻结类型  枚举维护，1-提现冻结 2- 充值冻结
+                bizFreezeOrder.setFreezeType("1") ; //冻结类型  枚举维护，1-提现冻结 2- 充值冻结
                 bizFreezeOrder.setFreezeTime(new Date()) ;
                 bizFreezeOrder.setStatus(1) ;//1：冻结 2：解冻
                 bizFreezeOrder.setRemark("账户："+account_no+ "  账户类型："+ accounttypecode+ "充值："+chargeMoney  ) ;
@@ -189,7 +185,7 @@ public class AppLoginPayChargeController {
 
                 BizAssetChangeRecord bizAssetChangeRecord = new BizAssetChangeRecord() ;//账户资金变更聚合流水表
 
-                bizAssetChangeRecord.setPayNo(biz_recharge_no) ;
+                bizAssetChangeRecord.setPayNo(biz_withdraw_no) ;
                 bizAssetChangeRecord.setBillNo(bill_no) ;
                 bizAssetChangeRecord.setUserNo(userno) ;
                 bizAssetChangeRecord.setUserType(Integer.parseInt(usertype)) ;
@@ -197,7 +193,7 @@ public class AppLoginPayChargeController {
                 bizAssetChangeRecord.setAccountType( Integer.parseInt(accounttypecode)) ;
                 bizAssetChangeRecord.setIdentityNo(identity_no) ;
 
-                bizAssetChangeRecord.setChangeType(1) ; //变更类型 1-增加 2-减少 4-冻结 5-解冻
+                bizAssetChangeRecord.setChangeType(2) ; //变更类型 1-增加 2-减少 4-冻结 5-解冻
                 bizAssetChangeRecord.setChangeAmount(chargeMoneyInt) ;
                 bizAssetChangeRecord.setFrozenAmountBefore(frozen_amount_before) ;
                 bizAssetChangeRecord.setAvailableAmountBefore(available_amount_before) ;
@@ -207,7 +203,7 @@ public class AppLoginPayChargeController {
                 bizAssetChangeRecord.setChangeTime(new Date()) ;//变更时间
                 bizAssetChangeRecord.setBillTime(new Date()) ;
                 bizAssetChangeRecord.setBillType(4) ;//记账类型 1-资产增加 2-转账(废弃) 3-资产减少 4-冻结 5-解冻 6-冻结资产减少
-                bizAssetChangeRecord.setPayBizType("1") ; //业务类型编码 1 充值 2 提现 3 转账这种类似的举例
+                bizAssetChangeRecord.setPayBizType("2") ; //业务类型编码 1 充值 2 提现 3 转账这种类似的举例
                 bizAssetChangeRecord.setRemark("") ;// 备注
                 bizAssetChangeRecord.setBillJson("") ;// 记账json
 
