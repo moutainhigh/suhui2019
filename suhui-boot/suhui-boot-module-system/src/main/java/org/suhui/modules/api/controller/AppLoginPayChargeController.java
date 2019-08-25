@@ -70,7 +70,7 @@ public class AppLoginPayChargeController {
 //        String user_pay_account = params.get("user_pay_account")  +""; //客户付款的支付账号:支付宝账号或者微信账号或者银行卡号
         String user_pay_account = "" ;
         String device_type = params.get("device_type")+"" ;// 支付设备来源类型 （1-android；2-ios；3-web; 4-h5）
-        String city_code = params.get("city_code")  +"";
+//        String city_code = params.get("city_code")  +"";  // 国家城市编码 现在没有用到。
         String remark = params.get("remark") +"";
         String channel_type = params.get("channel_type")+"" ;//支付渠道 与支付渠道账户表的channel_type一致  渠道类型 1-支付宝 2-微信 3-招行 4-XX银行
         String recharge_type = params.get("recharge_type")+"";  //充值类型 1-在线充值 2-线下充值(由操作员在运营后台手动充值)
@@ -127,7 +127,7 @@ public class AppLoginPayChargeController {
             bizRechargeOrder.setDeviceType(Integer.parseInt(device_type)) ;
             bizRechargeOrder.setRemark(remark) ;
             bizRechargeOrder.setUserPayAccount(user_pay_account) ;
-            bizRechargeOrder.setCityCode(city_code) ;
+//            bizRechargeOrder.setCityCode(city_code) ;
 
             bizRechargeOrder.setIsRefund(Integer.parseInt(is_refund)) ;
 //  充值交易表 信息录入
@@ -233,5 +233,25 @@ public class AppLoginPayChargeController {
         return result ;
     }
 
+
+    /**
+     *  账号充值 回调
+     * @param params
+     * @return
+     */
+    @RequestMapping(value = "/rechargeCallback", method = RequestMethod.POST)
+    @Transactional
+    public Result<JSONObject> rechargeCallback(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
+        //用户退出逻辑
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+
+       System.out.println(params.toString()+">>>>>>>>>>>>>>>>");
+
+        result.setResult(obj);
+        result.success("add success");
+        result.setCode(CommonConstant.SC_OK_200);
+        return result ;
+    }
 
 }

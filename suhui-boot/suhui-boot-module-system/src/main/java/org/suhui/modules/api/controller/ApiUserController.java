@@ -89,7 +89,7 @@ public class ApiUserController {
 		}
 
 		if(request.getSession(false) ==null){
-			result.error500("验证码过期");
+			result.error500("verification Code is out of time");
 			return result ;
 		}
 		String smsCode =  request.getSession().getAttribute("smsCode_"+codeVaue)+"" ;
@@ -97,7 +97,7 @@ public class ApiUserController {
 		if(smsCodeParam.equals(smsCode)){
 
 		}else{
-			result.error500("验证码不正确");
+			result.error500("verification Code is not right");
 			return result ;
 		}
 
@@ -122,7 +122,7 @@ public class ApiUserController {
 		sysUserService.addUserWithRole(sysUser,role);
 
 		result.setResult(obj);
-		result.success("注册成功");
+		result.success("resign success");
 		result.setCode(CommonConstant.SC_OK_200);
 		return result ;
 	}
@@ -206,7 +206,7 @@ public class ApiUserController {
 		}
 
 		if(sysUser==null) {
-			result.error500("该用户不存在");
+			result.error500("user not exist");
 			sysBaseAPI.addLog("登录失败，用户名:"+username+"不存在！", CommonConstant.LOG_TYPE_1, null);
 			return result;
 		}else {
@@ -215,7 +215,7 @@ public class ApiUserController {
 			String userpassword = PasswordUtil.encrypt(username, password, sysUser.getSalt());
 			String syspassword = sysUser.getPassword();
 			if(!syspassword.equals(userpassword)) {
-				result.error500("用户名或密码错误");
+				result.error500("user or password is wrong");
 				return result;
 			}
 			//生成token
@@ -239,7 +239,7 @@ public class ApiUserController {
 			obj.put("token", token);
 			obj.put("userInfo", sysUser);
 			result.setResult(obj);
-			result.success("登录成功");
+			result.success("success");
 			sysBaseAPI.addLog("用户名: "+username+",登录成功！", CommonConstant.LOG_TYPE_1, null);
 		}
 		return result;
@@ -262,7 +262,7 @@ public class ApiUserController {
 		String smsCodeParam =  params.get("smsCode")+"" ;
 
 		if(request.getSession(false) ==null){
-			result.error500("验证码过期");
+			result.error500("verification Code is out of time");
 			return result ;
 		}
 		String smsCode =  request.getSession().getAttribute("smsCode_"+phone)+"" ;
@@ -270,7 +270,7 @@ public class ApiUserController {
 		if(smsCodeParam.equals(smsCode)){
 
 		}else{
-			result.error500("验证码不正确");
+			result.error500("verification Code is not right");
 			return result ;
 		}
 
