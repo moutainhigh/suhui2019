@@ -3,6 +3,8 @@ package org.suhui.modules.suhui.suhui.service;
 import org.suhui.modules.suhui.suhui.entity.BizFreezeOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.Map;
+
 /**
  * @Description: 冻结记录表
  * @Author: jeecg-boot
@@ -11,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IBizFreezeOrderService extends IService<BizFreezeOrder> {
 
+    public Map<String,String> getFreezeOrderByTradeNo(Map<String,String> map);
 }

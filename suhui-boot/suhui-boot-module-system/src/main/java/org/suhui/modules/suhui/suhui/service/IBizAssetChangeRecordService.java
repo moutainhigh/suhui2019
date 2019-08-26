@@ -3,6 +3,8 @@ package org.suhui.modules.suhui.suhui.service;
 import org.suhui.modules.suhui.suhui.entity.BizAssetChangeRecord;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.Map;
+
 /**
  * @Description: 账户资金变更聚合流水表
  * @Author: jeecg-boot
@@ -10,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @Version: V1.0
  */
 public interface IBizAssetChangeRecordService extends IService<BizAssetChangeRecord> {
-
+    public Map<String,String> getAssetChangeRecordByRechargeNo(Map<String,String> map);
 }

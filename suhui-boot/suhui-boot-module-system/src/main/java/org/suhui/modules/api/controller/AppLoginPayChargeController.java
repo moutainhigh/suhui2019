@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,11 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.suhui.common.api.vo.Result;
 import org.suhui.common.constant.CommonConstant;
 import org.suhui.common.util.UUIDGenerator;
+import org.suhui.modules.api.utils.MD5Util;
 import org.suhui.modules.suhui.suhui.entity.*;
 import org.suhui.modules.suhui.suhui.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,6 +37,7 @@ import java.util.Random;
 @Api(tags="账户操作")
 @Slf4j
 public class AppLoginPayChargeController {
+
 
     @Autowired
     private IPayAccountService iPayAccountService ;
@@ -52,6 +56,13 @@ public class AppLoginPayChargeController {
 
     @Autowired
     private IBizAssetChangeRecordService iBizAssetChangeRecordService ;
+
+    @Value("${goldsunpay.paysurl}")
+    private String payurl ;
+
+    @Value("${goldsunpay.payskey}")
+    private String keys ;
+
     /**
      *  账号充值
      * @param params
@@ -75,6 +86,11 @@ public class AppLoginPayChargeController {
         String channel_type = params.get("channel_type")+"" ;//支付渠道 与支付渠道账户表的channel_type一致  渠道类型 1-支付宝 2-微信 3-招行 4-XX银行
         String recharge_type = params.get("recharge_type")+"";  //充值类型 1-在线充值 2-线下充值(由操作员在运营后台手动充值)
         Double discount_amount = Double.parseDouble(params.get("discount_amount")+"") ;
+        DecimalFormat df = new DecimalFormat("#0.00");
+
+        discount_amount = Double.parseDouble(df.format(discount_amount))  ;
+        chargeMoney = Double.parseDouble(df.format(chargeMoney))  ;
+
         String discount_info = params.get("discount_info")+ "" ;
         String status = params.get("status")+"" ;
         String is_refund = params.get("is_refund") +"" ; //是否退款过（0-否 1-是）
@@ -213,6 +229,16 @@ public class AppLoginPayChargeController {
 
                 iBizAssetChangeRecordService.save(bizAssetChangeRecord) ;
 
+                String urlParam = payurl + "?app_id=52&format=web&goods_name=recharge&notify_url=http://3.93.15.101:3333/api/login/payCharge/rechargeCallback"
+                        +"&order_id=" + biz_recharge_no +"&order_uid=" + userno + "&pay_type=alipay&price="+discount_amount+"&version=v1.0&signature=" ;
+
+                String urlKey = "app_id=52&format=web&goods_name=recharge&notify_url=http://3.93.15.101:3333/api/login/payCharge/rechargeCallback"
+                        +"&order_id=" + biz_recharge_no +"&order_uid=" + userno  + "&pay_type=alipay&price="+discount_amount+"&version=v1.0&"+keys ;
+
+                String signature = MD5Util.encryption(urlKey).toUpperCase() ;
+                urlParam = urlParam + signature;
+
+                obj.put("url" , urlParam) ;
 
             }else{
                 result.error("not allow to recharge");
@@ -245,8 +271,130 @@ public class AppLoginPayChargeController {
         //用户退出逻辑
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
+        try{
 
-       System.out.println(params.toString()+">>>>>>>>>>>>>>>>");
+        String version = params.get("version") +"" ;
+        String platform_order_id = params.get("platform_order_id") +"" ;  //⽀付平台分配的订单号，便于对账 第三方账号
+        String order_id = params.get("order_id") +"" ; // 系统订单号 对应biz_recharge_no
+        String order_uid = params.get("order_uid") +"" ;
+        String pay_type = params.get("pay_type") +"" ;
+        String price = params.get("price") +"" ; // 支付金额
+        String pay_price = params.get("pay_price") +"" ; // 实际支付金额
+        String signature = params.get("signature") +"" ;
+
+        Map mapRecharge = new HashMap() ;
+        mapRecharge.put("biz_recharge_no" , order_id) ;
+        // 修改 订单信息
+        Map mapRechargeDb = iBizRechargeOrderService.getRechargeOrderByRechargeNo(mapRecharge) ;
+        String id = mapRechargeDb.get("id")+"" ;
+        String trade_no = mapRechargeDb.get("trade_no")+"" ; //业务交易流水号(各业务保持唯一)
+
+        BizRechargeOrder bizRechargeOrder = new BizRechargeOrder() ;
+        bizRechargeOrder.setId(Integer.parseInt(id)) ;
+        bizRechargeOrder.setStatus(100) ;
+        bizRechargeOrder.setThirdTransNo(platform_order_id) ;
+        iBizRechargeOrderService.updateById(bizRechargeOrder) ;
+        // 修改 订单信息
+//        BizRechargeOrder bizRechargeOrder = iBizRechargeOrderService.getRechargeOrderObjectByRechargeNo(mapRecharge) ;
+//        bizRechargeOrder.setThirdTransNo(platform_order_id) ;//
+//        bizRechargeOrder.setStatus(100) ;
+//        iBizRechargeOrderService.updateById(bizRechargeOrder) ;
+
+        String user_no = mapRechargeDb.get("user_no") +"";
+        String user_type = mapRechargeDb.get("user_type")+"" ;
+        String accounttypecode = mapRechargeDb.get("account_type")+"" ;
+        Map map = new HashMap() ;
+        map.put("userno" , user_no) ;
+        map.put("usertype" , user_type) ;
+        map.put("accounttypecode" , accounttypecode) ;
+
+        Map payaccount = iPayAccountService.getPayAccountByUserNo(map) ;
+
+        String account_no = payaccount.get("account_no") +"";
+        String identity_no = payaccount.get("identity_no")+"" ;
+        String identity_type = payaccount.get("identity_type")+"" ;
+        Map mapAsset = new HashMap() ;
+        mapAsset.put("account_no" , account_no) ;
+        mapAsset.put("account_type_code" , accounttypecode) ;
+        Map<String,Object> mapAssetDb = iPayAccountService.getPayAccountAssetByUserNo(mapAsset) ;
+        DecimalFormat df  =new DecimalFormat("#0.00") ;
+        double priceDou = Double.parseDouble(price) ;//  字符转 double
+        priceDou = Double.parseDouble(df.format(priceDou))  ; // double 取两位小数
+        int chargeMoneyInt = (int)(priceDou*100) ; // 小数转 整数
+
+        long available_amount_before = Long.parseLong(mapAssetDb.get("available_amount")+"")  ; // 可用金额
+        long frozen_amount_before =  Long.parseLong(mapAssetDb.get("frozen_amount")+"") ;// 冻结金额
+        long available_amount = available_amount_before + chargeMoneyInt ;
+        long frozen_amount = frozen_amount_before - chargeMoneyInt ;
+
+        PayAccountAsset payAccountAsset = new PayAccountAsset() ;
+        payAccountAsset.setId(Integer.parseInt(mapAssetDb.get("id")+"")) ;
+        payAccountAsset.setFrozenAmount(frozen_amount) ; // 冻结金额
+        payAccountAsset.setAvailableAmount(available_amount) ; // 设置可用金额
+        iPayAccountAssetService.updateById(payAccountAsset) ;
+
+        Map freezeMap = new HashMap() ;
+        freezeMap.put("trade_no" ,trade_no) ;
+        Map freezeMapdb = iBizFreezeOrderService.getFreezeOrderByTradeNo(freezeMap) ;
+        String freezeid = freezeMapdb.get("id")+"" ;
+        String biz_freeze_no =  freezeMapdb.get("biz_freeze_no")+"" ;
+
+
+        BizFreezeOrder bizFrezzeOrder = new BizFreezeOrder() ;
+        bizFrezzeOrder.setId(Integer.parseInt(freezeid)) ;
+        bizFrezzeOrder.setStatus(2) ;
+        iBizFreezeOrderService.updateById(bizFrezzeOrder) ;
+
+        Map cashierMap = new HashMap() ;
+        cashierMap.put("biz_freeze_no" , biz_freeze_no) ;
+        Map cashierMapdb = iCashierFreezeOrderDetailService.getCashierFreezeOrderByFreezeNo(cashierMap) ;
+
+        String cashierId = cashierMapdb.get("id") + "" ;
+
+        CashierFreezeOrderDetail cashierFreezeOrderDetail = new CashierFreezeOrderDetail() ;
+        cashierFreezeOrderDetail.setId(Integer.parseInt(cashierId)) ;
+        cashierFreezeOrderDetail.setSubStatus(2) ; //解冻
+        cashierFreezeOrderDetail.setUnfreezeTime(new Date()) ;
+        iCashierFreezeOrderDetailService.updateById(cashierFreezeOrderDetail) ;
+
+        Map assetRecordMap = new HashMap() ;
+        assetRecordMap.put("biz_recharge_no",order_id) ;
+        Map assetRecordMapdb =iBizAssetChangeRecordService.getAssetChangeRecordByRechargeNo(assetRecordMap) ;
+
+        String bill_no = assetRecordMapdb.get("bill_no")+"" ;
+        BizAssetChangeRecord bizAssetChangeRecord = new BizAssetChangeRecord() ;//账户资金变更聚合流水表
+
+        bizAssetChangeRecord.setPayNo(order_id) ;
+        bizAssetChangeRecord.setBillNo(bill_no) ;
+        bizAssetChangeRecord.setUserNo(user_no) ;
+        bizAssetChangeRecord.setUserType(Integer.parseInt(user_type)) ;
+        bizAssetChangeRecord.setAccountNo(account_no) ;
+        bizAssetChangeRecord.setAccountType( Integer.parseInt(accounttypecode)) ;
+        bizAssetChangeRecord.setIdentityNo(identity_no) ;
+
+        bizAssetChangeRecord.setChangeType(5) ; //变更类型 1-增加 2-减少 4-冻结 5-解冻
+        bizAssetChangeRecord.setChangeAmount(chargeMoneyInt) ;
+        bizAssetChangeRecord.setFrozenAmountBefore(frozen_amount_before) ;
+        bizAssetChangeRecord.setAvailableAmountBefore(available_amount_before) ;
+        bizAssetChangeRecord.setFrozenAmountAfter(frozen_amount) ;
+        bizAssetChangeRecord.setAvailableAmountAfter(available_amount) ;
+
+        bizAssetChangeRecord.setChangeTime(new Date()) ;//变更时间
+        bizAssetChangeRecord.setBillTime(new Date()) ;
+        bizAssetChangeRecord.setBillType(5) ;//记账类型 1-资产增加 2-转账(废弃) 3-资产减少 4-冻结 5-解冻 6-冻结资产减少
+        bizAssetChangeRecord.setPayBizType("1") ; //业务类型编码 1 充值 2 提现 3 转账这种类似的举例
+        bizAssetChangeRecord.setRemark("解冻") ;// 备注
+        bizAssetChangeRecord.setBillJson("") ;// 记账json
+
+        iBizAssetChangeRecordService.save(bizAssetChangeRecord) ;
+
+        }catch (Exception e){
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            result.error("failure");
+            return result ;
+        }
+        System.out.println(params.toString()+">>>>>>>>>>>>>>>>"+keys);
 
         result.setResult(obj);
         result.success("add success");

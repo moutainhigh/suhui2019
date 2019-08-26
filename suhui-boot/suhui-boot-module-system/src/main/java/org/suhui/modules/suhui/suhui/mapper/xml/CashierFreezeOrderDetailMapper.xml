@@ -2,4 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.suhui.modules.suhui.suhui.mapper.CashierFreezeOrderDetailMapper">
 
+
+    <select id="getCashierFreezeOrderByFreezeNo" resultType="map" parameterType="map">
+        SELECT
+        cfod.id ,
+        cfod.sub_status
+        FROM
+        cashier_freeze_order_detail cfod
+        WHERE 1 = 1
+        <if test="biz_freeze_no!=null and biz_freeze_no!=''">
+            AND cfod.biz_freeze_no = #{biz_freeze_no}
+        </if>
+
+    </select>
 </mapper>
