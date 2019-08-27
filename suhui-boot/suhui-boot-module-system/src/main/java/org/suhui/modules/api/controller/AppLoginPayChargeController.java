@@ -181,7 +181,12 @@ public class AppLoginPayChargeController {
                 bizFreezeOrder.setFreezeType("2") ; //冻结类型  枚举维护，1-提现冻结 2- 充值冻结
                 bizFreezeOrder.setFreezeTime(new Date()) ;
                 bizFreezeOrder.setStatus(1) ;//1：冻结 2：解冻
-                bizFreezeOrder.setRemark("账户："+account_no+ "  账户类型："+ accounttypecode+ "充值："+chargeMoney  ) ;
+                JSONObject objRemark = new JSONObject();
+                objRemark.put("account_no",account_no) ;
+                objRemark.put("accounttypecode" ,accounttypecode) ;
+                objRemark.put("chargeMoney" , chargeMoney) ;
+                objRemark.put("msg","充值冻结") ;
+                bizFreezeOrder.setRemark(objRemark.toString() ) ;
                 bizFreezeOrder.setCreateTime(new Date()) ;
 
 //                冻结记录表
@@ -382,9 +387,14 @@ public class AppLoginPayChargeController {
         bizAssetChangeRecord.setChangeTime(new Date()) ;//变更时间
         bizAssetChangeRecord.setBillTime(new Date()) ;
         bizAssetChangeRecord.setBillType(5) ;//记账类型 1-资产增加 2-转账(废弃) 3-资产减少 4-冻结 5-解冻 6-冻结资产减少
-        bizAssetChangeRecord.setPayBizType("1") ; //业务类型编码 1 充值 2 提现 3 转账这种类似的举例
-        bizAssetChangeRecord.setRemark("解冻") ;// 备注
-        bizAssetChangeRecord.setBillJson("") ;// 记账json
+        bizAssetChangeRecord.setPayBizType("1") ; //业务类型编码 1 充值 2 提现 3 转账这种类似的举
+        JSONObject objRemark = new JSONObject();
+            objRemark.put("pay_no",order_id) ;
+            objRemark.put("user_no" ,user_no) ;
+            objRemark.put("changetype" , 5) ;
+            objRemark.put("msg","充值解冻") ;
+        bizAssetChangeRecord.setRemark("充值解冻") ;// 备注
+        bizAssetChangeRecord.setBillJson(objRemark.toString()) ;// 记账json
 
         iBizAssetChangeRecordService.save(bizAssetChangeRecord) ;
 
