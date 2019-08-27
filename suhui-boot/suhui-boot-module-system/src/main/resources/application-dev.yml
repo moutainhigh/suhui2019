@@ -110,10 +110,12 @@ spring:
         min-idle: 0     #最小等待连接中的数量,设 0 为没有限制
       shutdown-timeout: 100ms
     password: ''
-    port: 6380
+    port: 6379
 #mybatis plus 设置
 mybatis-plus:
   mapper-locations: classpath*:org/suhui/modules/**/xml/*Mapper.xml
+  configuration:
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 #jeecg专用配置
 jeecg :
@@ -123,3 +125,12 @@ jeecg :
     #webapp文件路径
     #webapp: D://webapp
     webapp: /home/ubuntu/webapp
+# goldsunpays
+goldsunpay:
+  #支付url
+  paysurl: https://goldsunpay.com/agency/php/api/get_payment.php
+  #支付key
+  payskey: 3d40022bab03604caadf8f1f08399e7c
+  #提现url
+  withdrawurl: https://goldsunpay.com/merchant/php/api/apply_for_withdraw.php
+
