@@ -230,10 +230,10 @@ public class AppLoginPayChargeController {
                 iBizAssetChangeRecordService.save(bizAssetChangeRecord) ;
 
                 String urlParam = payurl + "?app_id=52&format=web&goods_name=recharge&notify_url=http://3.93.15.101:3333/api/login/payCharge/rechargeCallback"
-                        +"&order_id=" + biz_recharge_no +"&order_uid=" + userno + "&pay_type=alipay&price="+discount_amount+"&version=v1.0&signature=" ;
+                        +"&order_id=" + biz_recharge_no +"&order_uid=" + userno + "&pay_type=alipay&price="+chargeMoney+"&version=v1.0&signature=" ;
 
                 String urlKey = "app_id=52&format=web&goods_name=recharge&notify_url=http://3.93.15.101:3333/api/login/payCharge/rechargeCallback"
-                        +"&order_id=" + biz_recharge_no +"&order_uid=" + userno  + "&pay_type=alipay&price="+discount_amount+"&version=v1.0&"+keys ;
+                        +"&order_id=" + biz_recharge_no +"&order_uid=" + userno  + "&pay_type=alipay&price="+chargeMoney+"&version=v1.0&"+keys ;
 
                 String signature = MD5Util.encryption(urlKey).toUpperCase() ;
                 urlParam = urlParam + signature;
@@ -358,7 +358,7 @@ public class AppLoginPayChargeController {
         iCashierFreezeOrderDetailService.updateById(cashierFreezeOrderDetail) ;
 
         Map assetRecordMap = new HashMap() ;
-        assetRecordMap.put("biz_recharge_no",order_id) ;
+        assetRecordMap.put("pay_no",order_id) ;
         Map assetRecordMapdb =iBizAssetChangeRecordService.getAssetChangeRecordByRechargeNo(assetRecordMap) ;
 
         String bill_no = assetRecordMapdb.get("bill_no")+"" ;

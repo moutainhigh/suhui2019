@@ -36,6 +36,10 @@ public class BizWithDrawOrder {
 	@Excel(name = "业务交易流水号(各业务保持唯一)", width = 15)
     @ApiModelProperty(value = "业务交易流水号(各业务保持唯一)")
 	private String tradeNo;
+	/**第三方支付平台订单号，回调返回*/
+	@Excel(name = "第三方支付平台订单号，回调返回", width = 15)
+	@ApiModelProperty(value = "第三方支付平台订单号，回调返回")
+	private String thirdTransNo;
 	/**由支付系统生成的唯一流水号*/
 	@Excel(name = "由支付系统生成的唯一流水号", width = 15)
     @ApiModelProperty(value = "由支付系统生成的唯一流水号")
