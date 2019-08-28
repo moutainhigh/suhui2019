@@ -154,6 +154,13 @@ public class AppLoginPayWithDrawController {
                 long available_amount = available_amount_before - chargeMoneyInt; // 体现的话 账户金额会减少
                 long frozen_amount = frozen_amount_before+ chargeMoneyInt ;
 
+                if(available_amount <= 0){
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                    obj.put("msg" ,"insufficient funds in your account." ) ;
+                    result.setResult(obj);
+                    return result ;
+                }
+
                 PayAccountAsset payAccountAsset = new PayAccountAsset() ;
                 payAccountAsset.setId(Integer.parseInt(mapAssetDb.get("id")+"")) ;
                 payAccountAsset.setFrozenAmount(frozen_amount) ; // 冻结金额
@@ -222,7 +229,7 @@ public class AppLoginPayWithDrawController {
                 bizAssetChangeRecord.setBillJson("") ;// 记账json
 
                 iBizAssetChangeRecordService.save(bizAssetChangeRecord) ;
-                String accno = "15098899951" ;
+                String accno = user_pay_account ; // 支付账号
 
                 String urlParam =withdrawurl+ "?account="+accno+"&amount="+chargeMoneyDou+"&app_id=52&currency=CNY&notify_url=http://3.93.15.101:3333/api/login/payWithDraw/withdrawCallback&pay_type=alipay" +
                         "&user_id="+userno+"&version=v1.0&signature=" ;
