@@ -231,11 +231,11 @@ public class AppLoginPayWithDrawController {
                 iBizAssetChangeRecordService.save(bizAssetChangeRecord) ;
                 String accno = user_pay_account ; // 支付账号
 
-                String urlParam =withdrawurl+ "?account="+accno+"&amount="+chargeMoneyDou+"&app_id=52&currency=CNY&notify_url=http://3.93.15.101:3333/api/login/payWithDraw/withdrawCallback&pay_type=alipay" +
-                        "&order_id="+biz_withdraw_no+"&user_id="+userno+"&version=v1.0&signature=" ;
+                String urlParam =withdrawurl+ "?account="+accno+"&amount="+chargeMoneyDou+"&app_id=52&currency=CNY&notify_url=http://3.93.15.101:3333/api/login/payWithDraw/withdrawCallback" +
+                        "&order_id="+biz_withdraw_no+"&pay_type=alipay&user_id="+userno+"&version=v1.0&signature=" ;
 
-                String urlKey = "account="+accno+"&amount="+chargeMoneyDou+"&app_id=52&currency=CNY&notify_url=http://3.93.15.101:3333/api/login/payWithDraw/withdrawCallback&pay_type=alipay" +
-                        "&order_id="+biz_withdraw_no+"&user_id="+userno+"&version=v1.0&"+keys ;
+                String urlKey = "account="+accno+"&amount="+chargeMoneyDou+"&app_id=52&currency=CNY&notify_url=http://3.93.15.101:3333/api/login/payWithDraw/withdrawCallback" +
+                        "&order_id="+biz_withdraw_no+"&pay_type=alipay&user_id="+userno+"&version=v1.0&"+keys ;
 
                 String signature = MD5Util.encryption(urlKey).toUpperCase() ;
                 urlParam = urlParam + signature;
