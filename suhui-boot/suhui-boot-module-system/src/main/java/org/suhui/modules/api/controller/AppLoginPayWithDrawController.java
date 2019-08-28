@@ -232,10 +232,10 @@ public class AppLoginPayWithDrawController {
                 String accno = user_pay_account ; // 支付账号
 
                 String urlParam =withdrawurl+ "?account="+accno+"&amount="+chargeMoneyDou+"&app_id=52&currency=CNY&notify_url=http://3.93.15.101:3333/api/login/payWithDraw/withdrawCallback&pay_type=alipay" +
-                        "&user_id="+userno+"&version=v1.0&signature=" ;
+                        "&order_id="+biz_withdraw_no+"&user_id="+userno+"&version=v1.0&signature=" ;
 
                 String urlKey = "account="+accno+"&amount="+chargeMoneyDou+"&app_id=52&currency=CNY&notify_url=http://3.93.15.101:3333/api/login/payWithDraw/withdrawCallback&pay_type=alipay" +
-                        "&user_id="+userno+"&version=v1.0&"+keys ;
+                        "&order_id="+biz_withdraw_no+"&user_id="+userno+"&version=v1.0&"+keys ;
 
                 String signature = MD5Util.encryption(urlKey).toUpperCase() ;
                 urlParam = urlParam + signature;
@@ -278,7 +278,7 @@ public class AppLoginPayWithDrawController {
 
 //            String version = params.get("version") +"" ;
             String platform_order_id = params.get("platform_order_id") +"" ;  //⽀付平台分配的订单号，便于对账 第三方账号
-            String order_id = params.get("order_id") +"" ; // 系统订单号 对应biz_recharge_no
+            String order_id = params.get("order_id") +"" ; // 系统订单号 对应biz_withdraw_no
             String user_id = params.get("user_id") +"" ;
             String currency = params.get("currency") +"" ; // 提币成功时要扣除的游戏⽤户代币（法币）数
             String amount = params.get("amount") +"" ; //  提现金额
