@@ -146,7 +146,7 @@ public class AppLoginPayExchangeController {
                 mapAsset.put("account_type_code" , account_type_code) ;
                 Map<String,Object> mapAssetDb = iPayAccountService.getPayAccountAssetByUserNo(mapAsset) ;
                 long frozen_amount_before = Long.parseLong(mapAssetDb.get("frozen_amount")+"")  ; // 可用金额
-                if(moneyamount_long >frozen_amount ){
+                if(moneyamount_long >frozen_amount_before ){
                     result.error("frozen amount is not right");
                     TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                     return result ;
