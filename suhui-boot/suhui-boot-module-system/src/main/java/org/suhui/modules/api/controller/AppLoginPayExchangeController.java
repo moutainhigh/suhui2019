@@ -145,15 +145,15 @@ public class AppLoginPayExchangeController {
                 mapAsset.put("account_no" , account_no) ;
                 mapAsset.put("account_type_code" , account_type_code) ;
                 Map<String,Object> mapAssetDb = iPayAccountService.getPayAccountAssetByUserNo(mapAsset) ;
-                long frozen_amount = Long.parseLong(mapAssetDb.get("frozen_amount")+"")  ; // 可用金额
+                long frozen_amount_before = Long.parseLong(mapAssetDb.get("frozen_amount")+"")  ; // 可用金额
                 if(moneyamount_long >frozen_amount ){
                     result.error("frozen amount is not right");
                     TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                     return result ;
                 }else{
-
+                    long available_amount_before = Long.parseLong(mapAssetDb.get("available_amount")+"")  ; // 可用金额
                     // 设置 冻结金额
-                    long frozen_amount_before =  Long.parseLong(mapAssetDb.get("frozen_amount")+"") ;// 解冻金额
+//                    long frozen_amount_before =  Long.parseLong(mapAssetDb.get("frozen_amount")+"") ;// 解冻金额
                     long available_amount = available_amount_before;
                     long frozen_amount = frozen_amount_before- moneyamount_long ;
                     PayAccountAsset payAccountAsset = new PayAccountAsset() ;
