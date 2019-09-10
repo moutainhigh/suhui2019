@@ -2,4 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.suhui.modules.suhui.suhui.mapper.PayCurrencyRateMapper">
 
+    <select id="getPayAccountMoneyByUserNo" resultType="map" parameterType="map">
+        SELECT DISTINCT
+            source_currency_code,
+            target_currency_code
+        FROM
+            pay_currency_rate
+
+    </select>
+
 </mapper>

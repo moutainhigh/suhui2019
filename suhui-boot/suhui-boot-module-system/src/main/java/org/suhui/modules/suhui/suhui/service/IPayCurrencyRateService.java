@@ -3,6 +3,9 @@ package org.suhui.modules.suhui.suhui.service;
 import org.suhui.modules.suhui.suhui.entity.PayCurrencyRate;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @Description: 汇率记录表
  * @Author: jeecg-boot
@@ -11,4 +14,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IPayCurrencyRateService extends IService<PayCurrencyRate> {
 
+    public List<Map<String,String>> getCurrencyRateTypeList( ) ;
+
+    Map<String,String> getCurrencyRateValue(Map map) ;
 }

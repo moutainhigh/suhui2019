@@ -19,5 +19,5 @@ public interface PayUserLoginMapper extends BaseMapper<PayUserLogin> {
      * @param username
      * @return
      */
-    public PayUserLogin getUserByPhone(@Param("phone") String phone);
+    public PayUserLogin getUserByPhone(@Param("phone") String phone , @Param("areacode") String areacode);
 }

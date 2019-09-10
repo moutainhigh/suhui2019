@@ -4,6 +4,13 @@
 
     <!-- 根据用户名查询 -->
     <select id="getUserByPhone" resultType="org.suhui.modules.suhui.suhui.entity.PayUserLogin">
-		select * from  pay_user_login  where login_name = #{phone}
+		select * from  pay_user_login  where  1=1
+		<if test="phone!=null and phone != '' ">
+            and login_name = #{phone}
+        </if>
+        <if test="areacode!=null and areacode != '' ">
+            and areacode=#{areacode}
+        </if>
+
 	</select>
 </mapper>

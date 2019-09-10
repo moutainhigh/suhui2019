@@ -22,7 +22,9 @@ import org.suhui.modules.suhui.suhui.service.IPayUserAccountTypeService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -143,6 +145,22 @@ public class AppLoginPayCurrencyRateController {
         result.success("修改成功");
         result.setCode(CommonConstant.SC_OK_200);
         return result ;
+    }
+
+
+    @RequestMapping(value = "/getCurrencyRateList", method = RequestMethod.POST)
+    public Result<JSONObject> getCurrencyRateList(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
+        Result<JSONObject> result = new Result<JSONObject>();
+        List<Map<String,String>> list = iPayCurrencyRateService.getCurrencyRateTypeList() ;
+        List<Map<String,String>> listRtn =new ArrayList<Map<String,String>>() ;
+        for(int i = 0 ; i < list.size() ; i++){
+            Map mapParam=  list.get(i) ;
+            Map<String,String> mapdb = iPayCurrencyRateService.getCurrencyRateValue(mapParam) ;
+            listRtn.add(mapdb) ;
+        }
+
+        return result ;
+
     }
 
 }

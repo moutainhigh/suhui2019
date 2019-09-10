@@ -118,7 +118,7 @@ public class ShiroRealm extends AuthorizingRealm {
 		SysUser sysUser = sysUserService.getUserByName(username);
 		if (sysUser == null) {
 
-			PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(username) ;
+			PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(username,"") ;
 
 			if (!jwtTokenRefresh(token, username, payUserLogin.getPassword())) {
 				throw new AuthenticationException("Token失效，请重新登录!");

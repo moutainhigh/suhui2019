@@ -115,13 +115,14 @@ public class AppUserApiController {
      * @return
      */
     @RequestMapping(value = "/check-mobile", method = RequestMethod.POST)
-    public Result<JSONObject> checkMobile(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
+    public Result<JSONObject> checkMobile(HttpServletRequest request, HttpServletResponse response,@RequestBody Map<String, Object> params ) {
         //用户退出逻辑
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
         String phone = params.get("phone")+"" ;
+        String areacode = params.get("areacode")+"" ;
 //  校验注册的用户名 是否是手机号
-        PayUserLogin payUserLogindb = iPayUserLoginService.getUserByPhone(phone) ;
+        PayUserLogin payUserLogindb = iPayUserLoginService.getUserByPhone(phone,areacode) ;
 
 
         if(payUserLogindb==null) {
@@ -144,8 +145,9 @@ public class AppUserApiController {
         Result<JSONObject> result = new Result<JSONObject>();
         String phone = params.get("phone")+ "";
         String pwd = params.get("pwd")+ "";
+        String areacode =  params.get("areacode")+ "";
 
-        PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(phone) ;
+        PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(phone,areacode) ;
 
 //        SysUser sysUser = sysUserService.getUserByName(phone);
 //        if(sysUser==null){
@@ -199,6 +201,7 @@ public class AppUserApiController {
         String phone = params.get("phone")+"" ;
         String pwd = params.get("pwd")+"" ;  // 密码
         String smsCodeParam =  params.get("smsCode")+"" ;
+        String areacode =  params.get("areacode")+"" ;
 
         if(request.getSession(false) ==null){
             result.error500("验证码过期");
@@ -212,7 +215,7 @@ public class AppUserApiController {
             result.error500("验证码不正确");
             return result ;
         }
-        PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(phone) ;
+        PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(phone,areacode) ;
 
         if(payUserLogin==null) {
             result.setResult(obj);
