@@ -11,4 +11,16 @@
 
     </select>
 
+    <select id="getCurrencyRateValue" resultType="map" parameterType="map">
+        SELECT DISTINCT
+            source_currency_code,
+            target_currency_code
+        FROM
+            pay_currency_rate
+            where  source_currency_code = #{source_currency_code}
+            and target_currency_code = #{target_currency_code}
+
+    </select>
+
+
 </mapper>

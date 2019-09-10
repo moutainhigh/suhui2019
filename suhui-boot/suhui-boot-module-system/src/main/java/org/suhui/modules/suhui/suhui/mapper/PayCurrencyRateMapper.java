@@ -16,4 +16,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface PayCurrencyRateMapper extends BaseMapper<PayCurrencyRate> {
 
     public List<Map<String,String>> getCurrencyRateTypeList();
+
+    public Map<String,String> getCurrencyRateValue(Map map) ;
 }
