@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.suhui.modules.suhui.suhui.mapper.PayCurrencyRateMapper">
 
-    <select id="getPayAccountMoneyByUserNo" resultType="map" parameterType="map">
+    <select id="getCurrencyRateTypeList" resultType="map" parameterType="map">
         SELECT DISTINCT
             source_currency_code,
             target_currency_code
@@ -12,13 +12,14 @@
     </select>
 
     <select id="getCurrencyRateValue" resultType="map" parameterType="map">
-        SELECT DISTINCT
-            source_currency_code,
-            target_currency_code
+        SELECT             source_currency_code,
+            target_currency_code,
+            	rate_now
         FROM
             pay_currency_rate
             where  source_currency_code = #{source_currency_code}
             and target_currency_code = #{target_currency_code}
+            order by rate_time desc LIMIT 1
 
     </select>
 

@@ -115,7 +115,7 @@ public class AppUserApiController {
      * @return
      */
     @RequestMapping(value = "/check-mobile", method = RequestMethod.POST)
-    public Result<JSONObject> checkMobile(HttpServletRequest request, HttpServletResponse response,@RequestBody Map<String, Object> params ) {
+    public Result<JSONObject> checkMobile(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
         //用户退出逻辑
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
@@ -141,7 +141,7 @@ public class AppUserApiController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ApiOperation("登录接口")
-    public Result<JSONObject> login(HttpServletRequest request, HttpServletResponse response,@RequestBody Map<String, Object> params) {
+    public Result<JSONObject> login(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params) {
         Result<JSONObject> result = new Result<JSONObject>();
         String phone = params.get("phone")+ "";
         String pwd = params.get("pwd")+ "";
