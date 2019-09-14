@@ -99,12 +99,12 @@ public class AppLoginPayExchangeController {
         }catch (Exception e){
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            result.error("操作失败");
+            result.error("操作失败 Operation failed");
             return result ;
         }
 
         result.setResult(obj);
-        result.success("换汇冻结");
+        result.success("换汇冻结 frozen when changing currency ");
         result.setCode(CommonConstant.SC_OK_200);
         return result ;
     }
@@ -172,12 +172,12 @@ public class AppLoginPayExchangeController {
         }catch (Exception e){
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            result.error("操作失败");
+            result.error("操作失败 Operation failed");
             return result ;
         }
 
         result.setResult(obj);
-        result.success("换汇冻结");
+        result.success("换汇冻结 frozen when changing currency");
         result.setCode(CommonConstant.SC_OK_200);
         return result ;
     }
