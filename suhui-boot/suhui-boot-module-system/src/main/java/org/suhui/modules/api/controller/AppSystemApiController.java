@@ -77,12 +77,12 @@ public class AppSystemApiController {
         String status = (String)object.get("status") ;
         if(status.equals("success")){
             result.setResult(obj);
-            result.success("发送验证码成功");
+            result.success("发送验证码成功 Verification code sent successfully" );
             result.setCode(CommonConstant.SC_OK_200);
             return result ;
         }else{
             result.setResult(obj);
-            result.success("验证码发送失败");
+            result.success("验证码发送失败 failed when sending verification code ");
             result.setCode(0);
             return result ;
         }
@@ -148,7 +148,7 @@ public class AppSystemApiController {
 
         obj.put("smsCode", x+"");
         result.setResult(obj);
-        result.success("发送验证码成功");
+        result.success("发送验证码成功 Verification code sent successfully");
         result.setCode(CommonConstant.SC_OK_200);
         return result ;
     }

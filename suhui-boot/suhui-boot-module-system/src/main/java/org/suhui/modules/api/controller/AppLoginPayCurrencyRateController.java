@@ -86,7 +86,7 @@ public class AppLoginPayCurrencyRateController {
         }catch (Exception e){
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            result.error("操作失败");
+            result.error("操作失败  Operation failed");
             return result ;
         }
 
@@ -145,7 +145,7 @@ public class AppLoginPayCurrencyRateController {
         }
 
         result.setResult(obj);
-        result.success("修改成功");
+        result.success("修改成功 modification is successful");
         result.setCode(CommonConstant.SC_OK_200);
         return result ;
     }

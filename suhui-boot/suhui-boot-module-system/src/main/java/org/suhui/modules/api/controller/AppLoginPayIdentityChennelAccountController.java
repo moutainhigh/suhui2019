@@ -89,12 +89,12 @@ public class AppLoginPayIdentityChennelAccountController {
         }catch (Exception e){
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            result.error("操作失败");
+            result.error("操作失败 Operation failed");
             return result ;
         }
 
         result.setResult(obj);
-        result.success("添加成功");
+        result.success("添加成功 Add is successful");
         result.setCode(CommonConstant.SC_OK_200);
         return result ;
     }
@@ -156,12 +156,12 @@ public class AppLoginPayIdentityChennelAccountController {
         }catch (Exception e){
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            result.error("操作失败");
+            result.error("操作失败 Operation failed");
             return result ;
         }
 
         result.setResult(obj);
-        result.success("修改成功");
+        result.success("修改成功 Modification successful");
         result.setCode(CommonConstant.SC_OK_200);
         return result ;
     }
