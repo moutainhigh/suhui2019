@@ -16,12 +16,15 @@ import org.suhui.common.constant.CommonConstant;
 import org.suhui.common.util.UUIDGenerator;
 import org.suhui.modules.suhui.suhui.entity.PayIdentityChannelAccount;
 import org.suhui.modules.suhui.suhui.service.IPayIdentityChannelAccountService;
+import org.suhui.modules.suhui.suhui.service.IPayIdentityInfoService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -38,6 +41,9 @@ public class AppLoginPayIdentityChennelAccountController {
 
     @Autowired
     private IPayIdentityChannelAccountService iPayIdentityChannelAccountService ;
+
+    @Autowired
+    private IPayIdentityInfoService iPayIdentityInfoService ;
     /**
      *  账号绑定
      * @param params
@@ -49,8 +55,21 @@ public class AppLoginPayIdentityChennelAccountController {
         //用户退出逻辑
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
-        String identityno = params.get("identityno")+"" ;
-        String identitytype = params.get("identitytype")+"" ;
+
+        String userno = params.get("userno")+"" ;
+        String usertype = params.get("usertype")+"" ;
+
+        Map map = new HashMap() ;
+        map.put("user_no" ,userno);
+        map.put("user_type" ,usertype);
+        Map<String, Object> identityMap = iPayIdentityInfoService.getIdentityInfoByUserNo(map) ;
+
+        String identityno = identityMap.get("identity_no")+"";
+        String identitytype = identityMap.get("identity_type")+"" ;
+
+//  update by wch 20190915  identityno 在客户端 不好获取 需要后台处理
+//        String identityno = params.get("identityno")+"" ;
+//        String identitytype = params.get("identitytype")+"" ;
         String tradetype = params.get("tradetype")+"" ;
         String channeltype = params.get("channeltype")+"" ;
 //        渠道账户名称(如用户在支付宝的真实姓名、银行卡真实姓名)
@@ -111,8 +130,21 @@ public class AppLoginPayIdentityChennelAccountController {
         //用户退出逻辑
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
-        String identityno = params.get("identityno")+"" ;
-        String identitytype = params.get("identitytype")+"" ;
+
+        String userno = params.get("userno")+"" ;
+        String usertype = params.get("usertype")+"" ;
+
+        Map map = new HashMap() ;
+        map.put("user_no" ,userno);
+        map.put("user_type" ,usertype);
+        Map<String, Object> identityMap = iPayIdentityInfoService.getIdentityInfoByUserNo(map) ;
+
+        String identityno = identityMap.get("identity_no")+"";
+        String identitytype = identityMap.get("identity_type")+"" ;
+
+//  update by wch 20190915  identityno 在客户端 不好获取 需要后台处理
+//        String identityno = params.get("identityno")+"" ;
+//        String identitytype = params.get("identitytype")+"" ;
         String tradetype = params.get("tradetype")+"" ;
 
         String channeltype = params.get("channeltype")+"" ;

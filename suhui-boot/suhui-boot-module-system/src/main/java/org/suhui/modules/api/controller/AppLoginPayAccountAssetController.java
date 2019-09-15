@@ -16,9 +16,11 @@ import org.suhui.common.constant.CommonConstant;
 import org.suhui.common.util.UUIDGenerator;
 import org.suhui.modules.suhui.suhui.entity.PayAccountAsset;
 import org.suhui.modules.suhui.suhui.service.IPayAccountAssetService;
+import org.suhui.modules.suhui.suhui.service.IPayIdentityInfoService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -35,7 +37,8 @@ public class AppLoginPayAccountAssetController {
     @Autowired
     private IPayAccountAssetService iPayAccountAssetService ;
 
-
+    @Autowired
+    private IPayIdentityInfoService iPayIdentityInfoService ;
     /**
      * 资金账户
      * @param params
@@ -47,7 +50,21 @@ public class AppLoginPayAccountAssetController {
         //用户退出逻辑
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
-        String identityno = params.get("identityno")+"" ;
+
+        String userno = params.get("userno")+"" ;
+        String usertype = params.get("usertype")+"" ;
+
+        Map map = new HashMap() ;
+        map.put("user_no" ,userno);
+        map.put("user_type" ,usertype);
+        Map<String, Object> identityMap = iPayIdentityInfoService.getIdentityInfoByUserNo(map) ;
+
+        String identityno = identityMap.get("identity_no")+"";
+        String identitytype = identityMap.get("identity_type")+"" ;
+
+//        String identityno = params.get("identityno")+"" ;
+
+
         String accountno = params.get("accountno")+"" ;
         String accounttypecode = params.get("accounttypecode")+"" ;
 
