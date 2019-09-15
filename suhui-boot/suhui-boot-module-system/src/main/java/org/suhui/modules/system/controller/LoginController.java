@@ -269,8 +269,6 @@ public class LoginController {
 		String smsCode =  request.getSession().getAttribute("smsCode")+"" ;
 		System.out.println(smsCode+">>>>>>>>>>>>>>>>>>>>");
 
-
-
 		result.setResult(obj);
 		result.success("注册成功");
 		result.setCode(CommonConstant.SC_OK_200);

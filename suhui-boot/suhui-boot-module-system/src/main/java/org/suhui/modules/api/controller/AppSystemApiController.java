@@ -61,7 +61,7 @@ public class AppSystemApiController {
         System.out.println(x+"");
 
         String phone = params.get("phone")+"" ;
-        String areaCode = params.get("areaCode") + "" ;
+        String areaCode = params.get("areacode") + "" ;
         HttpSession session = request.getSession();
         session.setAttribute("smsCode_"+phone ,x);
         session.setMaxInactiveInterval(300);

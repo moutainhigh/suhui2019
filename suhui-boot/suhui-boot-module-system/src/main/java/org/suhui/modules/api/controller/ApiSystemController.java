@@ -74,9 +74,9 @@ public class ApiSystemController {
 		System.out.println(x+"");
 
 		String phone = params.get("phone")+"" ;
-		String areaCode = params.get("areaCode") + "" ;
+		String areaCode = params.get("areacode") + "" ;
 		HttpSession session = request.getSession();
-		session.setAttribute("smsCode_"+phone ,x);
+		session.setAttribute("smscode_"+phone ,x);
 		session.setMaxInactiveInterval(300);
 		String rtn ="" ;
 		//  areaCode 发送类型：1：国内  2：国际

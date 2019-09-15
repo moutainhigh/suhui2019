@@ -315,25 +315,25 @@ public class AppLoginUserApiController {
             payUserInfoDb.setSex(Integer.parseInt(sex)) ;
             payUserInfoDb.setBirthday(birthday);
             // 设置check
-            if(emailCheck == null || emailCheck.equals("")){
+            if(emailCheck == null || emailCheck.equals("")|| emailCheck.equals("null")){
 
             }else{
                 payUserInfoDb.setEmailCheck(Integer.parseInt(emailCheck));
             }
 
-            if(phoneCheck == null || phoneCheck.equals("")){
+            if(phoneCheck == null || phoneCheck.equals("")|| phoneCheck.equals("null")){
 
             }else{
                 payUserInfoDb.setPhoneCheck(Integer.parseInt(phoneCheck));
             }
 
-            if(cardCheck == null || cardCheck.equals("")){
+            if(cardCheck == null || cardCheck.equals("")|| cardCheck.equals("null")){
 
             }else{
                 payUserInfoDb.setCardCheck(Integer.parseInt(cardCheck));
             }
             // 设置用户等级  会员级别 1-普通会员 2-青铜 3-白银 4-黄金 5-钻石
-            if(userLevel == null || userLevel.equals("")){
+            if(userLevel == null || userLevel.equals("")|| userLevel.equals("null")){
 
             }else{
                 payUserInfoDb.setUserLevel(Integer.parseInt(userLevel));

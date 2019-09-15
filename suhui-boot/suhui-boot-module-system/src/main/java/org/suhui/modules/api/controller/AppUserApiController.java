@@ -59,10 +59,10 @@ public class AppUserApiController {
        // String username = params.get("username")+"" ;
         String pwd = params.get("pwd")+"" ;
         String email = params.get("email")+"" ;
-        String smsCodeParam =  params.get("smsCode")+"" ; // 短信验证码
+        String smsCodeParam =  params.get("smscode")+"" ; // 短信验证码
 
-        String areaCode = params.get("areaCode") +"" ; // 区域代码
-        if(areaCode == null || areaCode.equals("")||areaCode.equals("null")){
+        String areacode = params.get("areacode") +"" ; // 区域代码
+        if(areacode == null || areacode.equals("")||areacode.equals("null")){
             result.error500("please choose area code for your phone !");
             return result ;
         }
@@ -75,7 +75,7 @@ public class AppUserApiController {
         }
 
         if(request.getSession(false) ==null){
-            result.error500("验证码过期");
+            result.error500("sms code is out of time");
             return result ;
         }
         String smsCode =  request.getSession().getAttribute("smsCode_"+codeVaue)+"" ;
@@ -83,7 +83,7 @@ public class AppUserApiController {
         if(smsCodeParam.equals(smsCode)){
 
         }else{
-            result.error500("验证码不正确");
+            result.error500("sms code is not right");
             return result ;
         }
 
@@ -99,6 +99,7 @@ public class AppUserApiController {
         // 设置有效状态  状态 0-默认 1-有效 2-无效
         payUserLogin.setStatus(0);
         payUserLogin.setUserNo(userno); // 通过生成的uuid
+        payUserLogin.setAreacode(areacode);
         iPayUserLoginService.save(payUserLogin) ;
 
         PayUserInfo payUserInfo = new PayUserInfo() ;
@@ -200,7 +201,7 @@ public class AppUserApiController {
         JSONObject obj = new JSONObject();
         String phone = params.get("phone")+"" ;
         String pwd = params.get("pwd")+"" ;  // 密码
-        String smsCodeParam =  params.get("smsCode")+"" ;
+        String smsCodeParam =  params.get("smscode")+"" ;
         String areacode =  params.get("areacode")+"" ;
 
         if(request.getSession(false) ==null){

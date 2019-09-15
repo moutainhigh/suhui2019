@@ -73,9 +73,9 @@ public class ApiUserController {
 		String username = params.get("username")+"" ;
 		String pwd = params.get("pwd")+"" ;
 		String email = params.get("email")+"" ;
-		String smsCodeParam =  params.get("smsCode")+"" ;
+		String smsCodeParam =  params.get("smscode")+"" ;
 
-		String areaCode = params.get("areaCode") +"" ;
+		String areaCode = params.get("areacode") +"" ;
 		if(areaCode == null || areaCode.equals("")||areaCode.equals("null")){
 			result.error500("please choose area code for your phone !");
 			return result ;
@@ -259,7 +259,7 @@ public class ApiUserController {
 		JSONObject obj = new JSONObject();
 		String phone = params.get("phone")+"" ;
 		String pwd = params.get("pwd")+"" ;  // 密码
-		String smsCodeParam =  params.get("smsCode")+"" ;
+		String smsCodeParam =  params.get("smscode")+"" ;
 
 		if(request.getSession(false) ==null){
 			result.error500("verification Code is out of time");

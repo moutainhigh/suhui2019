@@ -2,6 +2,7 @@ package org.suhui.modules.api.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +14,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.suhui.common.api.vo.Result;
 import org.suhui.common.constant.CommonConstant;
+import org.suhui.common.system.query.QueryGenerator;
 import org.suhui.common.util.UUIDGenerator;
 import org.suhui.modules.suhui.suhui.entity.PayCurrencyType;
+import org.suhui.modules.suhui.suhui.entity.PayUserAccountType;
 import org.suhui.modules.suhui.suhui.service.IPayCurrencyTypeService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,8 +51,8 @@ public class AppLoginPayCurrencyTypeController {
         //用户退出逻辑
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
-        String currencycode =  UUIDGenerator.generate() ;  // 货币编号
-
+//        String currencycode =  UUIDGenerator.generate() ;  // 货币编号
+        String currencycode = params.get("currencycode")+"" ; //货币编号
         String currencyname = params.get("currencyname")+"" ; //货币名字
         String currencysymbol = params.get("currencysymbol")+"" ; //货币符号
         String currencyunit = params.get("currencyunit")+"" ; //货币单位
@@ -92,6 +96,9 @@ public class AppLoginPayCurrencyTypeController {
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
         String id = params.get("id")+"" ;
+
+        String currencycode = params.get("currencycode")+"" ; //货币编号
+
         String currencyname = params.get("currencyname")+"" ; //货币名字
         String currencysymbol = params.get("currencysymbol")+"" ; //货币符号
         String currencyunit = params.get("currencyunit")+"" ; //货币单位
@@ -105,6 +112,7 @@ public class AppLoginPayCurrencyTypeController {
         payCurrencyType.setStatus(Integer.parseInt(status)) ;
         payCurrencyType.setRemark(remark) ;
         payCurrencyType.setId(Integer.parseInt(id)) ;
+        payCurrencyType.setCurrencyCode(currencycode) ;
 
         try{
             /**  保存 支付账号信息  和身份信息 */
@@ -119,6 +127,39 @@ public class AppLoginPayCurrencyTypeController {
 
         result.setResult(obj);
         result.success("修改成功");
+        result.setCode(CommonConstant.SC_OK_200);
+        return result ;
+    }
+
+
+    /**
+     * 获取账户类型
+     * @param request
+     * @param response
+     * @param params
+     * @return
+     */
+    @RequestMapping(value = "/getCurrencyTypeList", method = RequestMethod.POST)
+    public Result<JSONObject> getCurrencyTypeList(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
+        //用户退出逻辑
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+//        PayCurrencyType payCurrencyType = new PayCurrencyType() ;
+//        QueryWrapper<PayCurrencyType> queryWrapper = null;
+//        queryWrapper = QueryGenerator.initQueryWrapper(payCurrencyType, request.getParameterMap());
+        try{
+//            List<PayCurrencyType> list = iPayCurrencyTypeService.list(queryWrapper) ;
+            List<PayCurrencyType> list = iPayCurrencyTypeService.list() ;
+            obj.put("list" ,list) ;
+
+        }catch (Exception e){
+            e.printStackTrace();
+            result.error("error");
+            return result ;
+        }
+
+        result.setResult(obj);
+        result.success("get currency type list success");
         result.setCode(CommonConstant.SC_OK_200);
         return result ;
     }

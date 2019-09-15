@@ -63,8 +63,8 @@
             AND pii.user_no = #{userno}
             AND pii.user_type = #{usertype}
 
-            <if test="accounttypecode!=null and accounttypecode!=''">
-                AND pa.account_type_code = #{accounttypecode}
+            <if test="accounttypecode!=null and accounttypecode!='' and accounttypecode!='null' ">
+                AND pa.account_type_code = #{accounttypecode }
             </if>
 
 	</select>
