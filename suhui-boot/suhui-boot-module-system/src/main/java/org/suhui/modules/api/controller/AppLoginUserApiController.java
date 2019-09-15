@@ -198,6 +198,62 @@ public class AppLoginUserApiController {
 
 
     /**
+     * 确认支付密码 接口
+     * @param params
+     * @return
+     */
+    @RequestMapping(value = "/confirm_paypassword", method = RequestMethod.POST)
+    public Result<JSONObject> confirmPaypassword(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
+
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+        String id = params.get("id")+"" ;
+        String paypwd = params.get("paypwd")+"" ;
+        PayUserLogin payUserLogin = iPayUserLoginService.getById(id) ;
+        if(payUserLogin == null){
+            result.setResult(obj);
+            result.success("has no user");
+            result.setCode(0);
+            return result ;
+        }
+        String userno = payUserLogin.getUserNo() ;
+        Integer usertype = payUserLogin.getUserType() ;
+
+        PayUserInfo payUserInfo = new PayUserInfo() ;
+        payUserInfo.setUserNo(userno);
+        payUserInfo.setUserType(usertype);
+        PayUserInfo payUserInfoDb = iPayUserInfoService.getUserByObj(payUserInfo) ;
+
+        if(payUserInfoDb==null) {
+            result.setResult(obj);
+            result.success("has no user");
+            result.setCode(0);
+        }else{
+
+            String salt = payUserInfoDb.getSalt() ;
+            if(salt == null || salt.equals("")){
+                salt = oConvertUtils.randomGen(8);
+            }
+
+            String payPasswordEncode = PasswordUtil.encrypt(payUserInfoDb.getPhoneNo(), paypwd+"", salt);
+            if(payUserInfoDb.getPayPassword() == null || payUserInfoDb.getPayPassword().equals("")){
+                result.success("please to set your pay password");
+                result.setCode(0);
+                return result ;
+            }
+
+            if(payPasswordEncode.equals(payUserInfoDb.getPayPassword())){
+                result.success("pay password is right");
+                result.setCode(CommonConstant.SC_OK_200);
+            }else{
+                result.success("pay password is not right");
+                result.setCode(0);
+            }
+        }
+
+        return result ;
+    }
+    /**
      * 修改支付密码
      * @param params
      * @return

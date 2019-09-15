@@ -162,6 +162,39 @@ public class ApiLoginUserController {
 	}
 
 
+	/**
+	 * 确认支付密码 接口
+	 * @param params
+	 * @return
+	 */
+	@RequestMapping(value = "/confirm_paypassword", method = RequestMethod.POST)
+	public Result<JSONObject> confirmPaypassword(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
+
+		Result<JSONObject> result = new Result<JSONObject>();
+		JSONObject obj = new JSONObject();
+		String id = params.get("id")+"" ;
+		String paypwd = params.get("paypwd")+"" ;
+		SysUser sysUser = sysUserService.getById(id) ;
+		if(sysUser==null) {
+			result.setResult(obj);
+			result.success("has no user");
+			result.setCode(0);
+		}else{
+
+			String salt = sysUser.getSalt() ;
+			String payPasswordEncode = PasswordUtil.encrypt(sysUser.getUsername(), paypwd+"", salt);
+
+			if(payPasswordEncode.equals(sysUser.getPayPassword())){
+				result.success("pay password is right");
+				result.setCode(CommonConstant.SC_OK_200);
+			}else{
+				result.success("pay password is not right");
+				result.setCode(0);
+			}
+		}
+
+		return result ;
+	}
 
 	/**
 	 * 修改资料

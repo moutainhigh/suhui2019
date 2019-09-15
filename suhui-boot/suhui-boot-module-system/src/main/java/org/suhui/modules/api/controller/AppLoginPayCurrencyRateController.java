@@ -190,4 +190,43 @@ public class AppLoginPayCurrencyRateController {
 
     }
 
+    @RequestMapping(value = "/getCurrencyRateByRateCode", method = RequestMethod.POST)
+    public Result<JSONObject> getCurrencyRateByRateCode(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+        int decimailnum = 4;
+
+        Map<String,String> mapdb = iPayCurrencyRateService.getCurrencyRateValue(params) ;
+
+        if(mapdb == null){
+            obj.put("message","this rate is not in database") ;
+            result.setResult(obj);
+            return result ;
+        }
+//            String rate_now = mapdb.get("rate_now")+"" ;
+        String rate_nowStr = String.valueOf(mapdb.get("rate_now"))  ;
+        BigDecimal rate_nowDouble = new BigDecimal(rate_nowStr);
+        BigDecimal bi2 = new BigDecimal("1000000000");
+        BigDecimal rate_now_divide = rate_nowDouble.divide(bi2, 9, RoundingMode.HALF_UP);
+
+        double rate_now_dou = rate_now_divide.setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
+        if(rate_now_dou > 0.1){
+            decimailnum = 4 ;
+        }else if(rate_now_dou*10 > 0.1){
+            decimailnum = 5 ;
+        }else if(rate_now_dou*100 > 0.1){
+            decimailnum = 6 ;
+        }else if(rate_now_dou*1000 > 0.1){
+            decimailnum = 7 ;
+        }else{
+            decimailnum =8 ;
+        }
+        rate_now_dou = rate_now_divide.setScale(decimailnum, BigDecimal.ROUND_HALF_UP).doubleValue();
+        mapdb.put("rate_now" ,rate_now_dou+"") ;
+        obj.put("data",mapdb) ;
+
+        result.setResult(obj);
+        return result ;
+
+    }
 }
