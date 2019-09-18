@@ -66,7 +66,7 @@ public class AppLoginPayAccountController {
         //account_no  通过自动生成
         String accountno  = UUIDGenerator.generate() ; //  账户编码
         String accounttypecode = params.get("accounttypecode")+"" ; //账户类型编码
-        String accountname = params.get("accountname")+"" ;//账户名称
+        String accountname = params.get("accountname")+"" ;//账户payCharge名称
 
         String isallowrecharge = params.get("isallowrecharge")+"" ; //是否允许充值
         String isallowwithdraw = params.get("isallowwithdraw")+"" ;//是否允许提现

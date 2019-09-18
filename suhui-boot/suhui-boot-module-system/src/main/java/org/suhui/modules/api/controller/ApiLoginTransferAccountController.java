@@ -16,9 +16,11 @@ import org.suhui.common.constant.CommonConstant;
 import org.suhui.common.util.UUIDGenerator;
 import org.suhui.modules.suhui.suhui.entity.BizAssetChangeRecord;
 import org.suhui.modules.suhui.suhui.entity.PayAccountAsset;
+import org.suhui.modules.suhui.suhui.entity.PayUserLogin;
 import org.suhui.modules.suhui.suhui.service.IBizAssetChangeRecordService;
 import org.suhui.modules.suhui.suhui.service.IPayAccountAssetService;
 import org.suhui.modules.suhui.suhui.service.IPayAccountService;
+import org.suhui.modules.suhui.suhui.service.IPayUserLoginService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,6 +49,9 @@ public class ApiLoginTransferAccountController {
     @Autowired
     private IPayAccountAssetService iPayAccountAssetService ;
 
+    @Autowired
+    private IPayUserLoginService iPayUserLoginService ;
+
 
     /**
      *  转账
@@ -60,13 +65,38 @@ public class ApiLoginTransferAccountController {
         //用户退出逻辑
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
-        String userno_from = params.get("user_no_from")+"" ; //用户编码
-        String usertype_from = params.get("user_type_from")+"" ; //用户类型
+//        String userno_from = params.get("user_no_from")+"" ; //用户编码
+//        String usertype_from = params.get("user_type_from")+"" ; //用户类型
         String accounttypecode_from = params.get("account_type_code_from") +"";
 
-        String userno_to = params.get("user_no_to")+"" ; //用户编码
-        String usertype_to = params.get("user_type_to")+"" ; //用户类型
-        String accounttypecode_to = params.get("account_type_code_to") +"";
+        String phone_from =  params.get("phone_from")+"" ; //登陆用户名 （手机号）
+        String areacode_from =  params.get("areacode_from")+"" ; //区域码
+
+        String userno_from = "" ; ////登陆用户名 （手机号）
+        String usertype_from = "" ; //区域码
+        PayUserLogin payUserLogin_from = iPayUserLoginService.getUserByPhone(phone_from,areacode_from) ;
+        if(payUserLogin_from == null){
+            result.error("from account is not exit! ");
+            return result ;
+        }
+        userno_from = payUserLogin_from.getUserNo() ;
+        usertype_from = payUserLogin_from.getUserType()+"" ;
+
+//        String userno_to = params.get("user_no_to")+"" ; //用户编码
+//        String usertype_to = params.get("user_type_to")+"" ; //用户类型
+//        String accounttypecode_to = params.get("account_type_code_to") +"";
+        String phone_to =  params.get("phone_to")+"" ; //登陆用户名 （手机号）
+        String areacode_to =  params.get("areacode_to")+"" ; //区域码
+        String userno_to ="" ;
+        String usertype_to="" ;
+
+        PayUserLogin payUserLogin_to = iPayUserLoginService.getUserByPhone(phone_to,areacode_to) ;
+        if(payUserLogin_to == null){
+            result.error("to account is not exit! ");
+            return result ;
+        }
+        userno_to = payUserLogin_to.getUserNo() ;
+        usertype_to = payUserLogin_to.getUserType()+"" ;
 
 
         Double chargeMoney = Double.parseDouble( params.get("charge_money")+"") ;
@@ -81,7 +111,7 @@ public class ApiLoginTransferAccountController {
         Map map_to = new HashMap() ;
         map_to.put("userno" , userno_to) ;
         map_to.put("usertype" , usertype_to) ;
-        map_to.put("accounttypecode" , accounttypecode_to) ;
+        map_to.put("accounttypecode" , accounttypecode_from) ;
         Map payaccount_to= iPayAccountService.getPayAccountByUserNo(map_to) ;
         String is_allow_transfer_out = payaccount_from.get("is_allow_transfer_out")+"" ;
         String is_allow_transfer_in = payaccount_to.get("is_allow_transfer_in")+"" ;
@@ -150,7 +180,7 @@ public class ApiLoginTransferAccountController {
                 String identity_type_to = payaccount_to.get("identity_type")+"" ;
                 Map mapAsset_to = new HashMap() ;
                 mapAsset_to.put("account_no" , account_no_to) ;
-                mapAsset_to.put("account_type_code" , accounttypecode_to) ;
+                mapAsset_to.put("account_type_code" , accounttypecode_from) ;
                 Map<String,Object> mapAssetDb_to = iPayAccountService.getPayAccountAssetByUserNo(mapAsset_to) ;
                 long available_amount_before_to = Long.parseLong(mapAssetDb_to.get("available_amount")+"")  ; // 可用金额
                 long frozen_amount_before_to =  Long.parseLong(mapAssetDb_to.get("frozen_amount")+"") ;// 冻结金额
@@ -171,7 +201,7 @@ public class ApiLoginTransferAccountController {
                 bizAssetChangeRecord_to.setUserNo(userno_to) ;
                 bizAssetChangeRecord_to.setUserType(Integer.parseInt(usertype_to)) ;
                 bizAssetChangeRecord_to.setAccountNo(account_no_to) ;
-                bizAssetChangeRecord_to.setAccountType( Integer.parseInt(accounttypecode_to)) ;
+                bizAssetChangeRecord_to.setAccountType( Integer.parseInt(accounttypecode_from)) ;
                 bizAssetChangeRecord_to.setIdentityNo(identity_no_to) ;
 
                 bizAssetChangeRecord_to.setChangeType(2) ; //变更类型 1-增加 2-减少 4-冻结 5-解冻
