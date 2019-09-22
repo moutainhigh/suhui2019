@@ -1,6 +1,7 @@
 package org.suhui.modules.api.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -264,7 +265,19 @@ public class AppSystemApiController {
 
         String fileData = params.get("file") +"";
 
-        String id = params.get("id")+"" ;
+        String id = "" ;
+        String userno = params.get("userno")+"" ;
+        String usertype = params.get("usertype")+"" ;
+        if(usertype == null || usertype.equals("")|| usertype.equals("null")){
+            result.success("please check usertype");
+            result.setCode(0);
+            return result;
+        }
+        PayUserInfo payUserInfoPararm = new PayUserInfo() ;
+        payUserInfoPararm.setUserNo(userno);
+        payUserInfoPararm.setUserType(Integer.parseInt(usertype));
+        PayUserInfo payUserInfoDb = iPayUserInfoService.getOne(new QueryWrapper<PayUserInfo>(payUserInfoPararm));
+        id = payUserInfoDb.getId()+"" ;
 
         PayUserInfo payUserInfo = iPayUserInfoService.getById(id) ;
 
