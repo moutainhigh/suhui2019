@@ -204,4 +204,80 @@ public class AppSystemApiController {
     }
 
 
+//    /**
+//     * 上传个人图像
+//     * @param
+//     * @return
+//     */
+//    @RequestMapping(value = "/upload-img_new" , method = RequestMethod.POST)
+//    public Result<?> uploadImgNew(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params) {
+//        Result<?> result = new Result<>();
+//        try {
+//            String ctxPath = uploadpath;
+//            String fileName = null;
+//            String bizPath = "files";
+//            String nowday = new SimpleDateFormat("yyyyMMdd").format(new Date());
+//            File file = new File(ctxPath + File.separator + bizPath + File.separator + nowday);
+//            if (!file.exists()) {
+//                file.mkdirs();// 创建文件根目录
+//            }
+//
+//            String fileData = params.get("file") +"";
+//            fileName = params.get("fileName")+"";
+//            String savePath = file.getPath() + File.separator + fileName;
+//            File savefile = new File(savePath);
+//            FileCopyUtils.copy(fileData.getBytes(), savefile);
+//            String dbpath = bizPath + File.separator + nowday + File.separator + fileName;
+//            if (dbpath.contains("\\")) {
+//                dbpath = dbpath.replace("\\", "/");
+//            }
+//            String id = params.get("id")+"" ;
+//
+//            PayUserInfo payUserInfo = iPayUserInfoService.getById(id) ;
+//
+//            if(payUserInfo==null) {
+//                result.success("has no user");
+//                result.setCode(0);
+//            }else{
+//                payUserInfo.setPicture(dbpath);
+//                iPayUserInfoService.updateById(payUserInfo) ;
+//                result.success("update avatar success!");
+//                result.setCode(CommonConstant.SC_OK_200);
+//            }
+//
+//        } catch (IOException e) {
+//            result.setSuccess(false);
+//            result.setMessage(e.getMessage());
+//            log.error(e.getMessage(), e);
+//        }
+//        return result;
+//    }
+
+    /**
+     * 上传个人图像
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/upload-img_new" , method = RequestMethod.POST)
+    public Result<?> uploadImgNew(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params) {
+        Result<?> result = new Result<>();
+
+        String fileData = params.get("file") +"";
+
+        String id = params.get("id")+"" ;
+
+        PayUserInfo payUserInfo = iPayUserInfoService.getById(id) ;
+
+        if(payUserInfo==null) {
+            result.success("has no user");
+            result.setCode(0);
+        }else{
+            payUserInfo.setPicture(fileData);
+            iPayUserInfoService.updateById(payUserInfo) ;
+            result.success("update avatar success!");
+            result.setCode(CommonConstant.SC_OK_200);
+        }
+
+        return result;
+    }
 }
