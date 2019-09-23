@@ -1,7 +1,7 @@
 
-# 速汇
+# suhui-fundTransfer   
 
-The backend for suihui project.    
+The repo for suihui fundTransfer project.    
 
 
 
