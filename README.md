@@ -3,6 +3,31 @@
 
 The backend for suihui project.    
 
+
+
+## postman三个地址    
+登陆注册
+https://www.getpostman.com/collections/a73ac6f4fa7c8bf6edaa 
+
+充值提现
+https://www.getpostman.com/collections/ff6f2d91d7529a4a7456  
+
+支付汇总
+https://www.getpostman.com/collections/74176a8b6a4e4e00f43c
+
+
+相应的发布后的postman文档（可能需要重新发布）
+
+
+https://documenter.getpostman.com/view/1895285/SVmyRHpF
+
+https://documenter.getpostman.com/view/1895285/SVmyRHpD
+
+https://documenter.getpostman.com/view/1895285/SVmyRHpG
+
+
+
+
 #### Description    
 速汇项目
 
