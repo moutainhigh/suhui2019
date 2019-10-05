@@ -264,6 +264,7 @@ public class AppLoginPayExchangeController {
                 mapexcharge.put("biz_excharge_no" , order_id) ;
                 // 获取换汇信息
                 Map mapexchargeDb = iBizExchangeOrderService.getExchargeOrderByExchargeNo(mapexcharge) ;
+                Integer targetmoney = Integer.parseInt( mapexchargeDb.get("target_currency") +"");
 
                 if(status == null || status.equals("")){
                     result.error("请传入解冻状态");
@@ -382,7 +383,7 @@ public class AppLoginPayExchangeController {
 
                         long frozen_amount_target_before = Long.parseLong(mapAssetDb.get("frozen_amount")+"")  ; // 冻结金额
                         long available_amount_target_before = Long.parseLong(mapAssetDb.get("available_amount")+"")  ;
-                        long available_amount_target = frozen_amount_target_before + moneyamount_long;
+                        long available_amount_target = available_amount_target_before + targetmoney;
                         long frozen_amount_target = frozen_amount_target_before ;
 
                         PayAccountAsset payAccountAssetTarget = new PayAccountAsset() ;
