@@ -14,5 +14,7 @@ public interface IPayUserInfoService extends IService<PayUserInfo> {
 
     public PayUserInfo getUserByObj(PayUserInfo payUserInfo);
 
+    public PayUserInfo getUserByPhone(String username,String areacode);
+
 
 }

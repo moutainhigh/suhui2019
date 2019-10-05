@@ -332,18 +332,22 @@ public class AppLoginPayChargeController {
         long available_amount = available_amount_before + chargeMoneyInt ;
         long frozen_amount = frozen_amount_before - chargeMoneyInt ;
 
-        PayAccountAsset payAccountAsset = new PayAccountAsset() ;
-        payAccountAsset.setId(Integer.parseInt(mapAssetDb.get("id")+"")) ;
-        payAccountAsset.setFrozenAmount(frozen_amount) ; // 冻结金额
-        payAccountAsset.setAvailableAmount(available_amount) ; // 设置可用金额
-        iPayAccountAssetService.updateById(payAccountAsset) ;
+
 
         Map freezeMap = new HashMap() ;
         freezeMap.put("trade_no" ,trade_no) ;
         Map freezeMapdb = iBizFreezeOrderService.getFreezeOrderByTradeNo(freezeMap) ;
         String freezeid = freezeMapdb.get("id")+"" ;
         String biz_freeze_no =  freezeMapdb.get("biz_freeze_no")+"" ;
+        String status =   freezeMapdb.get("status")+"" ;
 
+        if(status == null|| status.equals("")){
+
+        }else if(status.equals("2")){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            result.error("已经解冻，不能重复解冻");
+            return result ;
+        }
 
         BizFreezeOrder bizFrezzeOrder = new BizFreezeOrder() ;
         bizFrezzeOrder.setId(Integer.parseInt(freezeid)) ;
@@ -397,6 +401,13 @@ public class AppLoginPayChargeController {
         bizAssetChangeRecord.setBillJson(objRemark.toString()) ;// 记账json
 
         iBizAssetChangeRecordService.save(bizAssetChangeRecord) ;
+
+        PayAccountAsset payAccountAsset = new PayAccountAsset() ;
+        payAccountAsset.setId(Integer.parseInt(mapAssetDb.get("id")+"")) ;
+        payAccountAsset.setFrozenAmount(frozen_amount) ; // 冻结金额
+        payAccountAsset.setAvailableAmount(available_amount) ; // 设置可用金额
+        iPayAccountAssetService.updateById(payAccountAsset) ;
+
 
         }catch (Exception e){
             e.printStackTrace();

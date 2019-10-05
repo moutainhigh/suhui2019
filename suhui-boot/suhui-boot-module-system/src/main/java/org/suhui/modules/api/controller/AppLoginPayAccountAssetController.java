@@ -143,6 +143,22 @@ public class AppLoginPayAccountAssetController {
     }
 
 
+    /**
+     * 用户余额检查接口
+     * @param request
+     * @param response
+     * @param params
+     * @return
+     */
+    public Result<JSONObject> search(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
+        //用户退出逻辑
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+        String id = params.get("id")+"" ;
 
-
+        result.setResult(obj);
+        result.success("修改成功 Update succeeded");
+        result.setCode(CommonConstant.SC_OK_200);
+        return result ;
+    }
 }

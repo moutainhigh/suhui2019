@@ -27,4 +27,11 @@ public class PayUserInfoServiceImpl extends ServiceImpl<PayUserInfoMapper, PayUs
        return payUserInfoMapper.getUserByObj(payUserInfo) ;
 
     }
+
+
+
+    @Override
+    public PayUserInfo getUserByPhone(String phone , String areacode) {
+        return payUserInfoMapper.getUserByPhoneInfo(phone ,areacode);
+    }
 }

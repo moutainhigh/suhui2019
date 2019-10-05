@@ -2,4 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.suhui.modules.suhui.suhui.mapper.BizExchangeOrderMapper">
 
+    <!-- 通过用户userno usertype 获取账号信息 -->
+    <select id="getExchargeOrderByExchargeNo" resultType="map" parameterType="map">
+        SELECT
+            beo.id,
+            beo.trade_no,
+            beo.biz_exchange_no,
+            beo.user_no,
+            beo.user_type,
+            beo.account_type,
+            beo.source_currency,
+            beo.target_currency,
+            beo.rate_code,
+            beo.exchange_time
+        FROM
+          biz_excharge_order beo
+        WHERE 1 = 1
+        <if test="biz_exchange_no!=null and biz_exchange_no!=''">
+            AND beo.biz_exchange_no = #{biz_exchange_no}
+        </if>
+
+    </select>
+
 </mapper>

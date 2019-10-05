@@ -162,7 +162,9 @@ public class ShiroRealm extends AuthorizingRealm {
 	 * @param passWord
 	 * @return
 	 */
-	public boolean jwtTokenRefresh(String token, String userName, String passWord) {
+	public boolean
+
+	jwtTokenRefresh(String token, String userName, String passWord) {
 		String cacheToken = String.valueOf(redisUtil.get(CommonConstant.PREFIX_USER_TOKEN + token));
 		if (oConvertUtils.isNotEmpty(cacheToken)) {
 			// 校验token有效性

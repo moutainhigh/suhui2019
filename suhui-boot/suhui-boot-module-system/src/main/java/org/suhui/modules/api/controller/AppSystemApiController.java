@@ -4,8 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authc.AuthenticationException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,8 +18,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.suhui.common.api.vo.Result;
 import org.suhui.common.constant.CommonConstant;
+import org.suhui.common.system.util.JwtUtil;
+import org.suhui.common.system.vo.LoginUser;
+import org.suhui.common.util.RedisUtil;
+import org.suhui.common.util.oConvertUtils;
 import org.suhui.modules.suhui.suhui.service.IPayUserInfoService;
+import org.suhui.modules.suhui.suhui.service.IPayUserLoginService;
 import org.suhui.modules.system.entity.SysUser;
+import org.suhui.modules.system.service.ISysUserService;
 import org.suhui.modules.utils.SmsUtil;
 
 import javax.mail.*;
@@ -45,6 +54,18 @@ public class AppSystemApiController {
 
     @Autowired
     private IPayUserInfoService iPayUserInfoService ;
+
+    @Autowired
+    @Lazy
+    private ISysUserService sysUserService;
+
+    @Autowired
+    @Lazy
+    private IPayUserLoginService iPayUserLoginService ;
+
+    @Autowired
+    @Lazy
+    private RedisUtil redisUtil;
     /**
      * 获取验证码
      * @param params
@@ -292,5 +313,148 @@ public class AppSystemApiController {
         }
 
         return result;
+    }
+
+    /**
+     * 上传个人图像
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/getpayuserinfo" , method = RequestMethod.POST)
+    public Result getPayUserInfo(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params) {
+        Result result = new Result();
+
+
+
+        String userno = params.get("userno")+"" ;
+        String usertype = params.get("usertype")+"" ;
+        if(usertype == null || usertype.equals("")|| usertype.equals("null")){
+            result.success("please check usertype");
+            result.setCode(0);
+            return result;
+        }
+        PayUserInfo payUserInfoPararm = new PayUserInfo() ;
+        payUserInfoPararm.setUserNo(userno);
+        payUserInfoPararm.setUserType(Integer.parseInt(usertype));
+        PayUserInfo payUserInfoDb = iPayUserInfoService.getOne(new QueryWrapper<PayUserInfo>(payUserInfoPararm));
+
+        File savefile = new File("");
+        try {
+            FileCopyUtils.copy( payUserInfoDb.getPicture().getBytes(), savefile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        if(payUserInfoDb==null) {
+            result.success("has no user");
+            result.setCode(0);
+        }else{
+
+            result.setResult("" +payUserInfoDb.getPicture());
+            result.success("update avatar success!");
+            result.setCode(CommonConstant.SC_OK_200);
+        }
+
+        return result;
+    }
+
+
+
+/**
+ * 判断是否登陆
+ * @param
+ * @return
+ */
+    @RequestMapping(value = "/isLogin" , method = RequestMethod.POST)
+    public Result isLogin(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params) {
+        Result result = new Result();
+
+        String token = params.get("token")+"" ;
+        String usernameparam = params.get("phone")+"" ; // 用户名
+        String areacode = params.get("areacode")+"" ;
+        String username = JwtUtil.getUsername(token);
+        if (username == null) {
+            result.setResult("token非法无效");
+            return result;
+        }
+
+        LoginUser loginUser = new LoginUser();
+        SysUser sysUser = sysUserService.getUserByName(username);
+        if(sysUser == null){
+            PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(username,areacode) ;
+
+            if (!jwtTokenRefresh(token, username, payUserLogin.getPassword())) {
+//                throw new AuthenticationException("Token失效，请重新登录!");
+                result.setResult("Token失效，请重新登录!");
+                return result;
+            }
+
+            // 判断用户状态
+            if (payUserLogin.getStatus() == 2) {
+//                throw new AuthenticationException("账号无效,请联系管理员!");
+                result.setResult("账号无效,请联系管理员!");
+                return result;
+            }
+            BeanUtils.copyProperties(payUserLogin, loginUser);
+        }else{
+            // 校验token是否超时失效 & 或者账号密码是否错误
+            if (!jwtTokenRefresh(token, username, sysUser.getPassword())) {
+//            throw new AuthenticationException("Token失效，请重新登录!");
+                result.setResult("Token失效，请重新登录!");
+                return result;
+            }
+
+            // 判断用户状态
+            if (sysUser.getStatus() != 1) {
+//            throw new AuthenticationException("账号已被锁定,请联系管理员!");
+                result.setResult("账号无效,请联系管理员!");
+                return result;
+            }
+
+            BeanUtils.copyProperties(sysUser, loginUser);
+        }
+
+        result.setCode(200);
+        result.setResult("success");
+        result.setMessage("已登陆状态");
+        return result;
+    }
+
+
+    /**
+     * JWTToken刷新生命周期 （解决用户一直在线操作，提供Token失效问题）
+     * 1、登录成功后将用户的JWT生成的Token作为k、v存储到cache缓存里面(这时候k、v值一样)
+     * 2、当该用户再次请求时，通过JWTFilter层层校验之后会进入到doGetAuthenticationInfo进行身份验证
+     * 3、当该用户这次请求JWTToken值还在生命周期内，则会通过重新PUT的方式k、v都为Token值，缓存中的token值生命周期时间重新计算(这时候k、v值一样)
+     * 4、当该用户这次请求jwt生成的token值已经超时，但该token对应cache中的k还是存在，则表示该用户一直在操作只是JWT的token失效了，程序会给token对应的k映射的v值重新生成JWTToken并覆盖v值，该缓存生命周期重新计算
+     * 5、当该用户这次请求jwt在生成的token值已经超时，并在cache中不存在对应的k，则表示该用户账户空闲超时，返回用户信息已失效，请重新登录。
+     * 6、每次当返回为true情况下，都会给Response的Header中设置Authorization，该Authorization映射的v为cache对应的v值。
+     * 7、注：当前端接收到Response的Header中的Authorization值会存储起来，作为以后请求token使用
+     * 参考方案：https://blog.csdn.net/qq394829044/article/details/82763936
+     *
+     * @param userName
+     * @param passWord
+     * @return
+     */
+    public boolean
+
+    jwtTokenRefresh(String token, String userName, String passWord) {
+        String cacheToken = String.valueOf(redisUtil.get(CommonConstant.PREFIX_USER_TOKEN + token));
+        if (oConvertUtils.isNotEmpty(cacheToken)) {
+            // 校验token有效性
+            if (!JwtUtil.verify(token, userName, passWord)) {
+                String newAuthorization = JwtUtil.sign(userName, passWord);
+                redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, newAuthorization);
+                // 设置超时时间
+                redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME / 1000);
+            } else {
+                redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, cacheToken);
+                // 设置超时时间
+                redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME / 1000);
+            }
+            return true;
+        }
+        return false;
     }
 }

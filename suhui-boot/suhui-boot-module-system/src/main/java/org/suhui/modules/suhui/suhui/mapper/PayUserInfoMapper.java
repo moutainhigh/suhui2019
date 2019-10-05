@@ -16,4 +16,11 @@ import org.suhui.modules.suhui.suhui.entity.PayUserLogin;
 public interface PayUserInfoMapper extends BaseMapper<PayUserInfo> {
 
     public PayUserInfo getUserByObj(PayUserInfo payUserInfo);
+
+    /**
+     * 通过用户账号查询用户信息
+     * @param username
+     * @return
+     */
+    public PayUserInfo getUserByPhoneInfo(@Param("phone") String phone , @Param("areacode") String areacode);
 }
