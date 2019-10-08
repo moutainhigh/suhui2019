@@ -1,6 +1,6 @@
 package org.suhui.modules.api.controller;
 
-
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.suhui.common.api.vo.Result;
-import org.suhui.common.constant.CommonConstant;
 import org.suhui.common.util.UUIDGenerator;
 import org.suhui.modules.suhui.suhui.entity.*;
 import org.suhui.modules.suhui.suhui.service.*;
@@ -25,15 +24,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-/**
- * @Author scott
- * @since 2018-12-17
- */
 @RestController
-@RequestMapping("/api/login/exchange")
-@Api(tags="换汇")
+@RequestMapping("/api/login/sendhome")
+@Api(tags="送汇上门")
 @Slf4j
-public class AppLoginPayExchangeController {
+public class AppLoginSendhomeController {
 
     @Autowired
     private IPayAccountService iPayAccountService ;
@@ -55,11 +50,100 @@ public class AppLoginPayExchangeController {
 
     @Autowired
     private IBizAssetChangeRecordService iBizAssetChangeRecordService ;
+
+
+
     /**
-     *  换汇冻结
+     *  扣取手续费接口(费率由配送模块提供)
      * @param params
      * @return
      */
+    @RequestMapping(value = "/deductionfee", method = RequestMethod.POST)
+    @Transactional
+    public Result<JSONObject> deductionfee(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
+        //用户退出逻辑
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+
+        String rate = params.get("rate")+"" ;
+        String money = params.get("money")+"" ;
+        String userno =params.get("userno")+"" ;
+        String usertype =params.get("usertype")+"" ;
+        String accounttypecode = params.get("accounttypecode")+"" ; // 账户类型  101 人民币账户  201 美元账户  301 菲律宾账户
+
+        String userno_kkzh = "4028f3816d9a075a016da549eb150008" ; // 扣款账户 所有账户都放到本账户下
+
+        try {
+
+                long moneylong = Long.parseLong(money) ;
+                Map map = new HashMap() ;
+                map.put("userno" , userno) ;
+                map.put("usertype" , usertype) ;
+                map.put("accounttypecode" , accounttypecode) ;
+                Map payaccount =  iPayAccountService.getPayAccountByUserNo(map) ;
+
+                String account_no = payaccount.get("account_no") +"";
+                Map mapAsset = new HashMap() ;
+                mapAsset.put("account_no" , account_no) ;
+                mapAsset.put("account_type_code" , accounttypecode) ;
+                Map<String,Object> mapAssetDb = iPayAccountService.getPayAccountAssetByUserNo(mapAsset) ;
+                long available_amount = Long.parseLong(mapAssetDb.get("available_amount")+"")  ; // 可用金额
+
+                Map map_kkzh = new HashMap() ;
+                map_kkzh.put("userno" , userno_kkzh) ;
+                map_kkzh.put("usertype" , "0") ;
+                map_kkzh.put("accounttypecode" , accounttypecode) ;
+                Map payaccount_kkzh =  iPayAccountService.getPayAccountByUserNo(map_kkzh) ;
+
+                String account_no_kkzh = payaccount_kkzh.get("account_no") +"";
+                Map mapAsset_kkzh = new HashMap() ;
+                mapAsset_kkzh.put("account_no" , account_no_kkzh) ;
+                mapAsset_kkzh.put("account_type_code" , accounttypecode) ;
+                Map<String,Object> mapAssetDb_kkzh = iPayAccountService.getPayAccountAssetByUserNo(mapAsset_kkzh) ;
+                long available_amount_kkzh = Long.parseLong(mapAssetDb_kkzh.get("available_amount")+"")  ; // 可用金额
+
+                double ratelong = Double.parseDouble(rate)  ;
+
+                double deductmoney = ratelong*moneylong;
+                if(deductmoney+moneylong > available_amount){
+                    // 账号资金不够 ，无法扣款
+                    result.error("insufficient funds in your account");
+//                    result.setResult(JSON.parseObject("less than"));
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                    return result ;
+                }else{
+                    double availableafter = available_amount - deductmoney ;
+                    int availableafterint = (int)availableafter ;
+                    int frozenamountint = Integer.parseInt(mapAssetDb.get("frozen_amount")+"")  ;
+
+                    PayAccountAsset payAccountAsset = new PayAccountAsset() ;
+                    payAccountAsset.setId(Integer.parseInt(mapAssetDb.get("id")+"")) ;
+                    payAccountAsset.setAvailableAmount(availableafterint) ; // 设置可用金额
+                    payAccountAsset.setFrozenAmount(frozenamountint) ;
+                    iPayAccountAssetService.updateById(payAccountAsset) ;
+
+                    double availableafter_kkzh =  available_amount_kkzh+deductmoney ;
+                    int availableafter_kkzh_int = (int)availableafter_kkzh ;
+                    PayAccountAsset payAccountAsset_kkzh = new PayAccountAsset() ;
+                    payAccountAsset_kkzh.setId(Integer.parseInt(mapAssetDb_kkzh.get("id")+"")) ;
+                    payAccountAsset_kkzh.setAvailableAmount(availableafter_kkzh_int) ; // 设置可用金额
+                    payAccountAsset_kkzh.setFrozenAmount(Integer.parseInt(mapAssetDb_kkzh.get("frozen_amount")+"")) ; // 设置可用金额
+                    iPayAccountAssetService.updateById(payAccountAsset_kkzh) ;
+                    result.setMessage("deducute money :"+ deductmoney);
+                }
+
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            result.error("error");
+            return  result ;
+        }
+        result.success("dedecute success");
+
+        return result ;
+    }
+
+
+
     @RequestMapping(value = "/frozen", method = RequestMethod.POST)
     @Transactional
     public Result<JSONObject> frozen(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
@@ -67,44 +151,30 @@ public class AppLoginPayExchangeController {
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
 
-        try{
+        String userno = params.get("userno")+"" ; //用户id
+        String usertype = params.get("usertype")+"" ; //用户类型 0-默认 1-个人 2-企业',
+        String accounttypecode = params.get("accounttypecode")+"" ; //账户类型
+        String moneyamount = params.get("moneyamount") +""; // 获取
+        String status =  params.get("status") +"";
+        String biz_sendhome_no =  params.get("bizsendhomeno") + "" ; // 送汇上门编码 通过此编码 能获取到唯一数据  本地生成规则是 字母 + 3位随机码 +当前时间+3位随机码
 
-            String userno = params.get("userno")+"" ; //用户id
-            String usertype = params.get("usertype")+"" ; //用户类型 0-默认 1-个人 2-企业',
-            String account_type_code = params.get("account_type_code")+"" ; //账户类型
-            String moneyamount = params.get("moneyamount") +""; // 获取
-            String status =  params.get("status") +"";
+        long moneyamount_long = Long.parseLong(moneyamount) ;
+        Map map = new HashMap() ;
+        map.put("userno" , userno) ;
+        map.put("usertype" , usertype) ;
+        map.put("accounttypecode" , accounttypecode) ;
+        Map payaccount =  iPayAccountService.getPayAccountByUserNo(map) ;
 
-//            String sourcecurrency = params.get("sourcecurrency")+"" ;
-//            String targetcurrency = params.get("targetcurrency")+"" ;
 
-            String ratecodeid = params.get("ratecodeid")+"" ;
-
-            long moneyamount_long = Long.parseLong(moneyamount) ;
-            Map map = new HashMap() ;
-            map.put("userno" , userno) ;
-            map.put("usertype" , usertype) ;
-            map.put("accounttypecode" , account_type_code) ;
-            Map payaccount =  iPayAccountService.getPayAccountByUserNo(map) ;
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss") ;
-            Random random = new Random();
-            int x = random.nextInt(899);
-            x = x+100; //生成一个3位的随机数
-            int y = random.nextInt(899);
-            y = y+100 ;
-
-            String is_allow_transfer_out = payaccount.get("is_allow_transfer_out")+"" ;
-            if(is_allow_transfer_out.equals("0")){ // 是否允许转汇
-                // 操作账户金额
+        try {
                 String account_no = payaccount.get("account_no") +"";
                 String identity_no = payaccount.get("identity_no")+"" ;
-                String identity_type = payaccount.get("identity_type")+"" ;
                 Map mapAsset = new HashMap() ;
                 mapAsset.put("account_no" , account_no) ;
-                mapAsset.put("account_type_code" , account_type_code) ;
+                mapAsset.put("account_type_code" , accounttypecode) ;
                 Map<String,Object> mapAssetDb = iPayAccountService.getPayAccountAssetByUserNo(mapAsset) ;
                 long available_amount_before = Long.parseLong(mapAssetDb.get("available_amount")+"")  ; // 可用金额
+
                 if(moneyamount_long >available_amount_before ){
                     result.error("insufficient funds in your account");
                     TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -121,27 +191,7 @@ public class AppLoginPayExchangeController {
                     payAccountAsset.setAvailableAmount(available_amount) ; // 设置可用金额
                     iPayAccountAssetService.updateById(payAccountAsset) ;
 
-
                     String trade_no = UUIDGenerator.generate() ;//业务交易流水号(各业务保持唯一)
-                    String biz_excharge_no =  "EX"+y+ sdf.format(new Date())+'0'+x;
-
-                    BizExchangeOrder bizExchangeOrder = new BizExchangeOrder() ;
-                    bizExchangeOrder.setTradeNo(trade_no) ;
-                    bizExchangeOrder.setBizExchangeNo(biz_excharge_no) ;
-                    bizExchangeOrder.setUserNo(userno) ;
-                    bizExchangeOrder.setUserType(Integer.parseInt(usertype)) ;
-                    bizExchangeOrder.setAccountType(Integer.parseInt(account_type_code)) ;
-                    bizExchangeOrder.setSourceCurrency(Integer.parseInt(moneyamount)) ;
-
-                    PayCurrencyRate payCurrencyRate = iPayCurrencyRateService.getById(ratecodeid) ;
-                    Integer ratenow = payCurrencyRate.getRateNow() ;
-                    long targetcurrency = moneyamount_long*ratenow/1000000000 ;
-
-                    bizExchangeOrder.setTargetCurrency(Integer.parseInt(targetcurrency+"")) ;
-                    bizExchangeOrder.setRateCode(payCurrencyRate.getRateCode()) ;
-                    bizExchangeOrder.setStatus(1) ;
-                    bizExchangeOrder.setExchangeTime(payCurrencyRate.getCreateTime()) ;
-                    iBizExchangeOrderService.save(bizExchangeOrder) ;
 
                     // biz_freeze_order  冻结记录
                     String biz_freeze_no = UUIDGenerator.generate() ;
@@ -154,24 +204,24 @@ public class AppLoginPayExchangeController {
                     bizFreezeOrder.setStatus(1) ;//1：冻结 2：解冻
                     JSONObject objRemark = new JSONObject();
                     objRemark.put("account_no",account_no) ;
-                    objRemark.put("accounttypecode" ,account_type_code) ;
+                    objRemark.put("accounttypecode" ,accounttypecode) ;
                     objRemark.put("chargeMoney" , moneyamount_long) ;
                     objRemark.put("msg","充值冻结") ;
                     bizFreezeOrder.setRemark(objRemark.toString() ) ;
                     bizFreezeOrder.setCreateTime(new Date()) ;
 
-//                冻结记录表
+        //                冻结记录表
                     iBizFreezeOrderService.save(bizFreezeOrder) ;
 
 
-//              冻结详情表
+        //              冻结详情表
                     CashierFreezeOrderDetail cashierFreezeOrderDetail = new CashierFreezeOrderDetail() ;
-//                String biz_freeze_no = UUIDGenerator.generate() ; //由支付系统生成的唯一流水号
+        //                String biz_freeze_no = UUIDGenerator.generate() ; //由支付系统生成的唯一流水号
                     cashierFreezeOrderDetail.setBizFreezeNo(biz_freeze_no) ;
                     cashierFreezeOrderDetail.setUserNo(userno) ;
                     cashierFreezeOrderDetail.setUserType(Integer.parseInt(usertype)) ;
                     //支付账户类型（1：渠道账户    2：本金账户    3：赠额账户    4：授信账户)
-                    cashierFreezeOrderDetail.setPayAccountType(Integer.parseInt(account_type_code)) ;
+                    cashierFreezeOrderDetail.setPayAccountType(Integer.parseInt(accounttypecode)) ;
                     cashierFreezeOrderDetail.setPayAccount(account_no) ;
                     cashierFreezeOrderDetail.setFreezeAmount(Integer.parseInt(moneyamount_long+"")) ;// 设置冻结金额
                     cashierFreezeOrderDetail.setSubStatus(Integer.parseInt(status)) ;
@@ -181,12 +231,12 @@ public class AppLoginPayExchangeController {
 
                     BizAssetChangeRecord bizAssetChangeRecord = new BizAssetChangeRecord() ;//账户资金变更聚合流水表
 
-                    bizAssetChangeRecord.setPayNo(biz_excharge_no) ;
+                    bizAssetChangeRecord.setPayNo(biz_sendhome_no) ;
                     bizAssetChangeRecord.setBillNo(bill_no) ;
                     bizAssetChangeRecord.setUserNo(userno) ;
                     bizAssetChangeRecord.setUserType(Integer.parseInt(usertype)) ;
                     bizAssetChangeRecord.setAccountNo(account_no) ;
-                    bizAssetChangeRecord.setAccountType( Integer.parseInt(account_type_code)) ;
+                    bizAssetChangeRecord.setAccountType( Integer.parseInt(accounttypecode)) ;
                     bizAssetChangeRecord.setIdentityNo(identity_no) ;
 
                     bizAssetChangeRecord.setChangeType(1) ; //变更类型 1-增加 2-减少 4-冻结 5-解冻
@@ -207,28 +257,18 @@ public class AppLoginPayExchangeController {
 
                 }
 
-            }else{
-                result.error("not allow to transfer out");
+            }catch (Exception e){
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                return result ;
+                result.error("error");
+                return  result ;
             }
-
-        }catch (Exception e){
-            e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            result.error("操作失败 Operation failed");
-            return result ;
-        }
-
-        result.setResult(obj);
-        result.success("换汇冻结 frozen when changing currency ");
-        result.setCode(CommonConstant.SC_OK_200);
+        result.success("frozen success");
         return result ;
     }
 
 
     /**
-     *  换汇解冻
+     *  送汇 上门 解冻
      * @param params
      * @return
      */
@@ -239,45 +279,26 @@ public class AppLoginPayExchangeController {
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
 
+        String biz_sendhome_no = params.get("bizsendhomeno") +"" ; // 系统订单号 对应biz_sendhome_no
+        String trade_no = params.get("tradeno")+"" ;
+        String userno = params.get("userno")+"" ; //用户id
+        String usertype = params.get("usertype")+"" ; //用户类型 0-默认 1-个人 2-企业',
+        String accounttypecode = params.get("accounttypecode")+"" ;
+        String moneyamount = params.get("moneyamount") +""; // 获取
+
+        String status = params.get("status") +"" ;//状态：状态：1-冻结成功 2-送汇中 100-送汇成功 99-送汇失败
         try{
-            String order_id = params.get("order_id") +"" ; // 系统订单号 对应biz_excharge_no
-
-            String status = params.get("status") +"" ;//状态：1-冻结成功 2-换汇中 100-换汇成功 99-换汇失败
-
-            String userno = params.get("userno")+"" ; //用户id
-            String usertype = params.get("usertype")+"" ; //用户类型 0-默认 1-个人 2-企业',
-            String account_type_code_source = params.get("account_type_code_source")+"" ; //账户类型
-            String account_type_code_target = params.get("account_type_code_target")+"" ; // 换汇目标账户
-            String moneyamount = params.get("moneyamount") +""; // 获取
-            long moneyamount_long = Long.parseLong(moneyamount) ;
-            Map map = new HashMap() ;
-            map.put("userno" , userno) ;
-            map.put("usertype" , usertype) ;
-            map.put("accounttypecode" , account_type_code_source) ;
-            Map payaccount =  iPayAccountService.getPayAccountByUserNo(map) ;
-
-            String is_allow_transfer_out = payaccount.get("is_allow_transfer_out")+"" ;
-            if(is_allow_transfer_out.equals("0")){ // 是否允许转汇
-
-                // 换汇信息
-                Map mapexcharge = new HashMap() ;
-                mapexcharge.put("biz_excharge_no" , order_id) ;
-                // 获取换汇信息
-                Map mapexchargeDb = iBizExchangeOrderService.getExchargeOrderByExchargeNo(mapexcharge) ;
-                Integer targetmoney = Integer.parseInt( mapexchargeDb.get("target_currency") +"");
+                long moneyamount_long = Long.parseLong(moneyamount) ;
+                Map map = new HashMap() ;
+                map.put("userno" , userno) ;
+                map.put("usertype" , usertype) ;
+                map.put("accounttypecode" , accounttypecode) ;
+                Map payaccount =  iPayAccountService.getPayAccountByUserNo(map) ;
 
                 if(status == null || status.equals("")){
                     result.error("请传入解冻状态");
                     return result ;
-                }else if(status.equals("100")){ //100-换汇成功
-                    // 换汇成功 解冻
-                    String id = mapexchargeDb.get("id")+"" ;
-                    String trade_no = mapexchargeDb.get("trade_no")+"" ; //业务交易流水号(各业务保持唯一)
-
-                    BizExchangeOrder bizRechargeOrder = new BizExchangeOrder() ;
-                    bizRechargeOrder.setId(Integer.parseInt(id)) ;
-                    bizRechargeOrder.setStatus(Integer.parseInt(status)) ;
-                    iBizExchangeOrderService.updateById(bizRechargeOrder) ;
+                }else if(status.equals("100")){ //100-送汇成功
 
                     Map freezeMap = new HashMap() ;
                     freezeMap.put("trade_no" ,trade_no) ;
@@ -294,10 +315,12 @@ public class AppLoginPayExchangeController {
                         result.error("已经解冻，不能重复解冻");
                         return result ;
                     }
+
                     /**解冻  解冻详情**/
                     BizFreezeOrder bizFrezzeOrder = new BizFreezeOrder() ;
                     bizFrezzeOrder.setId(Integer.parseInt(freezeid)) ;
                     bizFrezzeOrder.setStatus(2) ;
+                    bizFrezzeOrder.setUnfreezeTime(new Date()) ;
                     iBizFreezeOrderService.updateById(bizFrezzeOrder) ;
 
                     Map cashierMap = new HashMap() ;
@@ -313,13 +336,11 @@ public class AppLoginPayExchangeController {
                     iCashierFreezeOrderDetailService.updateById(cashierFreezeOrderDetail) ;
                     /**解冻  解冻详情**/
 
-                    // 操作账户金额
                     String account_no = payaccount.get("account_no") +"";
                     String identity_no = payaccount.get("identity_no")+"" ;
-                    String identity_type = payaccount.get("identity_type")+"" ;
                     Map mapAsset = new HashMap() ;
                     mapAsset.put("account_no" , account_no) ;
-                    mapAsset.put("account_type_code" , account_type_code_source) ;
+                    mapAsset.put("account_type_code" , accounttypecode) ;
                     Map<String,Object> mapAssetDb = iPayAccountService.getPayAccountAssetByUserNo(mapAsset) ;
                     long frozen_amount_before = Long.parseLong(mapAssetDb.get("frozen_amount")+"")  ; // 冻结金额
 
@@ -330,23 +351,23 @@ public class AppLoginPayExchangeController {
                     }else{
                         long available_amount_before = Long.parseLong(mapAssetDb.get("available_amount")+"")  ; // 可用金额
                         // 设置 冻结金额
-//                    long frozen_amount_before =  Long.parseLong(mapAssetDb.get("frozen_amount")+"") ;// 解冻金额
+        //                    long frozen_amount_before =  Long.parseLong(mapAssetDb.get("frozen_amount")+"") ;// 解冻金额
                         long available_amount = available_amount_before;
                         long frozen_amount = frozen_amount_before- moneyamount_long ;
 
                         Map assetRecordMap = new HashMap() ;
-                        assetRecordMap.put("pay_no",order_id) ;
+                        assetRecordMap.put("pay_no",biz_sendhome_no) ;
                         Map assetRecordMapdb =iBizAssetChangeRecordService.getAssetChangeRecordByRechargeNo(assetRecordMap) ;
 
                         String bill_no = assetRecordMapdb.get("bill_no")+"" ;
                         BizAssetChangeRecord bizAssetChangeRecord = new BizAssetChangeRecord() ;//账户资金变更聚合流水表
 
-                        bizAssetChangeRecord.setPayNo(order_id) ;
+                        bizAssetChangeRecord.setPayNo(biz_sendhome_no) ;
                         bizAssetChangeRecord.setBillNo(bill_no) ;
                         bizAssetChangeRecord.setUserNo(userno) ;
                         bizAssetChangeRecord.setUserType(Integer.parseInt(usertype)) ;
                         bizAssetChangeRecord.setAccountNo(account_no) ;
-                        bizAssetChangeRecord.setAccountType( Integer.parseInt(account_type_code_source)) ;
+                        bizAssetChangeRecord.setAccountType( Integer.parseInt(accounttypecode)) ;
                         bizAssetChangeRecord.setIdentityNo(identity_no) ;
 
                         bizAssetChangeRecord.setChangeType(5) ; //变更类型 1-增加 2-减少 4-冻结 5-解冻
@@ -359,13 +380,13 @@ public class AppLoginPayExchangeController {
                         bizAssetChangeRecord.setChangeTime(new Date()) ;//变更时间
                         bizAssetChangeRecord.setBillTime(new Date()) ;
                         bizAssetChangeRecord.setBillType(5) ;//记账类型 1-资产增加 2-转账(废弃) 3-资产减少 4-冻结 5-解冻 6-冻结资产减少
-                        bizAssetChangeRecord.setPayBizType("1") ; //业务类型编码 1 充值 2 提现 3 转账这种类似的举
+                        bizAssetChangeRecord.setPayBizType("5") ; //业务类型编码 1 充值 2 提现 3 转账 4 换汇  5 送汇 这种类似的举
                         JSONObject objRemark = new JSONObject();
-                        objRemark.put("pay_no",order_id) ;
+                        objRemark.put("pay_no",biz_sendhome_no) ;
                         objRemark.put("user_no" ,userno) ;
                         objRemark.put("changetype" , 5) ;
-                        objRemark.put("msg","换汇解冻") ;
-                        bizAssetChangeRecord.setRemark("换汇解冻") ;// 备注
+                        objRemark.put("msg","送汇解冻") ;
+                        bizAssetChangeRecord.setRemark("送汇解冻") ;// 备注
                         bizAssetChangeRecord.setBillJson(objRemark.toString()) ;// 记账json
 
                         iBizAssetChangeRecordService.save(bizAssetChangeRecord) ;
@@ -375,35 +396,9 @@ public class AppLoginPayExchangeController {
                         payAccountAsset.setFrozenAmount(frozen_amount) ; // 冻结金额
                         payAccountAsset.setAvailableAmount(available_amount) ; // 设置可用金额
                         iPayAccountAssetService.updateById(payAccountAsset) ;
-
-                        Map mapAssetTarget = new HashMap() ;
-                        mapAssetTarget.put("account_no" , account_no) ;
-                        mapAssetTarget.put("account_type_code" , account_type_code_target) ;
-                        Map<String,Object> mapAssetTargetDb = iPayAccountService.getPayAccountAssetByUserNo(mapAssetTarget) ;
-
-                        long frozen_amount_target_before = Long.parseLong(mapAssetDb.get("frozen_amount")+"")  ; // 冻结金额
-                        long available_amount_target_before = Long.parseLong(mapAssetDb.get("available_amount")+"")  ;
-                        long available_amount_target = available_amount_target_before + targetmoney;
-                        long frozen_amount_target = frozen_amount_target_before ;
-
-                        PayAccountAsset payAccountAssetTarget = new PayAccountAsset() ;
-                        payAccountAssetTarget.setId(Integer.parseInt(mapAssetTargetDb.get("id")+"")) ;
-                        payAccountAssetTarget.setFrozenAmount(frozen_amount_target) ; // 冻结金额
-                        payAccountAssetTarget.setAvailableAmount(available_amount_target) ; // 设置可用金额
-                        iPayAccountAssetService.updateById(payAccountAsset) ; // 设置目标冻结
-
                     }
 
-                }else if(status.equals("99")){ //99-换汇失败
-                    // 换汇失败 解冻
-                    String id = mapexchargeDb.get("id")+"" ;
-                    String trade_no = mapexchargeDb.get("trade_no")+"" ; //业务交易流水号(各业务保持唯一)
-
-                    BizExchangeOrder bizRechargeOrder = new BizExchangeOrder() ;
-                    bizRechargeOrder.setId(Integer.parseInt(id)) ;
-                    bizRechargeOrder.setStatus(Integer.parseInt(status)) ;
-                    iBizExchangeOrderService.updateById(bizRechargeOrder) ;
-
+                }else if(status.equals("99")){ //99-送汇失败
                     Map freezeMap = new HashMap() ;
                     freezeMap.put("trade_no" ,trade_no) ;
                     Map freezeMapdb = iBizFreezeOrderService.getFreezeOrderByTradeNo(freezeMap) ;
@@ -419,10 +414,12 @@ public class AppLoginPayExchangeController {
                         result.error("已经解冻，不能重复解冻");
                         return result ;
                     }
+
                     /**解冻  解冻详情**/
                     BizFreezeOrder bizFrezzeOrder = new BizFreezeOrder() ;
                     bizFrezzeOrder.setId(Integer.parseInt(freezeid)) ;
                     bizFrezzeOrder.setStatus(2) ;
+                    bizFrezzeOrder.setUnfreezeTime(new Date()) ;
                     iBizFreezeOrderService.updateById(bizFrezzeOrder) ;
 
                     Map cashierMap = new HashMap() ;
@@ -438,13 +435,11 @@ public class AppLoginPayExchangeController {
                     iCashierFreezeOrderDetailService.updateById(cashierFreezeOrderDetail) ;
                     /**解冻  解冻详情**/
 
-                    // 操作账户金额
                     String account_no = payaccount.get("account_no") +"";
                     String identity_no = payaccount.get("identity_no")+"" ;
-                    String identity_type = payaccount.get("identity_type")+"" ;
                     Map mapAsset = new HashMap() ;
                     mapAsset.put("account_no" , account_no) ;
-                    mapAsset.put("account_type_code" , account_type_code_source) ;
+                    mapAsset.put("account_type_code" , accounttypecode) ;
                     Map<String,Object> mapAssetDb = iPayAccountService.getPayAccountAssetByUserNo(mapAsset) ;
                     long frozen_amount_before = Long.parseLong(mapAssetDb.get("frozen_amount")+"")  ; // 冻结金额
 
@@ -455,23 +450,23 @@ public class AppLoginPayExchangeController {
                     }else{
                         long available_amount_before = Long.parseLong(mapAssetDb.get("available_amount")+"")  ; // 可用金额
                         // 设置 冻结金额
-//                    long frozen_amount_before =  Long.parseLong(mapAssetDb.get("frozen_amount")+"") ;// 解冻金额
+        //                    long frozen_amount_before =  Long.parseLong(mapAssetDb.get("frozen_amount")+"") ;// 解冻金额
                         long available_amount = available_amount_before + moneyamount_long;
                         long frozen_amount = frozen_amount_before- moneyamount_long ;
 
                         Map assetRecordMap = new HashMap() ;
-                        assetRecordMap.put("pay_no",order_id) ;
+                        assetRecordMap.put("pay_no",biz_sendhome_no) ;
                         Map assetRecordMapdb =iBizAssetChangeRecordService.getAssetChangeRecordByRechargeNo(assetRecordMap) ;
 
                         String bill_no = assetRecordMapdb.get("bill_no")+"" ;
                         BizAssetChangeRecord bizAssetChangeRecord = new BizAssetChangeRecord() ;//账户资金变更聚合流水表
 
-                        bizAssetChangeRecord.setPayNo(order_id) ;
+                        bizAssetChangeRecord.setPayNo(biz_sendhome_no) ;
                         bizAssetChangeRecord.setBillNo(bill_no) ;
                         bizAssetChangeRecord.setUserNo(userno) ;
                         bizAssetChangeRecord.setUserType(Integer.parseInt(usertype)) ;
                         bizAssetChangeRecord.setAccountNo(account_no) ;
-                        bizAssetChangeRecord.setAccountType( Integer.parseInt(account_type_code_source)) ;
+                        bizAssetChangeRecord.setAccountType( Integer.parseInt(accounttypecode)) ;
                         bizAssetChangeRecord.setIdentityNo(identity_no) ;
 
                         bizAssetChangeRecord.setChangeType(5) ; //变更类型 1-增加 2-减少 4-冻结 5-解冻
@@ -484,13 +479,13 @@ public class AppLoginPayExchangeController {
                         bizAssetChangeRecord.setChangeTime(new Date()) ;//变更时间
                         bizAssetChangeRecord.setBillTime(new Date()) ;
                         bizAssetChangeRecord.setBillType(5) ;//记账类型 1-资产增加 2-转账(废弃) 3-资产减少 4-冻结 5-解冻 6-冻结资产减少
-                        bizAssetChangeRecord.setPayBizType("1") ; //业务类型编码 1 充值 2 提现 3 转账这种类似的举
+                        bizAssetChangeRecord.setPayBizType("5") ; //业务类型编码 1 充值 2 提现 3 转账 4 换汇  5 送汇 这种类似的举
                         JSONObject objRemark = new JSONObject();
-                        objRemark.put("pay_no",order_id) ;
+                        objRemark.put("pay_no",biz_sendhome_no) ;
                         objRemark.put("user_no" ,userno) ;
                         objRemark.put("changetype" , 5) ;
-                        objRemark.put("msg","换汇解冻") ;
-                        bizAssetChangeRecord.setRemark("换汇解冻") ;// 备注
+                        objRemark.put("msg","送汇解冻") ;
+                        bizAssetChangeRecord.setRemark("送汇解冻") ;// 备注
                         bizAssetChangeRecord.setBillJson(objRemark.toString()) ;// 记账json
 
                         iBizAssetChangeRecordService.save(bizAssetChangeRecord) ;
@@ -501,35 +496,18 @@ public class AppLoginPayExchangeController {
                         payAccountAsset.setAvailableAmount(available_amount) ; // 设置可用金额
                         iPayAccountAssetService.updateById(payAccountAsset) ;
 
-
                     }
-
-
                 }else{
                     result.error("请传入正确解冻状态");
                     return result ;
                 }
-
-
-
-
-            }else{
-                result.error("not allow to transfer out"); // 不允许 转出  同样就没有解冻了。
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                return result ;
-            }
-
         }catch (Exception e){
-            e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            result.error("操作失败 Operation failed");
-            return result ;
+            result.error("error");
+            return  result ;
         }
-
-        result.setResult(obj);
-        result.success("换汇冻结 frozen when changing currency");
-        result.setCode(CommonConstant.SC_OK_200);
-        return result ;
+        result.success("unfrozen success");
+        return  result ;
     }
 
 }
