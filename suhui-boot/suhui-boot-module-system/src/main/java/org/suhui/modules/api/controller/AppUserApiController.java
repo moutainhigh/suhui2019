@@ -194,15 +194,21 @@ public class AppUserApiController {
         map1.put("currencycode","1") ;
         list.add(map1) ;
         Map map2 = new HashMap() ;
-        map2.put("accounttypecode" ,"0201") ;//人民币账户
-        map2.put("accountname" ,"USD") ;//人民币账户
+        map2.put("accounttypecode" ,"0201") ;//美元账户
+        map2.put("accountname" ,"USD") ;//美元账户
         map2.put("currencycode","2") ;
         list.add(map2) ;
         Map map3 = new HashMap() ;
-        map3.put("accounttypecode" ,"0301") ;//人民币账户
-        map3.put("accountname" ,"PHP") ;//人民币账户
+        map3.put("accounttypecode" ,"0301") ;//非礼宾账户
+        map3.put("accountname" ,"PHP") ;//非礼宾账户
         map3.put("currencycode" ,"3") ;
         list.add(map3) ;
+
+        Map map4 = new HashMap() ;
+        map4.put("accounttypecode" ,"0401") ;//韩元账户
+        map4.put("accountname" ,"KRW") ;//韩元币账户
+        map4.put("currencycode" ,"4") ;
+        list.add(map4) ;
         try{
             for(int i = 0 ; i < list.size() ; i++){
 

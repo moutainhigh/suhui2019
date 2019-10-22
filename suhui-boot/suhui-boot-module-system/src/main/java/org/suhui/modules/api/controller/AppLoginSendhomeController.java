@@ -280,7 +280,7 @@ public class AppLoginSendhomeController {
         JSONObject obj = new JSONObject();
 
         String biz_sendhome_no = params.get("bizsendhomeno") +"" ; // 系统订单号 对应biz_sendhome_no
-        String trade_no = params.get("tradeno")+"" ;
+//        String trade_no = params.get("tradeno")+"" ;
         String userno = params.get("userno")+"" ; //用户id
         String usertype = params.get("usertype")+"" ; //用户类型 0-默认 1-个人 2-企业',
         String accounttypecode = params.get("accounttypecode")+"" ;
@@ -294,6 +294,12 @@ public class AppLoginSendhomeController {
                 map.put("usertype" , usertype) ;
                 map.put("accounttypecode" , accounttypecode) ;
                 Map payaccount =  iPayAccountService.getPayAccountByUserNo(map) ;
+
+                Map assetRecordMapBef = new HashMap() ;
+                assetRecordMapBef.put("pay_no",biz_sendhome_no) ;
+                Map assetRecordMapdbBef =iBizAssetChangeRecordService.getAssetChangeRecordByRechargeNo(assetRecordMapBef) ;
+
+                String trade_no = assetRecordMapdbBef.get("bill_no")+"" ;
 
                 if(status == null || status.equals("")){
                     result.error("请传入解冻状态");
