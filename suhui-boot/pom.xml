@@ -33,6 +33,14 @@
 	
 	<repositories>
 		<repository>
+            <id>mvn</id>
+            <name>maven2 Repository</name>
+            <url>http://repo.maven.apache.org/maven2/</url>
+            <snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+        </repository>	
+		<repository>
             <id>aliyun</id>
             <name>aliyun Repository</name>
             <url>http://maven.aliyun.com/nexus/content/groups/public</url>
