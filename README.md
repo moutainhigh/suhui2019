@@ -32,6 +32,21 @@ https://documenter.getpostman.com/view/1895285/SVmySxzg?version=latest
 #### Software Architecture
 Software architecture description
 
+## start main module  
+
+```
+cd suhui-boot/suhui-boot-module-system
+mvn clean install
+java -jar target/suhui-boot-module-system-2.0.1.jar
+
+通过 http://localhost:3000 访问项目即可进入系统，默认账号密码： admin/123456
+```
+
+## JeecgBoot 开发文档   
+```
+http://doc.jeecg.com/1273752
+```
+
 #### Installation
 
 1. xxxx
