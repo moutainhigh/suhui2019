@@ -42,6 +42,12 @@ java -jar target/suhui-boot-module-system-2.0.1.jar
 通过 http://localhost:3000 访问项目即可进入系统，默认账号密码： admin/123456
 ```
 
+## 目前的管理界面
+```
+http://3.93.15.101:3333   用户名密码：suhuiadmin   suhuiadmin
+
+```
+
 ## JeecgBoot 开发文档   
 ```
 http://doc.jeecg.com/1273752
