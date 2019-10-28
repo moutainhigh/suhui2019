@@ -126,7 +126,7 @@ public class ApiLoginTransferAccountController {
             y = y+100 ;
             //由支付系统生成的唯一流水号  通过日期和水机数生成
             String biz_transfer_no =  "T"+y+ sdf.format(new Date())+'0'+x;
-
+            obj.put("biz_transfer_no" ,biz_transfer_no) ;
             if(is_allow_transfer_in.equals("0")&&is_allow_transfer_out.equals("0")){
             // 转出账户
                 String account_no_from = payaccount_from.get("account_no") +"";
