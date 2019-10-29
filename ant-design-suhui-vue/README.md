@@ -38,6 +38,7 @@ cd  jeecg-boot/ant-design-jeecg-vue
 
 - 安装依赖
 ```
+yarn global add node-pre-gyp
 yarn install
 ```
 

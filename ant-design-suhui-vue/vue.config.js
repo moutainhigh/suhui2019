@@ -63,7 +63,7 @@ module.exports = {
         }
       },*/
       '/': {
-        target: 'http://192.168.1.102:3333', //请求本地 需要jeecg-boot后台项目
+        target: 'http://3.93.15.101:3333', //请求本地 需要jeecg-boot后台项目
         ws: false,
         changeOrigin: true
       },
