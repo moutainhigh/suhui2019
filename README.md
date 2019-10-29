@@ -39,7 +39,16 @@ Software architecture description
 wget "http://mirrors.jenkins.io/war-stable/latest/jenkins.war" 
 
 # start Jenkins  
-java -jar jenkins.war --httpPort=11000
+nohup `java -jar jenkins.war --httpPort=11000` &
+
+nohup java -jar jenkins.war --httpPort=11000 > jenkins.log &
+
+`java -jar jenkins.war --httpPort=11000 > jenkins.log` & disown
+
+your_command & disown
+
+nohup java -jar jenkins.war --httpPort=11000 &
+
 userName and Pass:suhuiadmin/suhuiadmin
 
 
