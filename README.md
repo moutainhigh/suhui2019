@@ -51,7 +51,9 @@ nohup java -jar jenkins.war --httpPort=11000 &
 
 userName and Pass:suhuiadmin/suhuiadmin
 
+http://3.93.15.101:11000
 
+# nohup java -jar -Xms64m -Xmx512m /root/mailCheck_fat.jar > /root/mail.log &
 
 ```
 
@@ -64,6 +66,9 @@ java -jar target/suhui-boot-module-system-2.0.1.jar
 ### AWS上的命令
 java -jar -Xms64m -Xmx512m /home/ubuntu/suhui-boot-module-system-2.0.1.jar
 /usr/local/jdk1.8.0_211/jre/bin/java -Djava.util.logging.config.file=/home/ubuntu/tomcat/conf/logging.properties -Dj
+
+仅仅是这一个命令
+# nohup java -jar -Xms64m -Xmx512m /root/mailCheck_fat.jar > /root/mail.log &
 
 
 通过 http://localhost:3000 访问项目即可进入系统，默认账号密码： admin/123456
