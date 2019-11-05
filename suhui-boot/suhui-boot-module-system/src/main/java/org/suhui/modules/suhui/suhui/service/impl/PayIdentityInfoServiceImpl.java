@@ -33,4 +33,7 @@ public class PayIdentityInfoServiceImpl extends ServiceImpl<PayIdentityInfoMappe
     public Map<String,String> getIdentityInfoByUserNo(Map<String,String> map ) {
         return payIdentityInfoMapper.getIdentityInfoByUserNo(map);
     }
+
+
+
 }

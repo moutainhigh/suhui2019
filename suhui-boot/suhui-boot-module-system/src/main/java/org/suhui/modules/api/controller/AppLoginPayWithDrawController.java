@@ -241,6 +241,7 @@ public class AppLoginPayWithDrawController {
                 urlParam = urlParam + signature;
 
                 obj.put("url" , urlParam) ;
+                obj.put("order_id" ,biz_withdraw_no) ;
 
 
             }else{

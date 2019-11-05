@@ -18,4 +18,7 @@ public interface PayIdentityInfoMapper extends BaseMapper<PayIdentityInfo> {
     public Map<String,String> getIdentityInfoByIdentityNo(Map<String,String> map);
 
     public Map<String,String> getIdentityInfoByUserNo(Map<String,String> map);
+
+
+
 }

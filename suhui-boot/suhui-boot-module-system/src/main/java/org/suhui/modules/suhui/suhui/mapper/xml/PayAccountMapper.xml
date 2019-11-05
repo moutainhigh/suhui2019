@@ -83,7 +83,7 @@
         FROM
         pay_account_asset paa
         WHERE
-        paa.account_no = #{account_no}
+        paa.identity_no = #{identity_no}
 
         <if test="account_type_code!=null and account_type_code!=''">
             AND paa.account_type_code = #{account_type_code}

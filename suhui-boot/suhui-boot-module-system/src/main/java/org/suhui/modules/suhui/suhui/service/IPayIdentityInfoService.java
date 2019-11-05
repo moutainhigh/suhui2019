@@ -28,4 +28,7 @@ public interface IPayIdentityInfoService extends IService<PayIdentityInfo> {
      */
     public Map<String,String> getIdentityInfoByUserNo(Map<String,String> map ) ;
 
+
+
+
 }
