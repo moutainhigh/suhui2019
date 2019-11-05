@@ -17,5 +17,5 @@ public interface PayCurrencyRateMapper extends BaseMapper<PayCurrencyRate> {
 
     public List<Map<String,String>> getCurrencyRateTypeList();
 
-    public Map<String,String> getCurrencyRateValue(Map map) ;
+    public Map<String,Object> getCurrencyRateValue(Map map) ;
 }

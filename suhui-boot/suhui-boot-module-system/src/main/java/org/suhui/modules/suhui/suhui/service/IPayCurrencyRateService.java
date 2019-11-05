@@ -16,5 +16,5 @@ public interface IPayCurrencyRateService extends IService<PayCurrencyRate> {
 
     public List<Map<String,String>> getCurrencyRateTypeList( ) ;
 
-    Map<String,String> getCurrencyRateValue(Map map) ;
+    Map<String,Object> getCurrencyRateValue(Map map) ;
 }
