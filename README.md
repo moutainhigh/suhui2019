@@ -55,7 +55,52 @@ http://3.93.15.101:11000
 
 # nohup java -jar -Xms64m -Xmx512m /root/mailCheck_fat.jar > /root/mail.log &
 
+
+# set git and jenkins using ssh public and private keys
+https://sharadchhetri.com/2018/12/16/how-to-setup-jenkins-credentials-for-git-repo-access/
+
+# 
+https://www.haowenbo.com/articles/2019/07/24/1563964257491.html
+
 ```
+
+
+draft
+```sh
+echo "BUILD_NUMBER" :: $BUILD_NUMBER
+echo "BUILD_ID" :: $BUILD_ID
+echo "BUILD_DISPLAY_NAME" :: $BUILD_DISPLAY_NAME
+echo "JOB_NAME" :: $JOB_NAME
+echo "JOB_BASE_NAME" :: $JOB_BASE_NAME
+echo "BUILD_TAG" :: $BUILD_TAG
+echo "EXECUTOR_NUMBER" :: $EXECUTOR_NUMBER
+echo "NODE_NAME" :: $NODE_NAME
+echo "NODE_LABELS" :: $NODE_LABELS
+echo "WORKSPACE" :: $WORKSPACE
+echo "JENKINS_HOME" :: $JENKINS_HOME
+echo "JENKINS_URL" :: $JENKINS_URL
+echo "BUILD_URL" ::$BUILD_URL
+echo "JOB_URL" :: $JOB_URL
+pwd
+ls -al
+cd suhui-boot/suhui-boot-module-system
+mvn clean install
+
+process_id=$(ps -ef | grep suhui-boot-module-system-2.0.1.jar | grep -v "grep" | awk '{print $2}')
+# 如果该项目正在运行，就杀死项目进程
+if [[ ! -z "$process_id" ]]
+then 
+	echo "stop suhui-boot-module-system-2.0.1.jar"
+    kill -9 $process_id
+else 
+	echo "suhui-boot-module-system-2.0.1.jar not started yet; no need to kill it"
+fi
+
+nohup java -jar -Xms64m -Xmx512m  target/suhui-boot-module-system-2.0.1.jar &
+
+
+```
+
 
 ## start backend   
 
@@ -64,7 +109,8 @@ cd suhui-boot/suhui-boot-module-system
 mvn clean install
 java -jar target/suhui-boot-module-system-2.0.1.jar
 ### AWS上的命令
-java -jar -Xms64m -Xmx512m /home/ubuntu/suhui-boot-module-system-2.0.1.jar
+java -jar -Xms64m -Xmx512m target/suhui-boot-module-system-2.0.1.jar
+
 /usr/local/jdk1.8.0_211/jre/bin/java -Djava.util.logging.config.file=/home/ubuntu/tomcat/conf/logging.properties -Dj
 
 仅仅是这一个命令
@@ -72,6 +118,7 @@ java -jar -Xms64m -Xmx512m /home/ubuntu/suhui-boot-module-system-2.0.1.jar
 
 
 通过 http://localhost:3000 访问项目即可进入系统，默认账号密码： admin/123456
+
 ```
 
 #### 目前的管理界面
