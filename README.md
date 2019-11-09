@@ -105,7 +105,8 @@ else
 	echo "suhui-boot-module-system-2.0.1.jar not started yet; no need to kill it"
 fi
 
-nohup java -jar -Xms64m -Xmx512m /home/ubuntu/suhui2019/suhui-boot/suhui-boot-module-system/target/suhui-boot-module-system-2.0.1.jar >/home/ubuntu/suhui.log &
+cp /home/ubuntu/suhui2019/suhui-boot/suhui-boot-module-system/target/suhui-boot-module-system-2.0.1.jar /home/ubuntu/
+sudo nohup java -jar -Xms64m -Xmx512m /home/ubuntu/suhui2019/suhui-boot/suhui-boot-module-system/target/suhui-boot-module-system-2.0.1.jar >/home/ubuntu/suhui.log &
 
 
 
