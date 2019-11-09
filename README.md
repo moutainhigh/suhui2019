@@ -86,11 +86,13 @@ pwd
 cd /home/ubuntu/suhui2019
 git checkout master
 git pull
-cd suhui-boot/suhui-boot-module-system
+
+cd /home/ubuntu/suhui2019/suhui-boot/suhui-boot-module-system
+pwd
+export JAVA_HOME="/usr/local/jdk1.8.0_211"
+sudo JAVA_HOME=/usr/local/jdk1.8.0_211 /home/ubuntu/apache-maven-3.6.2/bin/mvn clean install
+
 ls -al
-
-mvn clean install
-
 process_id=$(ps -ef | grep suhui-boot-module-system-2.0.1.jar | grep -v "grep" | awk '{print $2}')
 # 如果该项目正在运行，就杀死项目进程
 if [[ ! -z "$process_id" ]]
@@ -106,6 +108,10 @@ nohup java -jar -Xms64m -Xmx512m /home/ubuntu/suhui2019/suhui-boot/suhui-boot-mo
 
 ssh -i pem/suhui.pem ubuntu@3.93.15.101
 
+# 第一次运行前要在这个目录下（/home/ubuntu/suhui2019/suhui-boot/）执行 `mvn clean install`以生成项目必要的jar包 
+# org.jeecgframework.boot:suhui-boot-module-system:jar:2.0.1
+
+# wget http://mirror.rise.ph/apache/maven/maven-3/3.6.2/binaries/apache-maven-3.6.2-bin.tar.gz
 
 ```
 
