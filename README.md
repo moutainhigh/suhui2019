@@ -60,6 +60,9 @@ http://3.93.15.101:11000/job/suhuibackend/configure
 # set git and jenkins using ssh public and private keys
 https://sharadchhetri.com/2018/12/16/how-to-setup-jenkins-credentials-for-git-repo-access/
 
+# How to Integrate Your GitHub Repository to Your Jenkins Project
+https://www.blazemeter.com/blog/how-to-integrate-your-github-repository-to-your-jenkins-project/
+
 # 
 https://www.haowenbo.com/articles/2019/07/24/1563964257491.html
 
