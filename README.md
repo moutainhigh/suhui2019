@@ -89,16 +89,15 @@ git pull
 
 cd /home/ubuntu/suhui2019/suhui-boot/suhui-boot-module-system
 pwd
-export JAVA_HOME="/usr/local/jdk1.8.0_211"
-sudo JAVA_HOME=/usr/local/jdk1.8.0_211 /home/ubuntu/apache-maven-3.6.2/bin/mvn clean install
+sudo JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 /home/ubuntu/apache-maven-3.6.2/bin/mvn clean install
 
 ls -al
 process_id=$(ps -ef | grep suhui-boot-module-system-2.0.1.jar | grep -v "grep" | awk '{print $2}')
 # 如果该项目正在运行，就杀死项目进程
-if [[ ! -z "$process_id" ]]
+if [ -n "$process_id" ]
 then 
-	echo "stop suhui-boot-module-system-2.0.1.jar"
-    kill -9 $process_id
+	echo "stop old suhui-boot-module-system-2.0.1.jar"
+    sudo kill -9 $process_id
 else 
 	echo "suhui-boot-module-system-2.0.1.jar not started yet; no need to kill it"
 fi
@@ -106,12 +105,18 @@ fi
 nohup java -jar -Xms64m -Xmx512m /home/ubuntu/suhui2019/suhui-boot/suhui-boot-module-system/target/suhui-boot-module-system-2.0.1.jar >/home/ubuntu/suhui.log &
 
 
-ssh -i pem/suhui.pem ubuntu@3.93.15.101
 
 # 第一次运行前要在这个目录下（/home/ubuntu/suhui2019/suhui-boot/）执行 `mvn clean install`以生成项目必要的jar包 
 # org.jeecgframework.boot:suhui-boot-module-system:jar:2.0.1
 
 # wget http://mirror.rise.ph/apache/maven/maven-3/3.6.2/binaries/apache-maven-3.6.2-bin.tar.gz
+
+# 需要在Jenkins中配置好JDK的位置（http://3.93.15.101:11000/configureTools/）。否则会容易出现这个错误：
+# No compiler is provided in this environment. Perhaps you are running on a JRE rather than a JDK?
+# https://stackoverflow.com/questions/36622142/maven-builds-with-wrong-jdk-on-jenkins/36623758
+# 有时候，还要移除openJDK
+# sudo apt-get install openjdk-8-jdk    # 不要安装错误，千万不要安jre版本
+
 
 ```
 
