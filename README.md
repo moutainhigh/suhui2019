@@ -52,6 +52,7 @@ nohup java -jar jenkins.war --httpPort=11000 &
 userName and Pass:suhuiadmin/suhuiadmin
 
 http://3.93.15.101:11000
+http://3.93.15.101:11000/job/suhuibackend/configure
 
 # nohup java -jar -Xms64m -Xmx512m /root/mailCheck_fat.jar > /root/mail.log &
 
@@ -82,8 +83,12 @@ echo "JENKINS_URL" :: $JENKINS_URL
 echo "BUILD_URL" ::$BUILD_URL
 echo "JOB_URL" :: $JOB_URL
 pwd
-ls -al
+cd /home/ubuntu/suhui2019
+git checkout master
+git pull
 cd suhui-boot/suhui-boot-module-system
+ls -al
+
 mvn clean install
 
 process_id=$(ps -ef | grep suhui-boot-module-system-2.0.1.jar | grep -v "grep" | awk '{print $2}')
@@ -96,7 +101,10 @@ else
 	echo "suhui-boot-module-system-2.0.1.jar not started yet; no need to kill it"
 fi
 
-nohup java -jar -Xms64m -Xmx512m  target/suhui-boot-module-system-2.0.1.jar &
+nohup java -jar -Xms64m -Xmx512m /home/ubuntu/suhui2019/suhui-boot/suhui-boot-module-system/target/suhui-boot-module-system-2.0.1.jar >/home/ubuntu/suhui.log &
+
+
+ssh -i pem/suhui.pem ubuntu@3.93.15.101
 
 
 ```
