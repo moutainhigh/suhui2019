@@ -54,4 +54,3 @@ Software architecture description
 # test in master
 # test in master
 # test in master
-# test in master
