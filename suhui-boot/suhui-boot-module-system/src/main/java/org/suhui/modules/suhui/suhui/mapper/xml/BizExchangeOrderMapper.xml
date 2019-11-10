@@ -16,7 +16,7 @@
             beo.rate_code,
             beo.exchange_time
         FROM
-          biz_excharge_order beo
+          biz_exchange_order beo
         WHERE 1 = 1
         <if test="biz_exchange_no!=null and biz_exchange_no!=''">
             AND beo.biz_exchange_no = #{biz_exchange_no}

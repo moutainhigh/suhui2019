@@ -255,6 +255,9 @@ public class AppLoginSendhomeController {
 
                     iBizAssetChangeRecordService.save(bizAssetChangeRecord) ;
 
+                    JSONObject obj1 = new JSONObject();
+                    obj1.put("tradeno",trade_no) ;
+                    result.setResult(obj1);
                 }
 
             }catch (Exception e){
@@ -263,6 +266,7 @@ public class AppLoginSendhomeController {
                 return  result ;
             }
         result.success("frozen success");
+
         return result ;
     }
 
@@ -280,7 +284,7 @@ public class AppLoginSendhomeController {
         JSONObject obj = new JSONObject();
 
         String biz_sendhome_no = params.get("bizsendhomeno") +"" ; // 系统订单号 对应biz_sendhome_no
-//        String trade_no = params.get("tradeno")+"" ;
+        String trade_no = params.get("tradeno")+"" ;
         String userno = params.get("userno")+"" ; //用户id
         String usertype = params.get("usertype")+"" ; //用户类型 0-默认 1-个人 2-企业',
         String accounttypecode = params.get("accounttypecode")+"" ;
@@ -295,11 +299,11 @@ public class AppLoginSendhomeController {
                 map.put("accounttypecode" , accounttypecode) ;
                 Map payaccount =  iPayAccountService.getPayAccountByUserNo(map) ;
 
-                Map assetRecordMapBef = new HashMap() ;
-                assetRecordMapBef.put("pay_no",biz_sendhome_no) ;
-                Map assetRecordMapdbBef =iBizAssetChangeRecordService.getAssetChangeRecordByRechargeNo(assetRecordMapBef) ;
+//                Map assetRecordMapBef = new HashMap() ;
+//                assetRecordMapBef.put("pay_no",biz_sendhome_no) ;
+//                Map assetRecordMapdbBef =iBizAssetChangeRecordService.getAssetChangeRecordByRechargeNo(assetRecordMapBef) ;
 
-                String trade_no = assetRecordMapdbBef.get("bill_no")+"" ;
+//                String trade_no = assetRecordMapdbBef.get("bill_no")+"" ;
 
                 if(status == null || status.equals("")){
                     result.error("请传入解冻状态");

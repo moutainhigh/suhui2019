@@ -30,7 +30,7 @@ public class PayCurrencyRateServiceImpl extends ServiceImpl<PayCurrencyRateMappe
     }
 
     @Override
-    public Map<String, String> getCurrencyRateValue(Map map) {
+    public Map<String, Object> getCurrencyRateValue(Map map) {
         return payCurrencyRateMapper.getCurrencyRateValue(map);
     }
 

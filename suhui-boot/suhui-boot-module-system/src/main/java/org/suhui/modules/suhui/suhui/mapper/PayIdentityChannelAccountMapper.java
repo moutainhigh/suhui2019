@@ -1,6 +1,7 @@
 package org.suhui.modules.suhui.suhui.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.suhui.modules.suhui.suhui.entity.PayIdentityChannelAccount;
@@ -14,4 +15,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface PayIdentityChannelAccountMapper extends BaseMapper<PayIdentityChannelAccount> {
 
+    public List<Map<String,String>> getChannelAccountInfoByUserNo(Map<String,String> map);
 }

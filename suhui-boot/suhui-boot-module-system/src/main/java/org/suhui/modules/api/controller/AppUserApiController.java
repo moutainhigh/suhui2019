@@ -274,7 +274,7 @@ public class AppUserApiController {
 
                 PayAccountAsset payAccountAsset = new PayAccountAsset() ;
                 payAccountAsset.setAccountNo(accountno) ;
-                payAccountAsset.setIdentityNo(identityno) ;
+                payAccountAsset.setIdentityNo(identityMap.get("identity_no")+"") ;
                 payAccountAsset.setAccountTypeCode(Integer.parseInt(accounttypecode)) ;
                 payAccountAsset.setAvailableAmount(Integer.parseInt(availableamount)) ;
 

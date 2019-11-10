@@ -119,6 +119,7 @@ public class AppLoginUserApiController {
         JSONObject obj = new JSONObject();
         String id = params.get("id")+"" ;
         String pwd = params.get("pwd")+"" ;
+        String oldpwd = params.get("oldpwd")+"" ;
 
         PayUserLogin payUserLogin = iPayUserLoginService.getById(id) ;
 
@@ -129,6 +130,15 @@ public class AppLoginUserApiController {
         }else{
 
             String salt = payUserLogin.getSalt() ;
+            String passworddb = payUserLogin.getPassword() ;
+            String oldEncode = PasswordUtil.encrypt(payUserLogin.getLoginName(), oldpwd+"", salt);
+
+            if(!passworddb.equals(oldEncode)){
+                result.error500("old  password is not right , please check it!");
+                return result ;
+            }
+
+//            String salt = payUserLogin.getSalt() ;
             String passwordEncode = PasswordUtil.encrypt(payUserLogin.getLoginName(), pwd+"", salt);
             payUserLogin.setPassword(passwordEncode) ;
 

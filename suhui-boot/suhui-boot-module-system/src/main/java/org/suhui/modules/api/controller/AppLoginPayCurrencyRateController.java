@@ -156,11 +156,11 @@ public class AppLoginPayCurrencyRateController {
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
         List<Map<String,String>> list = iPayCurrencyRateService.getCurrencyRateTypeList() ;
-        List<Map<String,String>> listRtn =new ArrayList<Map<String,String>>() ;
+        List<Map<String,Object>> listRtn =new ArrayList<Map<String,Object>>() ;
         for(int i = 0 ; i < list.size() ; i++){
             int decimailnum = 4;
             Map mapParam=  list.get(i) ;
-            Map<String,String> mapdb = iPayCurrencyRateService.getCurrencyRateValue(mapParam) ;
+            Map<String,Object> mapdb = iPayCurrencyRateService.getCurrencyRateValue(mapParam) ;
 
 //            String rate_now = mapdb.get("rate_now")+"" ;
             String rate_nowStr = String.valueOf(mapdb.get("rate_now"))  ;
@@ -169,23 +169,31 @@ public class AppLoginPayCurrencyRateController {
             BigDecimal rate_now_divide = rate_nowDouble.divide(bi2, 9, RoundingMode.HALF_UP);
 
             double rate_now_dou = rate_now_divide.setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
+            DecimalFormat df = null ;
             if(rate_now_dou > 0.1){
                 decimailnum = 4 ;
+                df = new DecimalFormat("#.####") ;
             }else if(rate_now_dou*10 > 0.1){
                 decimailnum = 5 ;
+                df = new DecimalFormat("#.#####") ;
             }else if(rate_now_dou*100 > 0.1){
                 decimailnum = 6 ;
+                df = new DecimalFormat("#.######") ;
             }else if(rate_now_dou*1000 > 0.1){
                 decimailnum = 7 ;
+                df = new DecimalFormat("#.#######") ;
             }else{
                 decimailnum =8 ;
+                df = new DecimalFormat("#.########") ;
             }
             rate_now_dou = rate_now_divide.setScale(decimailnum, BigDecimal.ROUND_HALF_UP).doubleValue();
-            mapdb.put("rate_now" ,rate_now_dou+"") ;
+
+            mapdb.put("rate_now" ,df.format(rate_now_dou)) ;
             listRtn.add(mapdb) ;
         }
         obj.put("data",listRtn) ;
         result.setResult(obj);
+        result.setCode(200);
         return result ;
 
     }
@@ -196,7 +204,7 @@ public class AppLoginPayCurrencyRateController {
         JSONObject obj = new JSONObject();
         int decimailnum = 4;
 
-        Map<String,String> mapdb = iPayCurrencyRateService.getCurrencyRateValue(params) ;
+        Map<String,Object> mapdb = iPayCurrencyRateService.getCurrencyRateValue(params) ;
 
         if(mapdb == null){
             obj.put("message","this rate is not in database") ;
@@ -222,7 +230,7 @@ public class AppLoginPayCurrencyRateController {
             decimailnum =8 ;
         }
         rate_now_dou = rate_now_divide.setScale(decimailnum, BigDecimal.ROUND_HALF_UP).doubleValue();
-        mapdb.put("rate_now" ,rate_now_dou+"") ;
+        mapdb.put("rate_now" ,rate_now_dou) ;
         obj.put("data",mapdb) ;
 
         result.setResult(obj);

@@ -22,10 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author scott
@@ -195,6 +192,37 @@ public class AppLoginPayIdentityChennelAccountController {
         result.setResult(obj);
         result.success("修改成功 Modification successful");
         result.setCode(CommonConstant.SC_OK_200);
+        return result ;
+    }
+
+
+    /**
+     * 账号绑定 信息 修改
+     * @param params
+     * @return
+     */
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    @Transactional
+    public Result<JSONObject> search(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
+        //用户退出逻辑
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+
+        String userno = params.get("userno") + "";
+        String usertype = params.get("usertype") + "";
+        String channeltype = params.get("channeltype") + ""; // 支付通道类型
+
+        Map map = new HashMap() ;
+        map.put("userno" ,userno) ;
+        map.put("usertype" ,usertype) ;
+        map.put("channeltype" ,channeltype) ;
+        List<Map> mapDb = iPayIdentityChannelAccountService.getChannelAccountInfoByUserNo(map) ;
+
+        obj.put("data" ,mapDb) ;
+        result.setResult(obj);
+        result.setMessage("查询列表成功");
+        result.setSuccess(true);
+
         return result ;
     }
 
