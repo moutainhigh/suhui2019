@@ -92,7 +92,8 @@ git pull
 
 cd /home/ubuntu/suhui2019/suhui-boot/suhui-boot-module-system
 pwd
-sudo JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 /home/ubuntu/apache-maven-3.6.2/bin/mvn clean install
+sudo JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 /home/ubuntu/apache-maven-3.6.2/bin/mvn clean package
+cp /home/ubuntu/suhui2019/suhui-boot/suhui-boot-module-system/target/suhui-boot-module-system-2.0.1.jar /home/ubuntu/
 
 ls -al
 process_id=$(ps -ef | grep suhui-boot-module-system-2.0.1.jar | grep -v "grep" | awk '{print $2}')
@@ -105,9 +106,20 @@ else
 	echo "suhui-boot-module-system-2.0.1.jar not started yet; no need to kill it"
 fi
 
-cp /home/ubuntu/suhui2019/suhui-boot/suhui-boot-module-system/target/suhui-boot-module-system-2.0.1.jar /home/ubuntu/
-sudo nohup java -jar -Xms64m -Xmx512m /home/ubuntu/suhui2019/suhui-boot/suhui-boot-module-system/target/suhui-boot-module-system-2.0.1.jar >/home/ubuntu/suhui.log &
+#!/bin/bash
+sudo su root -c "nohup java -jar -Xms64m -Xmx512m /home/ubuntu/suhui-boot-module-system-2.0.1.jar >/home/ubuntu/suhui.log &"
 
+
+
+#### draft only
+for i in {1,2,3}    #
+    do
+	sudo su -s /bin/bash jenkins
+	nohup java -jar -Xms64m -Xmx512m /home/ubuntu/suhui-boot-module-system-2.0.1.jar >/home/ubuntu/suhui.log &   
+done
+
+
+sudo nohup java -Xms64m -Xmx512m -jar  /home/ubuntu/suhui-boot-module-system-2.0.1.jar >/home/ubuntu/suhui.log & 
 
 
 # 第一次运行前要在这个目录下（/home/ubuntu/suhui2019/suhui-boot/）执行 `mvn clean install`以生成项目必要的jar包 
@@ -121,6 +133,7 @@ sudo nohup java -jar -Xms64m -Xmx512m /home/ubuntu/suhui2019/suhui-boot/suhui-bo
 # 有时候，还要移除openJDK
 # sudo apt-get install openjdk-8-jdk    # 不要安装错误，千万不要安jre版本
 
+# 如果修改了配置，例如Redis的端口的配置，那么需要重新编译整个项目，也就是需要登录到Java服务器上，在parent层次（suhui-boot目录）下，使用sudo JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 /home/ubuntu/apache-maven-3.6.2/bin/mvn clean install
 
 ```
 
