@@ -137,6 +137,22 @@ sudo nohup java -Xms64m -Xmx512m -jar  /home/ubuntu/suhui-boot-module-system-2.0
 
 ```
 
+## Redis
+
+```sh
+
+sudo lsof -i -P -n | grep LISTEN
+
+/usr/local/redis/bin/redis-cli -h 127.0.0.1 -p 6380 
+
+redis pass:suhuiadmin
+
+# start
+sudo su root -c "nohup /usr/local/redis/bin/redis-server --port 6380 &"
+
+```
+
+
 
 ## start backend   
 
