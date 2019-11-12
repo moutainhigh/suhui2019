@@ -134,7 +134,7 @@ public class AppLoginPayExchangeController {
                     bizExchangeOrder.setSourceCurrency(Integer.parseInt(moneyamount)) ;
 
                     PayCurrencyRate payCurrencyRate = iPayCurrencyRateService.getById(ratecodeid) ;
-                    Integer ratenow = payCurrencyRate.getRateNow() ;
+                    Long ratenow = payCurrencyRate.getRateNow() ;
                     long targetcurrency = moneyamount_long*ratenow/1000000000 ;
 
                     bizExchangeOrder.setTargetCurrency(Integer.parseInt(targetcurrency+"")) ;
@@ -616,7 +616,7 @@ public class AppLoginPayExchangeController {
                     bizExchangeOrder.setSourceCurrency(Integer.parseInt(moneyamount)) ;
 
                     PayCurrencyRate payCurrencyRate = iPayCurrencyRateService.getById(ratecodeid) ;
-                    Integer ratenow = payCurrencyRate.getRateNow() ;
+                    Long ratenow = payCurrencyRate.getRateNow() ;
                     long targetcurrency = moneyamount_long_fr*ratenow/1000000000 ;
 
                     bizExchangeOrder.setTargetCurrency(Integer.parseInt(targetcurrency+"")) ;

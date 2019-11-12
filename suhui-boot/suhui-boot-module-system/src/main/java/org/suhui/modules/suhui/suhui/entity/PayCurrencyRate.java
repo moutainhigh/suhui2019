@@ -43,7 +43,7 @@ public class PayCurrencyRate {
 	/**当前汇率，用10000表示1*/
 	@Excel(name = "当前汇率，用10000表示1", width = 15)
     @ApiModelProperty(value = "当前汇率，用10000表示1")
-	private Integer rateNow;
+	private Long rateNow;
 	/**是否启用(0-停用 1-启用)*/
 	@Excel(name = "是否启用(0-停用 1-启用)", width = 15)
     @ApiModelProperty(value = "是否启用(0-停用 1-启用)")

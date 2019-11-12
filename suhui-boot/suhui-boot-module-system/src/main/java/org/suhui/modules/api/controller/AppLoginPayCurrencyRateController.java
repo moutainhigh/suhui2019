@@ -65,7 +65,7 @@ public class AppLoginPayCurrencyRateController {
         String target_currency_code = params.get("target_currency_code")+"" ; //目标货币编号
         String remark = params.get("remark")+"" ;
         String rate_nowStr = df.format(Double.parseDouble(rate_now)*10000)  ;
-        int  rate_nowInt = (int)Double.parseDouble(rate_nowStr) ;
+        Long  rate_nowInt = Long.parseLong(rate_nowStr) ;
 
         PayCurrencyRate payCurrencyRate = new PayCurrencyRate() ; // 当前账号类型
         payCurrencyRate.setRateCode(rate_code) ;
@@ -113,7 +113,7 @@ public class AppLoginPayCurrencyRateController {
         String rate_name = params.get("rate_name")+"" ; //换汇名称
         String rate_now = params.get("rate_now")+"" ; //当前汇率，用10000表示1   用分表示
         String rate_nowStr = df.format(Double.parseDouble(rate_now)*10000)  ;
-        int  rate_nowInt = (int)Double.parseDouble(rate_nowStr) ;
+        Long  rate_nowInt = Long.parseLong(rate_nowStr) ;
         String status = params.get("status")+"" ; //是否启用(0-停用 1-启用)
         String source_currency_code = params.get("source_currency_code")+"" ; //源货币编号
         String target_currency_code = params.get("target_currency_code")+"" ; //目标货币编号
