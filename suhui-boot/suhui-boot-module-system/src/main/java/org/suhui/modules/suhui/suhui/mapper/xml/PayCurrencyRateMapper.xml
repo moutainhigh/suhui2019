@@ -14,7 +14,7 @@
     <select id="getCurrencyRateValue" resultType="map" parameterType="map">
         SELECT             source_currency_code,
             target_currency_code,
-            	rate_now
+            	rate_now ,id
         FROM
             pay_currency_rate
             where  source_currency_code = #{source_currency_code}
