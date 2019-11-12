@@ -143,7 +143,10 @@ sudo nohup java -Xms64m -Xmx512m -jar  /home/ubuntu/suhui-boot-module-system-2.0
 
 sudo lsof -i -P -n | grep LISTEN
 
-/usr/local/redis/bin/redis-cli -h 127.0.0.1 -p 6380 
+/usr/local/redis/bin/redis-cli -h 127.0.0.1 -p 6380 -a suhuiadmin
+
+set key 123
+
 
 redis pass:suhuiadmin
 
