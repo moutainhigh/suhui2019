@@ -151,7 +151,7 @@ set key 123
 redis pass:suhuiadmin
 
 # start
-sudo su root -c "nohup /usr/local/redis/bin/redis-server --port 6380 &"
+sudo su root -c "nohup /usr/local/redis/bin/redis-server /usr/local/redis/bin/redis.conf  --port 6380 &"
 
 ```
 
