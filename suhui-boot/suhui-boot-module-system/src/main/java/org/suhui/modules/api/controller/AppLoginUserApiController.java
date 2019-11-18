@@ -59,6 +59,7 @@ public class AppLoginUserApiController {
         if(payUserInfo==null) {
             result.setResult(obj);
             result.success("has no user");
+            result.setCode(517);
             result.setCode(0);
         }else{
             // 用户身份认证 0-未实名认证 1-已经实名认证
@@ -103,6 +104,7 @@ public class AppLoginUserApiController {
         iPayUserInfoService.updateById(payUserInfoDb) ;
 
         result.success("update phone success!");
+        result.setCode(200);
         return result ;
     }
 
@@ -126,7 +128,7 @@ public class AppLoginUserApiController {
         if(payUserLogin==null) {
             result.setResult(obj);
             result.success("has no user");
-            result.setCode(0);
+            result.setCode(517);
         }else{
 
             String salt = payUserLogin.getSalt() ;
@@ -135,6 +137,7 @@ public class AppLoginUserApiController {
 
             if(!passworddb.equals(oldEncode)){
                 result.error500("old  password is not right , please check it!");
+                result.setCode(518);
                 return result ;
             }
 
@@ -168,7 +171,7 @@ public class AppLoginUserApiController {
         if(payUserLogin == null){
             result.setResult(obj);
             result.success("has no user");
-            result.setCode(0);
+            result.setCode(517);
             return result ;
         }
         String userno = payUserLogin.getUserNo() ;
@@ -185,7 +188,7 @@ public class AppLoginUserApiController {
         if(payUserInfoDb==null) {
             result.setResult(obj);
             result.success("has no user");
-            result.setCode(0);
+            result.setCode(517);
         }else{
 
             String salt = payUserInfoDb.getSalt() ;
@@ -223,7 +226,7 @@ public class AppLoginUserApiController {
         if(payUserLogin == null){
             result.setResult(obj);
             result.success("has no user");
-            result.setCode(0);
+            result.setCode(517);
             return result ;
         }
         String userno = payUserLogin.getUserNo() ;
@@ -237,7 +240,7 @@ public class AppLoginUserApiController {
         if(payUserInfoDb==null) {
             result.setResult(obj);
             result.success("has no user");
-            result.setCode(0);
+            result.setCode(517);
         }else{
 
             String salt = payUserInfoDb.getSalt() ;
@@ -248,7 +251,7 @@ public class AppLoginUserApiController {
             String payPasswordEncode = PasswordUtil.encrypt(payUserInfoDb.getPhoneNo(), paypwd+"", salt);
             if(payUserInfoDb.getPayPassword() == null || payUserInfoDb.getPayPassword().equals("")){
                 result.success("please to set your pay password");
-                result.setCode(0);
+                result.setCode(412);
                 return result ;
             }
 
@@ -257,7 +260,7 @@ public class AppLoginUserApiController {
                 result.setCode(CommonConstant.SC_OK_200);
             }else{
                 result.success("pay password is not right");
-                result.setCode(0);
+                result.setCode(413);
             }
         }
 
@@ -279,7 +282,7 @@ public class AppLoginUserApiController {
         if(payUserLogin == null){
             result.setResult(obj);
             result.success("has no user");
-            result.setCode(0);
+            result.setCode(517);
             return result ;
         }
         String userno = payUserLogin.getUserNo() ;
@@ -300,13 +303,14 @@ public class AppLoginUserApiController {
 
         if(!oldpaypwdEncode.equals(paypassword)){
             result.error500("old pay password is not right , please check it!");
+            result.setCode(518);
             return result ;
         }
 
         if(payUserInfoDb==null) {
             result.setResult(obj);
             result.success("has no user");
-            result.setCode(0);
+            result.setCode(517);
         }else{
             String payPasswordEncode = PasswordUtil.encrypt(payUserInfoDb.getPhoneNo(), paypwd+"", salt);
             payUserInfoDb.setPayPassword(payPasswordEncode) ;
@@ -354,7 +358,7 @@ public class AppLoginUserApiController {
         if(payUserLogin == null){
             result.setResult(obj);
             result.success("has no user");
-            result.setCode(0);
+            result.setCode(517);
             return result ;
         }
         String userno = payUserLogin.getUserNo() ;
@@ -371,7 +375,7 @@ public class AppLoginUserApiController {
         if(payUserInfoDb==null) {
             result.setResult(obj);
             result.success("has no user");
-            result.setCode(0);
+            result.setCode(517);
         }else{
             payUserInfoDb.setUserName(userName); ; //real name
             payUserInfoDb.setCardType(Integer.parseInt(cardType));
@@ -432,7 +436,7 @@ public class AppLoginUserApiController {
         if(payUserLogin == null){
             result.setResult(obj);
             result.success("has no user");
-            result.setCode(0);
+            result.setCode(517);
             return result ;
         }
         String userno = payUserLogin.getUserNo() ;
@@ -446,7 +450,7 @@ public class AppLoginUserApiController {
         if(payUserInfoDb==null) {
             result.setResult(obj);
             result.success("has no user");
-            result.setCode(0);
+            result.setCode(517);
         }else{
             Map map = new HashMap() ;
             map.put("userName" ,payUserInfoDb.getUserName()) ;
@@ -485,7 +489,7 @@ public class AppLoginUserApiController {
         if(payUserLogin == null){
             result.setResult(obj);
             result.success("has no user");
-            result.setCode(0);
+            result.setCode(517);
             return result ;
         }
         String userno = payUserLogin.getUserNo() ;
@@ -499,7 +503,7 @@ public class AppLoginUserApiController {
         if(payUserInfoDb==null) {
             result.setResult(obj);
             result.success("has no user");
-            result.setCode(0);
+            result.setCode(517);
         }else{
             Map map = new HashMap() ;
             map.put("userName" ,payUserInfoDb.getUserName()) ;

@@ -136,12 +136,14 @@ public class AppUserApiController {
         String areacode = params.get("areacode") +"" ; // 区域代码
         if(areacode == null || areacode.equals("")||areacode.equals("null")){
             result.error500("please choose area code for your phone !");
+            result.setCode(414);
             return result ;
         }
 
         PayUserLogin payUserLoginCheck= iPayUserLoginService.getUserByPhone(phone ,areacode) ;
         if(payUserLoginCheck != null ){
             result.error500("the phone is exit !");
+            result.setCode(514 );
             return result ;
         }
 
@@ -155,6 +157,7 @@ public class AppUserApiController {
 
         if(request.getSession(false) ==null){
             result.error500("sms code is out of time");
+            result.setCode(521);
             return result ;
         }
         String smsCode =  request.getSession().getAttribute("smsCode_"+codeVaue)+"" ;
@@ -163,6 +166,7 @@ public class AppUserApiController {
 
         }else{
             result.error500("sms code is not right");
+            result.setCode(522);
             return result ;
         }
 
@@ -319,7 +323,7 @@ public class AppUserApiController {
         }else{
             result.setResult(obj);
             result.success("phone is used by some one");
-            result.setCode(0);
+            result.setCode(514);
         }
 
         return result ;
@@ -347,6 +351,7 @@ public class AppUserApiController {
 
         if(payUserLogin==null) {
             result.error500("该用户不存在");
+            result.setCode(510);
             log.error("登录失败，用户名:"+phone+"不存在！", CommonConstant.LOG_TYPE_1, null);
             return result;
         }else {
@@ -356,6 +361,7 @@ public class AppUserApiController {
             String syspassword = payUserLogin.getPassword();
             if(!syspassword.equals(userpassword)) {
                 result.error500("用户名或密码错误");
+                result.setCode(540);
                 return result;
             }
             //生成token
@@ -369,6 +375,7 @@ public class AppUserApiController {
             obj.put("payUserLogin", payUserLogin);
             result.setResult(obj);
             result.success("登录成功");
+            result.setCode(200);
             sysBaseAPI.addLog("用户名: "+phone+",登录成功！", CommonConstant.LOG_TYPE_1, null);
         }
         return result;
@@ -392,6 +399,7 @@ public class AppUserApiController {
 
         if(request.getSession(false) ==null){
             result.error500("验证码过期");
+            result.setCode(521);
             return result ;
         }
         String smsCode =  request.getSession().getAttribute("smsCode_"+phone)+"" ;
@@ -400,6 +408,7 @@ public class AppUserApiController {
 
         }else{
             result.error500("验证码不正确");
+            result.setCode(522);
             return result ;
         }
         PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(phone,areacode) ;
@@ -407,7 +416,7 @@ public class AppUserApiController {
         if(payUserLogin==null) {
             result.setResult(obj);
             result.success("has no user");
-            result.setCode(0);
+            result.setCode(517);
         }else{
 
             String salt = payUserLogin.getSalt() ;

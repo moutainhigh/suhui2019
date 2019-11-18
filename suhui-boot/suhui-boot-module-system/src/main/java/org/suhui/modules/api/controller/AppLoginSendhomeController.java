@@ -266,7 +266,7 @@ public class AppLoginSendhomeController {
                 return  result ;
             }
         result.success("frozen success");
-
+        result.setCode(200);
         return result ;
     }
 
@@ -307,6 +307,7 @@ public class AppLoginSendhomeController {
 
                 if(status == null || status.equals("")){
                     result.error("请传入解冻状态");
+                    result.setCode(411);
                     return result ;
                 }else if(status.equals("100")){ //100-送汇成功
 
@@ -509,6 +510,7 @@ public class AppLoginSendhomeController {
                     }
                 }else{
                     result.error("请传入正确解冻状态");
+                    result.setCode(411);
                     return result ;
                 }
         }catch (Exception e){
@@ -517,6 +519,7 @@ public class AppLoginSendhomeController {
             return  result ;
         }
         result.success("unfrozen success");
+        result.setCode(200);
         return  result ;
     }
 

@@ -115,7 +115,7 @@ public class AppLoginPayChargeController {
             Map payidentitychannel = iPayAccountService.getPayIdentityChannelAccountByUserNo(mapChannel) ;
             if(payidentitychannel == null){
                 result.success("does not has account channnel");
-                result.setCode(0);
+                result.setCode(513);
                 return result ;
             }else{
                 user_pay_account = payidentitychannel.get("channel_account_no")+"" ; // 银行账号  支付宝账户  微信账号等

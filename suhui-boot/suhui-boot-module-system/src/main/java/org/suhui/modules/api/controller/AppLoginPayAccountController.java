@@ -223,7 +223,7 @@ public class AppLoginPayAccountController {
             obj.put("data" ,"has no pay account") ;
             result.setResult(obj);
             result.success("failure");
-            result.setCode(-1);
+            result.setCode(510);
         }
 
         return result ;

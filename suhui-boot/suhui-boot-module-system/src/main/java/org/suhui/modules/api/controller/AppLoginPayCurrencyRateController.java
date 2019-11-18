@@ -209,6 +209,7 @@ public class AppLoginPayCurrencyRateController {
         if(mapdb == null){
             obj.put("message","this rate is not in database") ;
             result.setResult(obj);
+            result.setCode(515);
             return result ;
         }
 //            String rate_now = mapdb.get("rate_now")+"" ;

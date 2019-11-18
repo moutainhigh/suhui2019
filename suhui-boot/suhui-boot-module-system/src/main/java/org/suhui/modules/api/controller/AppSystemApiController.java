@@ -105,7 +105,7 @@ public class AppSystemApiController {
         }else{
             result.setResult(obj);
             result.success("验证码发送失败 failed when sending verification code ");
-            result.setCode(0);
+            result.setCode(530);
             return result ;
         }
 
@@ -209,7 +209,7 @@ public class AppSystemApiController {
 
             if(payUserInfo==null) {
                 result.success("has no user");
-                result.setCode(0);
+                result.setCode(517);
             }else{
                 payUserInfo.setPicture(dbpath);
                 iPayUserInfoService.updateById(payUserInfo) ;
@@ -291,7 +291,7 @@ public class AppSystemApiController {
         String usertype = params.get("usertype")+"" ;
         if(usertype == null || usertype.equals("")|| usertype.equals("null")){
             result.success("please check usertype");
-            result.setCode(0);
+            result.setCode(519);
             return result;
         }
         PayUserInfo payUserInfoPararm = new PayUserInfo() ;
@@ -304,7 +304,7 @@ public class AppSystemApiController {
 
         if(payUserInfo==null) {
             result.success("has no user");
-            result.setCode(0);
+            result.setCode(517);
         }else{
             payUserInfo.setPicture(fileData);
             iPayUserInfoService.updateById(payUserInfo) ;
@@ -330,7 +330,7 @@ public class AppSystemApiController {
         String usertype = params.get("usertype")+"" ;
         if(usertype == null || usertype.equals("")|| usertype.equals("null")){
             result.success("please check usertype");
-            result.setCode(0);
+            result.setCode(519);
             return result;
         }
         PayUserInfo payUserInfoPararm = new PayUserInfo() ;
@@ -348,7 +348,7 @@ public class AppSystemApiController {
 
         if(payUserInfoDb==null) {
             result.success("has no user");
-            result.setCode(0);
+            result.setCode(517);
         }else{
 
             result.setResult("" +payUserInfoDb.getPicture());
@@ -387,6 +387,7 @@ public class AppSystemApiController {
             if (!jwtTokenRefresh(token, username, payUserLogin.getPassword())) {
 //                throw new AuthenticationException("Token失效，请重新登录!");
                 result.setResult("Token失效，请重新登录!");
+                result.setCode(560);
                 return result;
             }
 
@@ -394,6 +395,7 @@ public class AppSystemApiController {
             if (payUserLogin.getStatus() == 2) {
 //                throw new AuthenticationException("账号无效,请联系管理员!");
                 result.setResult("账号无效,请联系管理员!");
+                result.setCode(561);
                 return result;
             }
             BeanUtils.copyProperties(payUserLogin, loginUser);
@@ -402,6 +404,7 @@ public class AppSystemApiController {
             if (!jwtTokenRefresh(token, username, sysUser.getPassword())) {
 //            throw new AuthenticationException("Token失效，请重新登录!");
                 result.setResult("Token失效，请重新登录!");
+                result.setCode(560);
                 return result;
             }
 
@@ -409,6 +412,7 @@ public class AppSystemApiController {
             if (sysUser.getStatus() != 1) {
 //            throw new AuthenticationException("账号已被锁定,请联系管理员!");
                 result.setResult("账号无效,请联系管理员!");
+                result.setCode(561);
                 return result;
             }
 

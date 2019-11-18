@@ -268,6 +268,7 @@ public class AppLoginPayExchangeController {
 
                 if(status == null || status.equals("")){
                     result.error("请传入解冻状态");
+                    result.setCode(411);
                     return result ;
                 }else if(status.equals("100")){ //100-换汇成功
                     // 换汇成功 解冻
@@ -292,6 +293,7 @@ public class AppLoginPayExchangeController {
                     }else if(statusFree.equals("2")){
                         TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                         result.error("已经解冻，不能重复解冻");
+                        result.setCode(516);
                         return result ;
                     }
                     /**解冻  解冻详情**/
@@ -417,6 +419,7 @@ public class AppLoginPayExchangeController {
                     }else if(statusFree.equals("2")){
                         TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                         result.error("已经解冻，不能重复解冻");
+                        result.setCode(516);
                         return result ;
                     }
                     /**解冻  解冻详情**/
@@ -707,6 +710,7 @@ public class AppLoginPayExchangeController {
 
                         if(status == null || status.equals("")){
                             result.error("请传入解冻状态");
+                            result.setCode(411 );
                             return result ;
                         }else if(status.equals("100")){ //100-换汇成功
                             // 换汇成功 解冻
@@ -731,6 +735,7 @@ public class AppLoginPayExchangeController {
                             }else if(statusFree.equals("2")){
                                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                                 result.error("已经解冻，不能重复解冻");
+                                result.setCode(516);
                                 return result ;
                             }
                             /**解冻  解冻详情**/
@@ -856,6 +861,7 @@ public class AppLoginPayExchangeController {
                             }else if(statusFree.equals("2")){
                                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                                 result.error("已经解冻，不能重复解冻");
+                                result.setCode(516);
                                 return result ;
                             }
                             /**解冻  解冻详情**/
@@ -946,6 +952,7 @@ public class AppLoginPayExchangeController {
 
                         }else{
                             result.error("请传入正确解冻状态");
+                            result.setCode(411);
                             return result ;
                         }
 

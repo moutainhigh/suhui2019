@@ -77,6 +77,7 @@ public class ApiLoginTransferAccountController {
         PayUserLogin payUserLogin_from = iPayUserLoginService.getUserByPhone(phone_from,areacode_from) ;
         if(payUserLogin_from == null){
             result.error("from account is not exit! ");
+            result.setCode(511);
             return result ;
         }
         userno_from = payUserLogin_from.getUserNo() ;
@@ -93,6 +94,7 @@ public class ApiLoginTransferAccountController {
         PayUserLogin payUserLogin_to = iPayUserLoginService.getUserByPhone(phone_to,areacode_to) ;
         if(payUserLogin_to == null){
             result.error("to account is not exit! ");
+            result.setCode(512);
             return result ;
         }
         userno_to = payUserLogin_to.getUserNo() ;
