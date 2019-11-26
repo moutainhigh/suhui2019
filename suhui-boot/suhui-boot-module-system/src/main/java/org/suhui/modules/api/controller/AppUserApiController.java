@@ -214,6 +214,7 @@ public class AppUserApiController {
         map4.put("currencycode" ,"4") ;
         list.add(map4) ;
         try{
+
             for(int i = 0 ; i < list.size() ; i++){
 
                 Map mapparam = (Map)list.get(i) ;
@@ -264,10 +265,13 @@ public class AppUserApiController {
                 map.put("user_no" ,userno);
                 map.put("user_type" ,usertype);
                 Map<String, Object> identityMap = iPayIdentityInfoService.getIdentityInfoByUserNo(map) ;
+                String identityInfo = "" ;
                 if(identityMap == null){
                     iPayIdentityInfoService.save(payIdentityInfo) ;
+                    identityInfo = identityno ;
                 }else{
                     payAccount.setIdentityNo(identityMap.get("identity_no")+"") ;
+                    identityInfo = identityMap.get("identity_no") + "";
                 }
                 /**  保存 支付账号信息  和身份信息 */
                 iPayAccountService.save(payAccount) ;
@@ -278,7 +282,7 @@ public class AppUserApiController {
 
                 PayAccountAsset payAccountAsset = new PayAccountAsset() ;
                 payAccountAsset.setAccountNo(accountno) ;
-                payAccountAsset.setIdentityNo(identityMap.get("identity_no")+"") ;
+                payAccountAsset.setIdentityNo(identityInfo+"") ;
                 payAccountAsset.setAccountTypeCode(Integer.parseInt(accounttypecode)) ;
                 payAccountAsset.setAvailableAmount(Integer.parseInt(availableamount)) ;
 
