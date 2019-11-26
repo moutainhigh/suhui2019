@@ -411,7 +411,7 @@ public class AppUserApiController {
         if(smsCodeParam.equals(smsCode)){
 
         }else{
-            result.error500("验证码不正确");
+            result.error500("短信验证码错误 sms code is wrong ");
             result.setCode(522);
             return result ;
         }
@@ -419,7 +419,7 @@ public class AppUserApiController {
 
         if(payUserLogin==null) {
             result.setResult(obj);
-            result.success("has no user");
+            result.success("无此用户 Cannot find this user");
             result.setCode(517);
         }else{
 
