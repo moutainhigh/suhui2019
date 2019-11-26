@@ -41,7 +41,9 @@ wget "http://mirrors.jenkins.io/war-stable/latest/jenkins.war"
 # start Jenkins  
 nohup `java -jar jenkins.war --httpPort=11000` &
 
+### this one is the correct one!!
 nohup java -jar jenkins.war --httpPort=11000 > jenkins.log &
+
 
 `java -jar jenkins.war --httpPort=11000 > jenkins.log` & disown
 
