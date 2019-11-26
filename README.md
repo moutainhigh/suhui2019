@@ -141,6 +141,9 @@ sudo nohup java -Xms64m -Xmx512m -jar  /home/ubuntu/suhui-boot-module-system-2.0
 
 ## Redis
 
+重启服务器后要注意开启Redis
+先杀死老的redis，然后重启（设置6380端口），
+
 ```sh
 
 sudo lsof -i -P -n | grep LISTEN
