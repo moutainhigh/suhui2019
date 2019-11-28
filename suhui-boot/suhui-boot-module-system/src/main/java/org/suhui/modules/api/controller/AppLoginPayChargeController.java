@@ -158,7 +158,7 @@ public class AppLoginPayChargeController {
                 String identity_no = payaccount.get("identity_no")+"" ;
                 String identity_type = payaccount.get("identity_type")+"" ;
                 Map mapAsset = new HashMap() ;
-                mapAsset.put("account_no" , account_no) ;
+                mapAsset.put("identity_no" , identity_no) ;
                 mapAsset.put("account_type_code" , accounttypecode) ;
                 Map<String,Object> mapAssetDb = iPayAccountService.getPayAccountAssetByUserNo(mapAsset) ;
                 long available_amount_before = Long.parseLong(mapAssetDb.get("available_amount")+"")  ; // 可用金额
