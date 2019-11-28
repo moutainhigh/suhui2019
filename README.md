@@ -139,10 +139,19 @@ sudo nohup java -Xms64m -Xmx512m -jar  /home/ubuntu/suhui-boot-module-system-2.0
 
 ```
 
+
+
 ## Redis
 
 重启服务器后要注意开启Redis
 先杀死老的redis，然后重启（设置6380端口），
+系统上可能有多个Redis安装，因此用下面这个命令关掉Redis（这个Redis没有配置好）
+sudo /etc/init.d/redis-server stop
+
+然后使用下面这个命令打开正常配置的Redis
+# start
+sudo su root -c "nohup /usr/local/redis/bin/redis-server /usr/local/redis/bin/redis.conf  --port 6380 &"
+
 
 ```sh
 
@@ -150,13 +159,17 @@ sudo lsof -i -P -n | grep LISTEN
 
 /usr/local/redis/bin/redis-cli -h 127.0.0.1 -p 6380 -a suhuiadmin
 
-set key 123
+
 
 
 redis pass:suhuiadmin
 
-# start
-sudo su root -c "nohup /usr/local/redis/bin/redis-server /usr/local/redis/bin/redis.conf  --port 6380 &"
+# see all keys in Redis
+KEYS * 
+
+# set key 123
+set key 123
+
 
 ```
 
