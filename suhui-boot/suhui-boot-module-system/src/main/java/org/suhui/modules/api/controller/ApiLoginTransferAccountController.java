@@ -91,6 +91,12 @@ public class ApiLoginTransferAccountController {
         String userno_to ="" ;
         String usertype_to="" ;
 
+        if(phone_to.equals(phone_from)&& areacode_from.equals(areacode_to)){
+            result.error("不能向自己账户转账 ");
+            result.setCode(431);
+            return result ;
+        }
+
         PayUserLogin payUserLogin_to = iPayUserLoginService.getUserByPhone(phone_to,areacode_to) ;
         if(payUserLogin_to == null){
             result.error("to account is not exit! ");
