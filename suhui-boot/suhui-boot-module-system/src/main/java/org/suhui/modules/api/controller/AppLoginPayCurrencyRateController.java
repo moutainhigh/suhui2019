@@ -55,7 +55,7 @@ public class AppLoginPayCurrencyRateController {
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
         String rate_code =  UUIDGenerator.generate() ;  // 换汇编号，兑换以此为准
-        DecimalFormat df = new DecimalFormat("#0.00") ;
+        DecimalFormat df = new DecimalFormat("#0") ;
 
         String rate_name = params.get("rate_name")+"" ; //换汇名称
         String rate_now = params.get("rate_now")+"" ; //当前汇率，用10000表示1   用分表示
@@ -64,8 +64,9 @@ public class AppLoginPayCurrencyRateController {
         String source_currency_code = params.get("source_currency_code")+"" ; //源货币编号
         String target_currency_code = params.get("target_currency_code")+"" ; //目标货币编号
         String remark = params.get("remark")+"" ;
-        String rate_nowStr = df.format(Double.parseDouble(rate_now)*10000)  ;
-        Long  rate_nowInt = Long.parseLong(rate_nowStr) ;
+        String rate_nowStr = df.format(Double.parseDouble(rate_now)*1000000000)  ;
+
+        Long rate_nowInt = Long.parseLong(rate_nowStr) ;
 
         PayCurrencyRate payCurrencyRate = new PayCurrencyRate() ; // 当前账号类型
         payCurrencyRate.setRateCode(rate_code) ;
@@ -107,12 +108,12 @@ public class AppLoginPayCurrencyRateController {
     public Result<JSONObject> update(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
         //用户退出逻辑
         Result<JSONObject> result = new Result<JSONObject>();
-        DecimalFormat df = new DecimalFormat("#0.00") ;
+        DecimalFormat df = new DecimalFormat("#0") ;
         JSONObject obj = new JSONObject();
         String id = params.get("id")+"" ;
         String rate_name = params.get("rate_name")+"" ; //换汇名称
         String rate_now = params.get("rate_now")+"" ; //当前汇率，用10000表示1   用分表示
-        String rate_nowStr = df.format(Double.parseDouble(rate_now)*10000)  ;
+        String rate_nowStr = df.format(Double.parseDouble(rate_now)*1000000000)  ;
         Long  rate_nowInt = Long.parseLong(rate_nowStr) ;
         String status = params.get("status")+"" ; //是否启用(0-停用 1-启用)
         String source_currency_code = params.get("source_currency_code")+"" ; //源货币编号
