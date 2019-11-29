@@ -135,7 +135,7 @@ public class ApiLoginTransferAccountController {
                 String identity_no_from = payaccount_from.get("identity_no")+"" ;
                 String identity_type_from = payaccount_from.get("identity_type")+"" ;
                 Map mapAsset_from = new HashMap() ;
-                mapAsset_from.put("account_no" , account_no_from) ;
+                mapAsset_from.put("identity_no" , identity_no_from) ;
                 mapAsset_from.put("account_type_code" , accounttypecode_from) ;
                 Map<String,Object> mapAssetDb_from = iPayAccountService.getPayAccountAssetByUserNo(mapAsset_from) ;
                 long available_amount_before_from = Long.parseLong(mapAssetDb_from.get("available_amount")+"")  ; // 可用金额
@@ -181,7 +181,7 @@ public class ApiLoginTransferAccountController {
                 String identity_no_to = payaccount_to.get("identity_no")+"" ;
                 String identity_type_to = payaccount_to.get("identity_type")+"" ;
                 Map mapAsset_to = new HashMap() ;
-                mapAsset_to.put("account_no" , account_no_to) ;
+                mapAsset_to.put("identity_no" , identity_no_to) ;
                 mapAsset_to.put("account_type_code" , accounttypecode_from) ;
                 Map<String,Object> mapAssetDb_to = iPayAccountService.getPayAccountAssetByUserNo(mapAsset_to) ;
                 long available_amount_before_to = Long.parseLong(mapAssetDb_to.get("available_amount")+"")  ; // 可用金额
