@@ -590,14 +590,21 @@ public class AppLoginPayExchangeController {
                 Map<String,Object> mapAssetDb_fr = iPayAccountService.getPayAccountAssetByUserNo(mapAsset_fr) ;
                 long available_amount_before_fr = Long.parseLong(mapAssetDb_fr.get("available_amount")+"")  ; // 可用金额
                 if(moneyamount_long_fr >available_amount_before_fr ){
-                    result.error("insufficient funds in your account");
-                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                    result.error("insufficient funds in your account 账户余额不足");
+                    result.setCode(430);
                     return result ;
                 }else{
 
                     // 设置 冻结金额
                     long frozen_amount_before_fr =  Long.parseLong(mapAssetDb_fr.get("frozen_amount")+"") ;// 冻结金额
                     long available_amount_fr = available_amount_before_fr-moneyamount_long_fr;
+
+                    if(available_amount_fr < 0){
+                        result.success("Insufficient balance in your account. 账户余额不足");
+                        result.setCode(430);
+                        return result ;
+                    }
+
                     long frozen_amount_fr = frozen_amount_before_fr+ moneyamount_long_fr ;
                     PayAccountAsset payAccountAsset_fr = new PayAccountAsset() ;
                     payAccountAsset_fr.setId(Integer.parseInt(mapAssetDb_fr.get("id")+"")) ;

@@ -143,8 +143,8 @@ public class ApiLoginTransferAccountController {
                 long available_amount_from = available_amount_before_from - chargeMoneyInt; // 体现的话 账户金额会减少  账户余额
                 // 资金不足的时候  金额会提示不足
                 if(available_amount_from < 0){
-                    result.success("账户余额不足");
-                    result.setCode(330);
+                    result.success("Insufficient balance in your account. 账户余额不足");
+                    result.setCode(430);
                     return result ;
                 }
 
