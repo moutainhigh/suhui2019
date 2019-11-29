@@ -140,7 +140,14 @@ public class ApiLoginTransferAccountController {
                 Map<String,Object> mapAssetDb_from = iPayAccountService.getPayAccountAssetByUserNo(mapAsset_from) ;
                 long available_amount_before_from = Long.parseLong(mapAssetDb_from.get("available_amount")+"")  ; // 可用金额
                 long frozen_amount_before_from =  Long.parseLong(mapAssetDb_from.get("frozen_amount")+"") ;// 冻结金额
-                long available_amount_from = available_amount_before_from - chargeMoneyInt; // 体现的话 账户金额会减少
+                long available_amount_from = available_amount_before_from - chargeMoneyInt; // 体现的话 账户金额会减少  账户余额
+                // 资金不足的时候  金额会提示不足
+                if(available_amount_from < 0){
+                    result.success("账户余额不足");
+                    result.setCode(330);
+                    return result ;
+                }
+
                 long frozen_amount_from = frozen_amount_before_from ;
 
                 PayAccountAsset payAccountAsset_from = new PayAccountAsset() ;
