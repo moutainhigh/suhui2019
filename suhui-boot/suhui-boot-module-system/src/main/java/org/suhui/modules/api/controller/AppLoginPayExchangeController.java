@@ -541,7 +541,7 @@ public class AppLoginPayExchangeController {
      * @param params
      * @return
      */
-    @RequestMapping(value = "/frozenAndUnfrozen", method = RequestMethod.POST)
+    @RequestMapping(value = "/currencyExchange", method = RequestMethod.POST)
     @Transactional
     public Result<JSONObject> frozenAndUnfrozen(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
         //用户退出逻辑
