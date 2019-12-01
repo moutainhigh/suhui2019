@@ -564,7 +564,7 @@ public class AppLoginPayExchangeController {
             String account_type_code_target = params.get("account_type_code_target")+"" ; // 换汇目标账户
 
 
-            long moneyamount_long_fr = Long.parseLong(moneyamount) ;
+            long moneyamount_long_fr = Long.parseLong(moneyamount)*100 ;
             Map map_fr = new HashMap() ;
             map_fr.put("userno" , userno) ;
             map_fr.put("usertype" , usertype) ;
@@ -832,8 +832,8 @@ public class AppLoginPayExchangeController {
                                 mapAssetTarget.put("account_type_code" , account_type_code_target) ;
                                 Map<String,Object> mapAssetTargetDb = iPayAccountService.getPayAccountAssetByUserNo(mapAssetTarget) ;
 
-                                long frozen_amount_target_before = Long.parseLong(mapAssetDb.get("frozen_amount")+"")  ; // 冻结金额
-                                long available_amount_target_before = Long.parseLong(mapAssetDb.get("available_amount")+"")  ;
+                                long frozen_amount_target_before = Long.parseLong(mapAssetTargetDb.get("frozen_amount")+"")  ; // 冻结金额
+                                long available_amount_target_before = Long.parseLong(mapAssetTargetDb.get("available_amount")+"")  ;
                                 long available_amount_target = available_amount_target_before + targetmoney;
                                 long frozen_amount_target = frozen_amount_target_before ;
 
@@ -841,7 +841,7 @@ public class AppLoginPayExchangeController {
                                 payAccountAssetTarget.setId(Integer.parseInt(mapAssetTargetDb.get("id")+"")) ;
                                 payAccountAssetTarget.setFrozenAmount(frozen_amount_target) ; // 冻结金额
                                 payAccountAssetTarget.setAvailableAmount(available_amount_target) ; // 设置可用金额
-                                iPayAccountAssetService.updateById(payAccountAsset) ; // 设置目标冻结
+                                iPayAccountAssetService.updateById(payAccountAssetTarget) ; // 设置目标冻结
 
                             }
 
