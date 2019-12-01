@@ -18,7 +18,7 @@ postman文档
 https://documenter.getpostman.com/view/1895285/SVmySxze?version=latest    
 
 支付汇总      
-https://www.getpostman.com/collections/74176a8b6a4e4e00f43c    
+https://www.getpostman.com/collections/0784d85540f5a61abfb7
 postman文档     
 https://documenter.getpostman.com/view/1895285/SVmySxzg?version=latest     
 
