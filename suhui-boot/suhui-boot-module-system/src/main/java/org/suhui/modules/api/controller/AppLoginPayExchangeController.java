@@ -698,7 +698,7 @@ public class AppLoginPayExchangeController {
                     iBizAssetChangeRecordService.save(bizAssetChangeRecord_fr) ;
 
 
-                    long moneyamount_long = Long.parseLong(moneyamount) ;
+                    long moneyamount_long = Long.parseLong(moneyamount)*100 ;
                     Map map = new HashMap() ;
                     map.put("userno" , userno) ;
                     map.put("usertype" , usertype) ;
