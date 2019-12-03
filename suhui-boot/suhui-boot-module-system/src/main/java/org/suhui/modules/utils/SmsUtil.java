@@ -80,7 +80,7 @@ public class SmsUtil {
         }else{
             appid = "60757";
             appkey = "31b6b7fd4208b407120895d8f959623a";
-            content = "【Suhui】Your verification code is "+code+". Please enter within 5 minutes.";
+            content = "[Suhui]Your verification code is "+code+". Please enter within 5 minutes.";
         }
         /**
          *  ---------------------------------------------------------------------------
