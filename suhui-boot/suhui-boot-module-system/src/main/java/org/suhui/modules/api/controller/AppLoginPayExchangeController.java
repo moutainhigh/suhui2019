@@ -564,7 +564,10 @@ public class AppLoginPayExchangeController {
             String account_type_code_target = params.get("account_type_code_target")+"" ; // 换汇目标账户
 
 
-            long moneyamount_long_fr = Long.parseLong(moneyamount)*100 ;
+            Double moneyamount_long_frDou = Double.parseDouble(moneyamount)*100 ;
+
+            long moneyamount_long_fr = moneyamount_long_frDou.longValue();
+
             Map map_fr = new HashMap() ;
             map_fr.put("userno" , userno) ;
             map_fr.put("usertype" , usertype) ;
@@ -623,7 +626,8 @@ public class AppLoginPayExchangeController {
                     bizExchangeOrder.setUserNo(userno) ;
                     bizExchangeOrder.setUserType(Integer.parseInt(usertype)) ;
                     bizExchangeOrder.setAccountType(Integer.parseInt(account_type_code_source)) ;
-                    bizExchangeOrder.setSourceCurrency(Integer.parseInt(moneyamount)) ;
+
+                    bizExchangeOrder.setSourceCurrency((int)moneyamount_long_fr) ;
 
                     PayCurrencyRate payCurrencyRate = iPayCurrencyRateService.getById(ratecodeid) ;
                     Long ratenow = payCurrencyRate.getRateNow() ;
@@ -682,7 +686,7 @@ public class AppLoginPayExchangeController {
                     bizAssetChangeRecord_fr.setIdentityNo(identity_no_fr) ;
 
                     bizAssetChangeRecord_fr.setChangeType(1) ; //变更类型 1-增加 2-减少 4-冻结 5-解冻
-                    bizAssetChangeRecord_fr.setChangeAmount(Integer.parseInt(moneyamount)) ;
+                    bizAssetChangeRecord_fr.setChangeAmount((int)moneyamount_long_fr) ;
                     bizAssetChangeRecord_fr.setFrozenAmountBefore(frozen_amount_before_fr) ;
                     bizAssetChangeRecord_fr.setAvailableAmountBefore(available_amount_before_fr) ;
                     bizAssetChangeRecord_fr.setFrozenAmountAfter(frozen_amount_fr) ;
@@ -697,8 +701,11 @@ public class AppLoginPayExchangeController {
 
                     iBizAssetChangeRecordService.save(bizAssetChangeRecord_fr) ;
 
+                    Double moneyamount_longDou = Double.parseDouble(moneyamount)*100 ;
 
-                    long moneyamount_long = Long.parseLong(moneyamount)*100 ;
+                    long moneyamount_long = moneyamount_longDou.longValue() ;
+
+
                     Map map = new HashMap() ;
                     map.put("userno" , userno) ;
                     map.put("usertype" , usertype) ;
@@ -801,7 +808,7 @@ public class AppLoginPayExchangeController {
                                 bizAssetChangeRecord.setIdentityNo(identity_no) ;
 
                                 bizAssetChangeRecord.setChangeType(5) ; //变更类型 1-增加 2-减少 4-冻结 5-解冻
-                                bizAssetChangeRecord.setChangeAmount(Integer.parseInt(moneyamount)) ;
+                                bizAssetChangeRecord.setChangeAmount((int)moneyamount_long_fr) ;
                                 bizAssetChangeRecord.setFrozenAmountBefore(frozen_amount_before) ;
                                 bizAssetChangeRecord.setAvailableAmountBefore(available_amount_before) ;
                                 bizAssetChangeRecord.setFrozenAmountAfter(frozen_amount) ;
@@ -927,7 +934,7 @@ public class AppLoginPayExchangeController {
                                 bizAssetChangeRecord.setIdentityNo(identity_no) ;
 
                                 bizAssetChangeRecord.setChangeType(5) ; //变更类型 1-增加 2-减少 4-冻结 5-解冻
-                                bizAssetChangeRecord.setChangeAmount(Integer.parseInt(moneyamount)) ;
+                                bizAssetChangeRecord.setChangeAmount((int)moneyamount_long_fr) ;
                                 bizAssetChangeRecord.setFrozenAmountBefore(frozen_amount_before) ;
                                 bizAssetChangeRecord.setAvailableAmountBefore(available_amount_before) ;
                                 bizAssetChangeRecord.setFrozenAmountAfter(frozen_amount) ;
