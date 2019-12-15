@@ -25,7 +25,7 @@ import org.suhui.common.util.oConvertUtils;
 public class JwtUtil {
 
 	// 过期时间30分钟
-	public static final long EXPIRE_TIME = 30 * 60 * 1000;
+	public static final long EXPIRE_TIME = 14 *24 * 60 * 60 * 1000;
 
 	/**
 	 * 校验token是否正确
