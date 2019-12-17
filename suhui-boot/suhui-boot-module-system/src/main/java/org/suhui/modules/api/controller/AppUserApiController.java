@@ -435,4 +435,31 @@ public class AppUserApiController {
         return result ;
     }
 
+    /**
+     * 校验token 是否过期
+     * @param params
+     * @return
+     */
+    @RequestMapping(value = "/check_token", method = RequestMethod.POST)
+    public Result<JSONObject> check_token(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
+
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+        String token = params.get("token")+"" ;
+
+        String login_name = JwtUtil.getUsername(token) ; // 登陆用户信息
+
+        PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(login_name,"") ;
+
+        boolean flag = JwtUtil.verify(token , login_name, payUserLogin.getPassword()) ;
+
+        obj.put("state" , flag) ;
+
+        result.setResult(obj);
+        result.success("check login state !");
+        result.setCode(CommonConstant.SC_OK_200);
+
+        return result ;
+    }
+
 }
