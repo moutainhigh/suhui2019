@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.suhui.modules.order.mapper.OrderAssurerAccountMapper">
+
+	<delete id="deleteByMainId" parameterType="java.lang.String">
+		DELETE 
+		FROM  order_assurer_account 
+		WHERE
+			 assurer_id = #{id} 		
+	</delete>
+	
+	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.suhui.modules.order.entity.OrderAssurerAccount">
+		SELECT * 
+		FROM  order_assurer_account
+		WHERE
+			 assurer_id = #{id} 		
+	</select>
+</mapper>
