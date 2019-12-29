@@ -55,4 +55,128 @@ public class OrderAssurer implements Serializable {
 	private java.util.Date updateTime;
 	/**删除状态（0，正常，1已删除）*/
 	private java.lang.String delFlag;
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getUserNo() {
+		return userNo;
+	}
+
+	public void setUserNo(String userNo) {
+		this.userNo = userNo;
+	}
+
+	public String getAssurerName() {
+		return assurerName;
+	}
+
+	public void setAssurerName(String assurerName) {
+		this.assurerName = assurerName;
+	}
+
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
+	}
+
+	public String getAssurerState() {
+		return assurerState;
+	}
+
+	public void setAssurerState(String assurerState) {
+		this.assurerState = assurerState;
+	}
+
+	public Double getAssurerRate() {
+		return assurerRate;
+	}
+
+	public void setAssurerRate(Double assurerRate) {
+		this.assurerRate = assurerRate;
+	}
+
+	public Integer getCanUseLimit() {
+		return canUseLimit;
+	}
+
+	public void setCanUseLimit(Integer canUseLimit) {
+		this.canUseLimit = canUseLimit;
+	}
+
+	public Integer getUsedLimit() {
+		return usedLimit;
+	}
+
+	public void setUsedLimit(Integer usedLimit) {
+		this.usedLimit = usedLimit;
+	}
+
+	public Integer getTotalLimit() {
+		return totalLimit;
+	}
+
+	public void setTotalLimit(Integer totalLimit) {
+		this.totalLimit = totalLimit;
+	}
+
+	public String getAssurerStrategy() {
+		return assurerStrategy;
+	}
+
+	public void setAssurerStrategy(String assurerStrategy) {
+		this.assurerStrategy = assurerStrategy;
+	}
+
+	public String getCreateBy() {
+		return createBy;
+	}
+
+	public void setCreateBy(String createBy) {
+		this.createBy = createBy;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getUpdateBy() {
+		return updateBy;
+	}
+
+	public void setUpdateBy(String updateBy) {
+		this.updateBy = updateBy;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public String getDelFlag() {
+		return delFlag;
+	}
+
+	public void setDelFlag(String delFlag) {
+		this.delFlag = delFlag;
+	}
 }

@@ -14,5 +14,5 @@ import java.util.Map;
  */
 public interface IOrderMainService extends IService<OrderMain> {
 
-      Result<Object> manageOrder(OrderMain orderMain);
+      Result<Object> manageOrder(OrderMain orderMain,String token);
 }

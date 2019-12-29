@@ -2,6 +2,7 @@ package org.suhui.modules.order.service.impl;
 
 import org.suhui.modules.order.entity.OrderAssurer;
 import org.suhui.modules.order.entity.OrderAssurerAccount;
+import org.suhui.modules.order.entity.OrderMain;
 import org.suhui.modules.order.mapper.OrderAssurerAccountMapper;
 import org.suhui.modules.order.mapper.OrderAssurerMapper;
 import org.suhui.modules.order.service.IOrderAssurerService;
@@ -10,8 +11,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @Description: 去
@@ -69,5 +72,13 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
 			orderAssurerMapper.deleteById(id);
 		}
 	}
-	
+
+	@Override
+	public Map getAssurerByOrder(OrderMain orderMain) {
+		Map<String,Object> paramMap = new HashMap<>();
+		paramMap.put("order_money",orderMain.getTargetCurrencyMoney());
+		List<Map> orderAssurers = orderAssurerMapper.getAssurerByOrderData(paramMap);
+		return orderAssurers.get(0);
+	}
+
 }

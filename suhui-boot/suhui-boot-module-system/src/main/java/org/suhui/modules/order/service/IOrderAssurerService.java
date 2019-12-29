@@ -3,9 +3,12 @@ package org.suhui.modules.order.service;
 import org.suhui.modules.order.entity.OrderAssurerAccount;
 import org.suhui.modules.order.entity.OrderAssurer;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.suhui.modules.order.entity.OrderMain;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 去
@@ -36,5 +39,10 @@ public interface IOrderAssurerService extends IService<OrderAssurer> {
 	 * 批量删除一对多
 	 */
 	public void delBatchMain (Collection<? extends Serializable> idList);
-	
+
+	/**
+	 * 为订单查询最优承兑商
+	 */
+	Map getAssurerByOrder(OrderMain orderMain);
+
 }

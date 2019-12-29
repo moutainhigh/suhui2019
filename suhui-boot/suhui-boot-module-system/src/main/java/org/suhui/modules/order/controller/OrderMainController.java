@@ -81,10 +81,11 @@ public class OrderMainController {
 	@AutoLog(value = "订单表-添加")
 	@ApiOperation(value="订单表-添加", notes="订单表-添加")
 	@PostMapping(value = "/add")
-	public Result<Object> add(@RequestBody OrderMain orderMain) {
+	public Result<Object> add(HttpServletRequest request,@RequestBody OrderMain orderMain) {
 		Result<Object> result = new Result<Object>();
+		String accessToken = request.getHeader("X-Access-Token");
 		try {
-			result = orderMainService.manageOrder(orderMain);
+			result = orderMainService.manageOrder(orderMain,accessToken);
 			return result;
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);

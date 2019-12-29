@@ -29,6 +29,9 @@ public class OrderAssurerAccount implements Serializable {
 	/**账户类型(支付宝(alipay)、银行卡(bank_card))*/
     @Excel(name = "账户类型(支付宝(alipay)、银行卡(bank_card))", width = 15)
 	private java.lang.String accountType;
+	/**开户行*/
+	@Excel(name = "开户行", width = 15)
+	private java.lang.String openBank;
 	/**账户*/
     @Excel(name = "账户", width = 15)
 	private java.lang.String accountNo;
@@ -69,4 +72,136 @@ public class OrderAssurerAccount implements Serializable {
 	/**删除状态（0，正常，1已删除）*/
     @Excel(name = "删除状态（0，正常，1已删除）", width = 15)
 	private java.lang.String delFlag;
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getAssurerId() {
+		return assurerId;
+	}
+
+	public void setAssurerId(String assurerId) {
+		this.assurerId = assurerId;
+	}
+
+	public String getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
+	}
+
+	public String getOpenBank() {
+		return openBank;
+	}
+
+	public void setOpenBank(String openBank) {
+		this.openBank = openBank;
+	}
+
+	public String getAccountNo() {
+		return accountNo;
+	}
+
+	public void setAccountNo(String accountNo) {
+		this.accountNo = accountNo;
+	}
+
+	public String getRealName() {
+		return realName;
+	}
+
+	public void setRealName(String realName) {
+		this.realName = realName;
+	}
+
+	public String getUseType() {
+		return useType;
+	}
+
+	public void setUseType(String useType) {
+		this.useType = useType;
+	}
+
+	public Integer getPayLimit() {
+		return payLimit;
+	}
+
+	public void setPayLimit(Integer payLimit) {
+		this.payLimit = payLimit;
+	}
+
+	public Integer getPayUsedLimit() {
+		return payUsedLimit;
+	}
+
+	public void setPayUsedLimit(Integer payUsedLimit) {
+		this.payUsedLimit = payUsedLimit;
+	}
+
+	public Integer getPayCanUseLimit() {
+		return payCanUseLimit;
+	}
+
+	public void setPayCanUseLimit(Integer payCanUseLimit) {
+		this.payCanUseLimit = payCanUseLimit;
+	}
+
+	public Integer getCollectionUsedLimit() {
+		return collectionUsedLimit;
+	}
+
+	public void setCollectionUsedLimit(Integer collectionUsedLimit) {
+		this.collectionUsedLimit = collectionUsedLimit;
+	}
+
+	public String getCreateBy() {
+		return createBy;
+	}
+
+	public void setCreateBy(String createBy) {
+		this.createBy = createBy;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getUpdateBy() {
+		return updateBy;
+	}
+
+	public void setUpdateBy(String updateBy) {
+		this.updateBy = updateBy;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public String getDelFlag() {
+		return delFlag;
+	}
+
+	public void setDelFlag(String delFlag) {
+		this.delFlag = delFlag;
+	}
 }

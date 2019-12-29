@@ -68,10 +68,10 @@ public class OrderMain {
 	@Excel(name = "汇率", width = 15)
     @ApiModelProperty(value = "汇率")
 	private java.lang.Double exchangeRate;
-	/**订单金额*/
-	@Excel(name = "订单金额", width = 15)
-    @ApiModelProperty(value = "订单金额")
-	private java.lang.Integer orderMoney;
+	/**源币种金额*/
+	@Excel(name = "源币种金额", width = 15)
+    @ApiModelProperty(value = "源币种金额")
+	private java.lang.Integer sourceCurrencyMoney;
 	/**用户支付方式(支付宝alipay、银行卡bank_card)*/
 	@Excel(name = "用户支付方式(支付宝alipay、银行卡bank_card)", width = 15)
     @ApiModelProperty(value = "用户支付方式(支付宝alipay、银行卡bank_card)")
@@ -118,10 +118,10 @@ public class OrderMain {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "承兑商确认收款时间")
 	private java.util.Date assurerCollectionTime;
-	/**承兑商需兑付金额*/
-	@Excel(name = "承兑商需兑付金额", width = 15)
-    @ApiModelProperty(value = "承兑商需兑付金额")
-	private java.lang.Integer assurerPayMoney;
+	/**目标币种金额*/
+	@Excel(name = "目标币种金额", width = 15)
+    @ApiModelProperty(value = "目标币种金额")
+	private java.lang.Integer targetCurrencyMoney;
 	/**承兑商兑付时间*/
 	@Excel(name = "承兑商兑付时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
@@ -171,11 +171,17 @@ public class OrderMain {
 		if(!BaseUtil.Base_HasValue(this.sourceCurrency)){
 			message += "缺少值源币种,";
 		}
+		if(!BaseUtil.Base_HasValue(this.exchangeRate)){
+			message += "缺少值汇率,";
+		}
+		if(!BaseUtil.Base_HasValue(this.sourceCurrencyMoney)){
+			message += "缺少值源币种金额,";
+		}
 		if(!BaseUtil.Base_HasValue(this.targetCurrency)){
 			message += "缺少值目标币种,";
 		}
-		if(!BaseUtil.Base_HasValue(this.orderMoney)){
-			message += "缺少值订单金额,";
+		if(!BaseUtil.Base_HasValue(this.targetCurrencyMoney)){
+			message += "缺少值目标币种金额,";
 		}
 		if(!BaseUtil.Base_HasValue(this.userPayMethod)){
 			message += "缺少值用户支付方式,";
@@ -190,5 +196,229 @@ public class OrderMain {
 			message = message.substring(0, message.length()-1);
 		}
 		return message;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getOrderCode() {
+		return orderCode;
+	}
+
+	public void setOrderCode(String orderCode) {
+		this.orderCode = orderCode;
+	}
+
+	public Integer getOrderState() {
+		return orderState;
+	}
+
+	public void setOrderState(Integer orderState) {
+		this.orderState = orderState;
+	}
+
+	public String getUserNo() {
+		return userNo;
+	}
+
+	public void setUserNo(String userNo) {
+		this.userNo = userNo;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getUserContact() {
+		return userContact;
+	}
+
+	public void setUserContact(String userContact) {
+		this.userContact = userContact;
+	}
+
+	public String getSourceCurrency() {
+		return sourceCurrency;
+	}
+
+	public void setSourceCurrency(String sourceCurrency) {
+		this.sourceCurrency = sourceCurrency;
+	}
+
+	public String getTargetCurrency() {
+		return targetCurrency;
+	}
+
+	public void setTargetCurrency(String targetCurrency) {
+		this.targetCurrency = targetCurrency;
+	}
+
+	public Double getExchangeRate() {
+		return exchangeRate;
+	}
+
+	public void setExchangeRate(Double exchangeRate) {
+		this.exchangeRate = exchangeRate;
+	}
+
+	public Integer getSourceCurrencyMoney() {
+		return sourceCurrencyMoney;
+	}
+
+	public void setSourceCurrencyMoney(Integer sourceCurrencyMoney) {
+		this.sourceCurrencyMoney = sourceCurrencyMoney;
+	}
+
+	public String getUserPayMethod() {
+		return userPayMethod;
+	}
+
+	public void setUserPayMethod(String userPayMethod) {
+		this.userPayMethod = userPayMethod;
+	}
+
+	public Date getUserPayTime() {
+		return userPayTime;
+	}
+
+	public void setUserPayTime(Date userPayTime) {
+		this.userPayTime = userPayTime;
+	}
+
+	public String getUserCollectionMethod() {
+		return userCollectionMethod;
+	}
+
+	public void setUserCollectionMethod(String userCollectionMethod) {
+		this.userCollectionMethod = userCollectionMethod;
+	}
+
+	public String getUserCollectionAccount() {
+		return userCollectionAccount;
+	}
+
+	public void setUserCollectionAccount(String userCollectionAccount) {
+		this.userCollectionAccount = userCollectionAccount;
+	}
+
+	public Date getUserCollectionTime() {
+		return userCollectionTime;
+	}
+
+	public void setUserCollectionTime(Date userCollectionTime) {
+		this.userCollectionTime = userCollectionTime;
+	}
+
+	public String getAssurerId() {
+		return assurerId;
+	}
+
+	public void setAssurerId(String assurerId) {
+		this.assurerId = assurerId;
+	}
+
+	public String getAssurerName() {
+		return assurerName;
+	}
+
+	public void setAssurerName(String assurerName) {
+		this.assurerName = assurerName;
+	}
+
+	public String getAssurerCollectionMethod() {
+		return assurerCollectionMethod;
+	}
+
+	public void setAssurerCollectionMethod(String assurerCollectionMethod) {
+		this.assurerCollectionMethod = assurerCollectionMethod;
+	}
+
+	public String getAssurerCollectionAccount() {
+		return assurerCollectionAccount;
+	}
+
+	public void setAssurerCollectionAccount(String assurerCollectionAccount) {
+		this.assurerCollectionAccount = assurerCollectionAccount;
+	}
+
+	public Date getAssurerCollectionTime() {
+		return assurerCollectionTime;
+	}
+
+	public void setAssurerCollectionTime(Date assurerCollectionTime) {
+		this.assurerCollectionTime = assurerCollectionTime;
+	}
+
+	public Integer getTargetCurrencyMoney() {
+		return targetCurrencyMoney;
+	}
+
+	public void setTargetCurrencyMoney(Integer targetCurrencyMoney) {
+		this.targetCurrencyMoney = targetCurrencyMoney;
+	}
+
+	public Date getAssurerPayTime() {
+		return assurerPayTime;
+	}
+
+	public void setAssurerPayTime(Date assurerPayTime) {
+		this.assurerPayTime = assurerPayTime;
+	}
+
+	public String getOrderText() {
+		return orderText;
+	}
+
+	public void setOrderText(String orderText) {
+		this.orderText = orderText;
+	}
+
+	public String getCreateBy() {
+		return createBy;
+	}
+
+	public void setCreateBy(String createBy) {
+		this.createBy = createBy;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getUpdateBy() {
+		return updateBy;
+	}
+
+	public void setUpdateBy(String updateBy) {
+		this.updateBy = updateBy;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public String getDelFlag() {
+		return delFlag;
+	}
+
+	public void setDelFlag(String delFlag) {
+		this.delFlag = delFlag;
 	}
 }
