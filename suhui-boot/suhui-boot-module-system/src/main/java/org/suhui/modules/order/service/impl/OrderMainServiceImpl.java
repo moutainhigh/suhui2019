@@ -28,6 +28,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
     @Override
     public Result<Object> manageOrder(OrderMain orderMain) {
         Result<Object> result = new Result<Object>();
+        // 判断必填项是否有值
         String checkValue = orderMain.checkCreateRequireValue();
         if(BaseUtil.Base_HasValue(checkValue)){
             return Result.error(402,checkValue);
