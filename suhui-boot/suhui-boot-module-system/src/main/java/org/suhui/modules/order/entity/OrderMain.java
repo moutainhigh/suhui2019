@@ -156,6 +156,10 @@ public class OrderMain {
 	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
     @ApiModelProperty(value = "删除状态（0，正常，1已删除）")
 	private java.lang.String delFlag;
+	private java.lang.String assurerPayMethod;
+	private java.lang.String assurerPayAccount;
+	private java.lang.Integer autoDispatchState;
+	private java.lang.String autoDispatchText;
 
 	public String checkCreateRequireValue(){
 		String message = "";
@@ -420,5 +424,37 @@ public class OrderMain {
 
 	public void setDelFlag(String delFlag) {
 		this.delFlag = delFlag;
+	}
+
+	public String getAssurerPayMethod() {
+		return assurerPayMethod;
+	}
+
+	public void setAssurerPayMethod(String assurerPayMethod) {
+		this.assurerPayMethod = assurerPayMethod;
+	}
+
+	public String getAssurerPayAccount() {
+		return assurerPayAccount;
+	}
+
+	public void setAssurerPayAccount(String assurerPayAccount) {
+		this.assurerPayAccount = assurerPayAccount;
+	}
+
+	public Integer getAutoDispatchState() {
+		return autoDispatchState;
+	}
+
+	public void setAutoDispatchState(Integer autoDispatchState) {
+		this.autoDispatchState = autoDispatchState;
+	}
+
+	public String getAutoDispatchText() {
+		return autoDispatchText;
+	}
+
+	public void setAutoDispatchText(String autoDispatchText) {
+		this.autoDispatchText = autoDispatchText;
 	}
 }

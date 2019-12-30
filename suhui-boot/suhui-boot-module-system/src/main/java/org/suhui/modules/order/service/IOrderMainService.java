@@ -1,5 +1,6 @@
 package org.suhui.modules.order.service;
 
+import com.alibaba.fastjson.JSONObject;
 import org.suhui.common.api.vo.Result;
 import org.suhui.modules.order.entity.OrderMain;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -14,5 +15,7 @@ import java.util.Map;
  */
 public interface IOrderMainService extends IService<OrderMain> {
 
-      Result<Object> manageOrder(OrderMain orderMain,String token);
+      Result<Object> manageOrderByAuto(OrderMain orderMain);
+
+      JSONObject getUserPayMoney(String source, String target, String money, String token);
 }

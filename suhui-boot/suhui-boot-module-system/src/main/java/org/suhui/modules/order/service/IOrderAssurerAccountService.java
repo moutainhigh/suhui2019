@@ -13,4 +13,8 @@ import java.util.List;
 public interface IOrderAssurerAccountService extends IService<OrderAssurerAccount> {
 
 	public List<OrderAssurerAccount> selectByMainId(String mainId);
+
+	OrderAssurerAccount getAssurerAccountByOrderPay(String assurerId,int orderMoney);
+
+	OrderAssurerAccount getAssurerAccountByOrderCollection(String assurerId);
 }

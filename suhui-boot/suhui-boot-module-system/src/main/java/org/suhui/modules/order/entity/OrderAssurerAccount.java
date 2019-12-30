@@ -72,6 +72,7 @@ public class OrderAssurerAccount implements Serializable {
 	/**删除状态（0，正常，1已删除）*/
     @Excel(name = "删除状态（0，正常，1已删除）", width = 15)
 	private java.lang.String delFlag;
+	private java.lang.Integer payLockMoney;
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
@@ -203,5 +204,13 @@ public class OrderAssurerAccount implements Serializable {
 
 	public void setDelFlag(String delFlag) {
 		this.delFlag = delFlag;
+	}
+
+	public Integer getPayLockMoney() {
+		return payLockMoney;
+	}
+
+	public void setPayLockMoney(Integer payLockMoney) {
+		this.payLockMoney = payLockMoney;
 	}
 }

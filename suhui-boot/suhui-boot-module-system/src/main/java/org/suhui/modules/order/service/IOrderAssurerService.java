@@ -41,8 +41,8 @@ public interface IOrderAssurerService extends IService<OrderAssurer> {
 	public void delBatchMain (Collection<? extends Serializable> idList);
 
 	/**
-	 * 为订单查询最优承兑商
+	 * 为订单查询最优承兑商及支付账户
 	 */
-	Map getAssurerByOrder(OrderMain orderMain);
+	Map<String,Object> getAssurerByOrder(OrderMain orderMain);
 
 }

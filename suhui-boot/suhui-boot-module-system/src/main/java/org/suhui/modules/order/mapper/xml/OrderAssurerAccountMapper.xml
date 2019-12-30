@@ -13,6 +13,6 @@
 		SELECT * 
 		FROM  order_assurer_account
 		WHERE
-			 assurer_id = #{id} 		
+			 del_flag = 0 and assurer_id = #{id}
 	</select>
 </mapper>

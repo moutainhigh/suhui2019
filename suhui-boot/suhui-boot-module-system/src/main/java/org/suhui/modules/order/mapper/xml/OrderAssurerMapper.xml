@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.suhui.modules.order.mapper.OrderAssurerMapper">
-    <select id="getAssurerByOrderData" resultType="map" parameterType="map">
+    <select id="getAssurerByOrderData" resultType="org.suhui.modules.order.entity.OrderAssurer" parameterType="map">
         SELECT
         a.*
         FROM
         order_assurer a
-        WHERE 1 = 1 AND a.assurer_state = 'normal' and a.del_flag = 0
+        WHERE 1 = 1 AND a.assurer_state = 'normal' and a.online_state = 1 and a.del_flag = 0
         <if test="order_money!=null and order_money!=''">
             AND a.can_use_limit >= #{order_money}
         </if>

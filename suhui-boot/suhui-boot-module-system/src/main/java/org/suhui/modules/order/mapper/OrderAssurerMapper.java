@@ -15,5 +15,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface OrderAssurerMapper extends BaseMapper<OrderAssurer> {
 
-    List<Map> getAssurerByOrderData(Map<String,Object> map);
+    List<OrderAssurer> getAssurerByOrderData(Map<String,Object> map);
 }

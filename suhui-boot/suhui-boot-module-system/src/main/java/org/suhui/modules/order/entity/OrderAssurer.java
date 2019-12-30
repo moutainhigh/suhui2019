@@ -55,7 +55,8 @@ public class OrderAssurer implements Serializable {
 	private java.util.Date updateTime;
 	/**删除状态（0，正常，1已删除）*/
 	private java.lang.String delFlag;
-
+	private java.lang.Integer onlineState;
+	private java.lang.Integer payLockMoney;
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
 	}
@@ -178,5 +179,21 @@ public class OrderAssurer implements Serializable {
 
 	public void setDelFlag(String delFlag) {
 		this.delFlag = delFlag;
+	}
+
+	public Integer getOnlineState() {
+		return onlineState;
+	}
+
+	public void setOnlineState(Integer onlineState) {
+		this.onlineState = onlineState;
+	}
+
+	public Integer getPayLockMoney() {
+		return payLockMoney;
+	}
+
+	public void setPayLockMoney(Integer payLockMoney) {
+		this.payLockMoney = payLockMoney;
 	}
 }
