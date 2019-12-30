@@ -49,7 +49,7 @@ import io.swagger.annotations.ApiOperation;
 @Slf4j
 @Api(tags="account_type_code")
 @RestController
-@RequestMapping("/api/login/accountTypeCode/getAccountTypeCode")
+@RequestMapping("/api/login/accountTypeCode/")
 
 public class ApiAccountTypeCodeController {
 
@@ -59,7 +59,7 @@ public class ApiAccountTypeCodeController {
    * @param response
    * @return
    */
-    @RequestMapping(value = "/getAccountTypeCodeList", method = RequestMethod.POST)
+    @RequestMapping(value = "/getList", method = RequestMethod.POST)
     public Result<JSONObject> add(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
         //用户退出逻辑
         Result<JSONObject> result = new Result<JSONObject>();
