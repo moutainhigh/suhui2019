@@ -12,7 +12,6 @@ import java.net.URLDecoder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.suhui.common.constant.CommonConstant;
-import org.suhui.common.constant.CurrencyConstant;
 import org.suhui.common.api.vo.Result;
 import org.suhui.common.system.query.QueryGenerator;
 import org.suhui.common.aspect.annotation.AutoLog;
@@ -69,10 +68,15 @@ public class ApiAccountTypeCodeController {
 
         Map<String, String> mapdb = new HashMap<String,String>();
 
-        mapdb.put("CNY", CurrencyConstant.CNY);
-        mapdb.put("USD", CurrencyConstant.USD);
-        mapdb.put("PHP", CurrencyConstant.PHP);
-        mapdb.put("KRW", CurrencyConstant.KRW);
+        final String CNY  = "0101";
+        final String USD  = "0201";
+        final String PHP  = "0301";
+        final String KRW  = "0401";
+
+        mapdb.put("CNY", CNY);
+        mapdb.put("USD", USD);
+        mapdb.put("PHP", PHP);
+        mapdb.put("KRW", KRW);
 
         listRtn.add(mapdb) ;
 
