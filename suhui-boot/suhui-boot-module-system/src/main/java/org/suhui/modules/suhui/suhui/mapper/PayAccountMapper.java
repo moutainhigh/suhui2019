@@ -16,7 +16,6 @@ import org.suhui.modules.suhui.suhui.entity.PayUserLogin;
  */
 public interface PayAccountMapper extends BaseMapper<PayAccount> {
 
-    @MapKey("id")
     public Map<String,String> getPayAccountByUserNo(Map<String,String> map);
 
     public List<Map<String,String>> getPayAccountMoneyByUserNo(Map<String,String> map);
