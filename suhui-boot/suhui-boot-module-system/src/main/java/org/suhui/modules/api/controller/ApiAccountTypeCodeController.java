@@ -49,7 +49,7 @@ import io.swagger.annotations.ApiOperation;
 @Slf4j
 @Api(tags="account_type_code")
 @RestController
-@RequestMapping("/api/login/accountTypeCode/")
+@RequestMapping("/api/login/accountTypeCode")
 
 public class ApiAccountTypeCodeController {
 
