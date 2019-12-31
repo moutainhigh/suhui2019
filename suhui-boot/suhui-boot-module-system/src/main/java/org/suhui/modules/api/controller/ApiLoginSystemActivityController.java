@@ -53,7 +53,7 @@ import org.suhui.modules.suhui.suhui.entity.*;
 @RequestMapping("/api/system")
 @Api(tags = "获取系统中的活动信息")
 @Slf4j
-public class AppSystemActivityApiController {
+public class ApiLoginSystemActivityController {
 
     /**
      * 获取系统中的活动信息
