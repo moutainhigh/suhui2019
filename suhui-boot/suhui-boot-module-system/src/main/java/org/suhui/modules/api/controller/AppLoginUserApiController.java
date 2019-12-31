@@ -22,7 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.List;
+import java.util.ArrayList;
 
 
 /**
@@ -524,4 +525,47 @@ public class AppLoginUserApiController {
     }
 
 
+    /**
+     * 通过电话 区域代码 查询用户详细信息
+     * @param params
+     * @return
+     */
+    @RequestMapping(value = "/getUserCardListByPhone", method = RequestMethod.POST)
+    public Result<JSONObject> getUserCardListByPhone(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
+
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+        String phone = params.get("phone")+"" ;
+        String areacode = params.get("areacode")+"" ;
+
+        PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(phone , areacode) ;
+        if(payUserLogin == null){
+            result.setResult(obj);
+            result.success("cannot find this user");
+            result.setCode(517);
+            return result ;
+        }
+        String userno = payUserLogin.getUserNo();
+        Integer usertype = payUserLogin.getUserType();
+
+        List<String> cardList = new ArrayList<>();
+        JSONObject sampleCard = new JSONObject();
+        sampleCard.put("cardType", "currencyTicket");
+        sampleCard.put("rate", "0.005");
+        sampleCard.put("usedOrNot", "0");   // 0 : not used， 1 : used
+        sampleCard.put("cardShouldBeUsedBefore", java.time.LocalDateTime.now().toString());   // 
+
+        sampleCard.put("cardNo", "5612314949667318464212");
+        cardList.add(sampleCard.toString());
+        sampleCard.put("cardNo", "5612314949667318464562");
+        cardList.add(sampleCard.toString());
+        sampleCard.put("cardNo", "5612314949667318464593");
+        cardList.add(sampleCard.toString());
+        obj.put("cardList", cardList);
+
+        result.setResult(obj);
+        result.success("get getUserCardListByPhone success");
+        result.setCode(CommonConstant.SC_OK_200);
+        return result;
+    }
 }
