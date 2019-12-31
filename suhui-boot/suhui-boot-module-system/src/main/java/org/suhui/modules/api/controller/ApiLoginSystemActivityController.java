@@ -50,7 +50,7 @@ import java.util.Random;
 import org.suhui.modules.suhui.suhui.entity.*;
 
 @RestController
-@RequestMapping("/api/system")
+@RequestMapping("/api/login/system")
 @Api(tags = "获取系统中的活动信息")
 @Slf4j
 public class ApiLoginSystemActivityController {
