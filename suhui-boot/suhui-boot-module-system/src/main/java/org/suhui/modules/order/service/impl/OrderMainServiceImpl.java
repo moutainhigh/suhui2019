@@ -71,6 +71,162 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
     }
 
     /**
+     * 用户确认支付
+     */
+    @Override
+    public Result<Object> userPayConfirm(String orderId) {
+        OrderMain orderMain = getById(orderId);
+        if (!BaseUtil.Base_HasValue(orderMain)) {
+            return Result.error(513, "订单不存在");
+        }
+        if (orderMain.getOrderState() != 2) {
+            return Result.error(514, "订单状态异常");
+        }
+        orderMain.setOrderState(3);
+        orderMain.setUserPayTime(new Date());
+        updateById(orderMain);
+        return Result.ok("操作成功");
+    }
+
+    /**
+     * 承兑商确认已收款
+     */
+    @Override
+    public Result<Object> assurerCollectionConfirm(String orderId) {
+        OrderMain orderMain = getById(orderId);
+        if (!BaseUtil.Base_HasValue(orderMain)) {
+            return Result.error(513, "订单不存在");
+        }
+        if (orderMain.getOrderState() != 3) {
+            return Result.error(514, "订单状态异常");
+        }
+        orderMain.setOrderState(4);
+        orderMain.setAssurerCollectionTime(new Date());
+        updateById(orderMain);
+        return Result.ok("操作成功");
+    }
+
+    /**
+     * 承兑商确认已兑付
+     */
+    @Override
+    public Result<Object> assurerPayConfirm(String orderId) {
+        OrderMain orderMain = getById(orderId);
+        if (!BaseUtil.Base_HasValue(orderMain)) {
+            return Result.error(513, "订单不存在");
+        }
+        if (orderMain.getOrderState() != 4) {
+            return Result.error(514, "订单状态异常");
+        }
+        orderMain.setOrderState(5);
+        orderMain.setAssurerPayTime(new Date());
+        updateById(orderMain);
+        return Result.ok("操作成功");
+    }
+
+    /**
+     * 用户确认已收款-订单完成
+     */
+    @Override
+    public Result<Object> userCollectionConfirm(String orderId) {
+        OrderMain orderMain = getById(orderId);
+        if (!BaseUtil.Base_HasValue(orderMain)) {
+            return Result.error(513, "订单不存在");
+        }
+        if (orderMain.getOrderState() != 5) {
+            return Result.error(514, "订单状态异常");
+        }
+        orderMain.setOrderState(6);
+        orderMain.setUserCollectionTime(new Date());
+        updateById(orderMain);
+        return orderFinishChangeAussurerMoney(orderMain);
+    }
+
+    /**
+     * 订单完成-释放承兑商锁定金额
+     */
+    public Result<Object> orderFinishChangeAussurerMoney(OrderMain orderMain) {
+        OrderAssurer orderAssurer = orderAssurerService.getById(orderMain.getAssurerId());
+        OrderAssurerAccount oaac = orderAssurerAccountService.getById(orderMain.getAssurerCollectionAccountId());
+        OrderAssurerAccount oaap = orderAssurerAccountService.getById(orderMain.getAssurerPayAccountId());
+        if (!BaseUtil.Base_HasValue(orderAssurer)) {
+            return Result.error(515, "承兑商不存在");
+        }
+        if (!BaseUtil.Base_HasValue(oaac)) {
+            return Result.error(516, "承兑商收款账户不存在");
+        }
+        if (!BaseUtil.Base_HasValue(oaap)) {
+            return Result.error(516, "承兑商支付账户不存在");
+        }
+        Integer orderMoney = orderMain.getTargetCurrencyMoney();
+        // 更新已使用金额 = 已用金额+该订单金额
+        Integer userdLimit = orderAssurer.getUsedLimit() + orderMoney;
+        // 更新锁定金额
+        Integer payLockMoney = orderAssurer.getPayLockMoney() - orderMoney;
+        if (userdLimit + orderAssurer.getCanUseLimit() + payLockMoney != orderAssurer.getTotalLimit()) {
+            return Result.error(520, "承兑商金额异常(已用金额+可用金额+锁定金额不等于总金额)");
+        }
+        orderAssurer.setUsedLimit(userdLimit);
+        orderAssurer.setPayLockMoney(payLockMoney);
+        orderAssurerService.updateById(orderAssurer);
+        // 目前支付宝账户才进行锁定金额
+        if ("alipay".equals(oaap.getAccountType())) {
+            // 更新账户已使用金额 = 已用金额+该订单金额
+            Integer usedLimitAccount = oaap.getPayUsedLimit() + orderMoney;
+            // 更新账户锁定金额
+            Integer payLockMoneyAccount = oaap.getPayLockMoney() - orderMoney;
+            if (usedLimitAccount + oaap.getPayCanUseLimit() + oaap.getPayLockMoney() != oaap.getPayLimit()) {
+                return Result.error(520, "承兑商账户金额异常(已用金额+可用金额+锁定金额不等于总金额)");
+            }
+            oaap.setPayLockMoney(payLockMoneyAccount);
+            oaap.setPayUsedLimit(usedLimitAccount);
+        }
+        // 收款账户已用金额增加
+        if (oaac.getId().equals(oaap.getId())) {
+            oaap.setCollectionUsedLimit(oaac.getCollectionUsedLimit() + orderMoney);
+        } else {
+            oaac.setCollectionUsedLimit(oaac.getCollectionUsedLimit() + orderMoney);
+            orderAssurerAccountService.updateById(oaac);
+        }
+        orderAssurerAccountService.updateById(oaap);
+        return Result.ok("操作成功");
+    }
+
+    /**
+     * 通过源货币和目标货币获取汇率计算金额
+     */
+    @Override
+    public JSONObject getUserPayMoney(String source, String target, String money, String token) {
+        JSONObject valueObj = new JSONObject();
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String url = "http://localhost:3333/api/login/payCurrencyRate/getCurrencyRateByRateCode";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            headers.add("X-Access-Token", token);
+            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+            map.add("source_currency_code", source);
+            map.add("target_currency_code", target);
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+            ResponseEntity<JSONObject> response = restTemplate.postForEntity(url, request, JSONObject.class);
+            if (response.getBody().getInteger("code") == 0) {
+                JSONObject result = response.getBody().getJSONObject("result");
+                JSONObject data = result.getJSONObject("data");
+                String rate = data.getString("rate_now");
+                BigDecimal a1 = new BigDecimal(money);
+                BigDecimal b1 = new BigDecimal(rate);
+                BigDecimal rate_now_divide = a1.multiply(b1);
+                Double value = rate_now_divide.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+                valueObj.put("money", value);
+                valueObj.put("rate", rate);
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return valueObj;
+    }
+
+    /**
      * 给订单分配一个承兑商和账户
      */
     public void dispatchAssurerToOrder(OrderMain orderMain, Map resutMap) {
@@ -81,7 +237,9 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             orderMain.setAssurerId(orderAssurer.getId());
             orderMain.setAssurerName(orderAssurer.getAssurerName());
             orderMain.setAssurerCollectionAccount(collection.getAccountNo());
+            orderMain.setAssurerCollectionAccountId(collection.getId());
             orderMain.setAssurerCollectionMethod(collection.getAccountType());
+            orderMain.setAssurerPayAccountId(pay.getId());
             orderMain.setAssurerPayAccount(pay.getAccountNo());
             orderMain.setAssurerPayMethod(pay.getAccountType());
             orderMain.setOrderState(2);
@@ -135,40 +293,6 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             orderAssurerAccount.setPayLockMoney(lockMoney);
             orderAssurerAccountService.updateById(orderAssurerAccount);
         }
-    }
-
-    /**
-     * 通过源货币和目标货币获取汇率计算金额
-     */
-    @Override
-    public JSONObject getUserPayMoney(String source, String target, String money, String token) {
-        JSONObject valueObj=new JSONObject();
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            String url = "http://localhost:3333/api/login/payCurrencyRate/getCurrencyRateByRateCode";
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            headers.add("X-Access-Token", token);
-            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-            map.add("source_currency_code", source);
-            map.add("target_currency_code", target);
-            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
-            ResponseEntity<JSONObject> response = restTemplate.postForEntity(url, request, JSONObject.class);
-            if (response.getBody().getInteger("code") == 0) {
-                JSONObject result = response.getBody().getJSONObject("result");
-                JSONObject data = result.getJSONObject("data");
-                String rate = data.getString("rate_now");
-                BigDecimal a1 = new BigDecimal(money);
-                BigDecimal b1 = new BigDecimal(rate);
-                BigDecimal rate_now_divide = a1.multiply(b1);
-                Double value = rate_now_divide.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
-                valueObj.put("money",value);
-                valueObj.put("rate",rate);
-            }
-        } catch (Exception e) {
-            return null;
-        }
-        return valueObj;
     }
 
 }

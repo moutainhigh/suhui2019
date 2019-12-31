@@ -94,6 +94,80 @@ public class OrderMainController {
     }
 
     /**
+     * 用户确认已支付
+     */
+    @AutoLog(value = "用户确认已支付")
+    @ApiOperation(value = "用户确认已支付", notes = "用户确认已支付")
+    @PostMapping(value = "/userPay")
+    public Result<Object> userPay(HttpServletRequest request,@RequestParam(name = "orderId", required = true) String orderId) {
+        Result<Object> result = new Result<Object>();
+        try {
+            result = orderMainService.userPayConfirm(orderId);
+            return result;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("操作失败");
+        }
+        return result;
+    }
+
+
+    /**
+     * 承兑商确认已收款
+     */
+    @AutoLog(value = "承兑商确认已收款")
+    @ApiOperation(value = "承兑商确认已收款", notes = "承兑商确认已收款")
+    @PostMapping(value = "/assurerCollection")
+    public Result<Object> assurerCollection(HttpServletRequest request,@RequestParam(name = "orderId", required = true) String orderId) {
+        Result<Object> result = new Result<Object>();
+        try {
+            result = orderMainService.assurerCollectionConfirm(orderId);
+            return result;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("操作失败");
+        }
+        return result;
+    }
+
+    /**
+     * 承兑商确认已兑付
+     */
+    @AutoLog(value = "承兑商确认已兑付")
+    @ApiOperation(value = "承兑商确认已兑付", notes = "承兑商确认已兑付")
+    @PostMapping(value = "/assurerPay")
+    public Result<Object> assurerPay(HttpServletRequest request,@RequestParam(name = "orderId", required = true) String orderId) {
+        Result<Object> result = new Result<Object>();
+        try {
+            result = orderMainService.assurerPayConfirm(orderId);
+            return result;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("操作失败");
+        }
+        return result;
+    }
+
+
+    /**
+     * 用户确认已收款-订单完成
+     */
+    @AutoLog(value = "用户确认已收款-订单完成")
+    @ApiOperation(value = "用户确认已收款-订单完成", notes = "用户确认已收款-订单完成")
+    @PostMapping(value = "/userCollection")
+    public Result<Object> userCollection(HttpServletRequest request,@RequestParam(name = "orderId", required = true) String orderId) {
+        Result<Object> result = new Result<Object>();
+        try {
+            result = orderMainService.userCollectionConfirm(orderId);
+            return result;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("操作失败");
+        }
+        return result;
+    }
+
+    /**
      * 通过源货币和目标货币获取汇率计算金额
      */
     @RequestMapping(value = "/getUserPayMoney", method = RequestMethod.POST)

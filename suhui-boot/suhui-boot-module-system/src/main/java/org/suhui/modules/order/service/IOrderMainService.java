@@ -17,5 +17,15 @@ public interface IOrderMainService extends IService<OrderMain> {
 
       Result<Object> manageOrderByAuto(OrderMain orderMain);
 
+      Result<Object> userPayConfirm(String orderId);
+
+      Result<Object> assurerCollectionConfirm(String orderId);
+
+      Result<Object> assurerPayConfirm(String orderId);
+
+      Result<Object> userCollectionConfirm(String orderId);
+
       JSONObject getUserPayMoney(String source, String target, String money, String token);
+
+
 }

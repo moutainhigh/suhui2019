@@ -112,6 +112,7 @@ public class OrderMain {
 	@Excel(name = "承兑商收款账号", width = 15)
     @ApiModelProperty(value = "承兑商收款账号")
 	private java.lang.String assurerCollectionAccount;
+	private java.lang.String assurerCollectionAccountId;
 	/**承兑商确认收款时间*/
 	@Excel(name = "承兑商确认收款时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
@@ -158,6 +159,7 @@ public class OrderMain {
 	private java.lang.String delFlag;
 	private java.lang.String assurerPayMethod;
 	private java.lang.String assurerPayAccount;
+	private java.lang.String assurerPayAccountId;
 	private java.lang.Integer autoDispatchState;
 	private java.lang.String autoDispatchText;
 
@@ -456,5 +458,21 @@ public class OrderMain {
 
 	public void setAutoDispatchText(String autoDispatchText) {
 		this.autoDispatchText = autoDispatchText;
+	}
+
+	public String getAssurerCollectionAccountId() {
+		return assurerCollectionAccountId;
+	}
+
+	public void setAssurerCollectionAccountId(String assurerCollectionAccountId) {
+		this.assurerCollectionAccountId = assurerCollectionAccountId;
+	}
+
+	public String getAssurerPayAccountId() {
+		return assurerPayAccountId;
+	}
+
+	public void setAssurerPayAccountId(String assurerPayAccountId) {
+		this.assurerPayAccountId = assurerPayAccountId;
 	}
 }
