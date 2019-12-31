@@ -75,7 +75,7 @@ public class AppSystemActivityApiController {
         congMsgs.add(s2);
         obj.put("congMsgs" , congMsgs);
 
-        List<JSONObject> cardList = new ArrayList<>();
+        List<String> cardList = new ArrayList<>();
         JSONObject sampleCard = new JSONObject();
         sampleCard.put("name", "千分之五汇率券抢券活动");
         sampleCard.put("status", "2");   // 0: 未开始  1：正在进行 2：已经结束  
@@ -86,9 +86,9 @@ public class AppSystemActivityApiController {
         details.put("rate", "0.005");
         sampleCard.put("cardDetails", details);
 
-        cardList.add(sampleCard.clone());
-        cardList.add(sampleCard.clone());
-        cardList.add(sampleCard.clone());
+        cardList.add(sampleCard.toString());
+        cardList.add(sampleCard.toString());
+        cardList.add(sampleCard.toString());
         obj.put("cardList", cardList);
 
         result.setResult(obj);
