@@ -76,10 +76,10 @@ public class OrderMainController {
     }
 
     /**
-     * 创建订单
+     * 创建订单-app
      */
-    @AutoLog(value = "订单表-添加")
-    @ApiOperation(value = "订单表-添加", notes = "订单表-添加")
+    @AutoLog(value = "创建订单-app")
+    @ApiOperation(value = "创建订单-app", notes = "创建订单-app")
     @PostMapping(value = "/add")
     public Result<Object> add(HttpServletRequest request, @RequestBody OrderMain orderMain) {
         Result<Object> result = new Result<Object>();
@@ -94,12 +94,32 @@ public class OrderMainController {
     }
 
     /**
+     * 订单分配承兑商-后台
+     */
+    @AutoLog(value = "订单分配承兑商-后台")
+    @ApiOperation(value = "订单分配承兑商-后台", notes = "订单分配承兑商-后台")
+    @PostMapping(value = "/dispatchOrder")
+    public Result<Object> dispatchOrder(HttpServletRequest request,
+                              @RequestParam(name = "orderId", required = true) String orderId,
+                              @RequestParam(name = "assurerId", required = true) String assurerId) {
+        Result<Object> result = new Result<Object>();
+        try {
+            result = orderMainService.dispatchOrderAdmin(orderMain);
+            return result;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("操作失败");
+        }
+        return result;
+    }
+
+    /**
      * 用户确认已支付
      */
     @AutoLog(value = "用户确认已支付")
     @ApiOperation(value = "用户确认已支付", notes = "用户确认已支付")
     @PostMapping(value = "/userPay")
-    public Result<Object> userPay(HttpServletRequest request,@RequestParam(name = "orderId", required = true) String orderId) {
+    public Result<Object> userPay(HttpServletRequest request, @RequestParam(name = "orderId", required = true) String orderId) {
         Result<Object> result = new Result<Object>();
         try {
             result = orderMainService.userPayConfirm(orderId);
@@ -118,7 +138,7 @@ public class OrderMainController {
     @AutoLog(value = "承兑商确认已收款")
     @ApiOperation(value = "承兑商确认已收款", notes = "承兑商确认已收款")
     @PostMapping(value = "/assurerCollection")
-    public Result<Object> assurerCollection(HttpServletRequest request,@RequestParam(name = "orderId", required = true) String orderId) {
+    public Result<Object> assurerCollection(HttpServletRequest request, @RequestParam(name = "orderId", required = true) String orderId) {
         Result<Object> result = new Result<Object>();
         try {
             result = orderMainService.assurerCollectionConfirm(orderId);
@@ -136,7 +156,7 @@ public class OrderMainController {
     @AutoLog(value = "承兑商确认已兑付")
     @ApiOperation(value = "承兑商确认已兑付", notes = "承兑商确认已兑付")
     @PostMapping(value = "/assurerPay")
-    public Result<Object> assurerPay(HttpServletRequest request,@RequestParam(name = "orderId", required = true) String orderId) {
+    public Result<Object> assurerPay(HttpServletRequest request, @RequestParam(name = "orderId", required = true) String orderId) {
         Result<Object> result = new Result<Object>();
         try {
             result = orderMainService.assurerPayConfirm(orderId);
@@ -155,7 +175,7 @@ public class OrderMainController {
     @AutoLog(value = "用户确认已收款-订单完成")
     @ApiOperation(value = "用户确认已收款-订单完成", notes = "用户确认已收款-订单完成")
     @PostMapping(value = "/userCollection")
-    public Result<Object> userCollection(HttpServletRequest request,@RequestParam(name = "orderId", required = true) String orderId) {
+    public Result<Object> userCollection(HttpServletRequest request, @RequestParam(name = "orderId", required = true) String orderId) {
         Result<Object> result = new Result<Object>();
         try {
             result = orderMainService.userCollectionConfirm(orderId);
@@ -178,11 +198,11 @@ public class OrderMainController {
         Result<JSONObject> result = new Result<JSONObject>();
         String accessToken = request.getHeader("X-Access-Token");
         JSONObject value = orderMainService.getUserPayMoney(sourceCurrencyCode, targetCurrencyCode, targetCurrencyMoney, accessToken);
-        if(!BaseUtil.Base_HasValue(value)){
-            value.put("message","this rate is not in database") ;
+        if (!BaseUtil.Base_HasValue(value)) {
+            value.put("message", "this rate is not in database");
             result.setResult(value);
             result.setCode(515);
-            return result ;
+            return result;
         }
         result.setResult(value);
         result.setCode(200);

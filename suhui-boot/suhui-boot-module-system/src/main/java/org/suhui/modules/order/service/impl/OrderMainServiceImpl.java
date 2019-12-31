@@ -71,6 +71,38 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
     }
 
     /**
+     * 订单分配承兑商-后台
+     */
+    @Override
+    public Result<Object> dispatchOrderAdmin(String orderId, String assurerId) {
+        OrderMain orderMain = getById(orderId);
+        OrderAssurer orderAssurer = orderAssurerService.getById(assurerId);
+        if (!BaseUtil.Base_HasValue(orderMain)) {
+            return Result.error(513, "订单不存在");
+        }
+        if (!BaseUtil.Base_HasValue(orderAssurer)) {
+            return Result.error(515, "承兑商不存在");
+        }
+        // 为承兑商选择一个支付账号
+        OrderAssurerAccount accountPay = orderAssurerAccountService.getAssurerAccountByOrderPay(assurerId, orderMain.getTargetCurrencyMoney());
+        if (!accountPay.Base_HasValue(accountPay)) {
+            return Result.error(518, "承兑商找不到合适的支付账号");
+        }
+        // 为承兑商选择一个收款账号
+        OrderAssurerAccount accountCollection = orderAssurerAccountService.getAssurerAccountByOrderCollection(assurerId);
+        if (!accountPay.Base_HasValue(accountCollection)) {
+            return Result.error(519, "承兑商找不到合适的收款账号");
+        }
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("state","success");
+        resultMap.put("orderAssurer", orderAssurer);
+        resultMap.put("orderAssurerAccountPay", accountPay);
+        resultMap.put("orderAssurerAccountCollection", accountCollection);
+        dispatchAssurerToOrder(orderMain, resultMap);
+        return Result.ok("订单分配成功");
+    }
+
+    /**
      * 用户确认支付
      */
     @Override
@@ -142,6 +174,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         return orderFinishChangeAussurerMoney(orderMain);
     }
 
+
     /**
      * 订单完成-释放承兑商锁定金额
      */
@@ -156,7 +189,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             return Result.error(516, "承兑商收款账户不存在");
         }
         if (!BaseUtil.Base_HasValue(oaap)) {
-            return Result.error(516, "承兑商支付账户不存在");
+            return Result.error(517, "承兑商支付账户不存在");
         }
         Integer orderMoney = orderMain.getTargetCurrencyMoney();
         // 更新已使用金额 = 已用金额+该订单金额

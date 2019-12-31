@@ -25,6 +25,8 @@ public interface IOrderMainService extends IService<OrderMain> {
 
       Result<Object> userCollectionConfirm(String orderId);
 
+      Result<Object> dispatchOrderAdmin(String orderId,String assurerId);
+
       JSONObject getUserPayMoney(String source, String target, String money, String token);
 
 
