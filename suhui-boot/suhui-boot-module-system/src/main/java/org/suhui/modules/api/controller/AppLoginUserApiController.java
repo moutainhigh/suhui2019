@@ -617,8 +617,19 @@ public class AppLoginUserApiController {
         sampleBill.put("currencyCode", "PHP");
         sampleBill.put("bizNumber", "56123149128800334471499");
         BillList.add(sampleBill.toString());
-
         obj.put("BillList", BillList);
+
+        List<String> sumList = new ArrayList<>();
+        JSONObject sampleSum = new JSONObject();
+        sampleSum.put("CNY", "376.10");
+        sumList.add(sampleSum.toString());
+        sampleSum.put("USD", "-76.13");
+        sumList.add(sampleSum.toString());        
+        sampleSum.put("PHP", "-90.56");
+        sumList.add(sampleSum.toString());
+        sampleSum.put("KRW", "0");
+        sumList.add(sampleSum.toString());
+        obj.put("sumList", sumList);
 
         result.setResult(obj);
         result.success("get getUserCardListByPhone success");
