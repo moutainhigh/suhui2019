@@ -5,23 +5,23 @@ The repo for suihui fundTransfer project.
 
 
 
-## postman三个地址    
-登陆注册    
+## postman 4个地址    
+1 登陆注册    
 https://www.getpostman.com/collections/a73ac6f4fa7c8bf6edaa     
-postman文档    
-https://documenter.getpostman.com/view/1895285/SVmySxzb?version=latest    
 
-
-充值提现    
+2 充值提现    
 https://www.getpostman.com/collections/ff6f2d91d7529a4a7456     
-postman文档     
-https://documenter.getpostman.com/view/1895285/SVmySxze?version=latest    
 
-支付汇总      
+3 支付汇总      
 https://www.getpostman.com/collections/0784d85540f5a61abfb7  
-postman文档     
-https://documenter.getpostman.com/view/1895285/SVmySxzg?version=latest     
 
+支付汇总 新增API（请贺贺将此API添加到支付汇总，重新发布postman文档）
+POST
+http://3.93.15.101:3333/api/login/accountTypeCode/getList
+
+4 活动信息（为了配合新的活动页面，从后端返回Demo数据）
+https://www.getpostman.com/collections/a44ccff2f8fbf535d277
+目前仅有2个API
 
 
 #### Description    
