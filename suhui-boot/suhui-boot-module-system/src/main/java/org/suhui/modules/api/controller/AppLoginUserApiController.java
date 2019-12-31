@@ -528,9 +528,111 @@ public class AppLoginUserApiController {
     /**
      * 通过电话 区域代码 查询用户详细信息
      * @param params
+     *  areaCode
+        phoneNumber
+        startDate
+        endDate
+
+     * @return
+     *  
+     * a list of bills
+     * 1 transactionName
+       2 merchantType
+       3 time
+       4 plusOrMinus
+       5 valueMoney
+       6 currencyCode
+       7 bizNumber
+     */
+    @RequestMapping(value = "/getUserBillList", method = RequestMethod.POST)
+    public Result<JSONObject> getUserBillList(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
+
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+        String phone = params.get("phone")+"" ;
+        String areacode = params.get("areacode")+"" ;
+
+        PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(phone , areacode) ;
+        if(payUserLogin == null){
+            result.setResult(obj);
+            result.success("cannot find this user");
+            result.setCode(517);
+            return result ;
+        }
+        String userno = payUserLogin.getUserNo();
+        Integer usertype = payUserLogin.getUserType();
+
+        List<String> BillList = new ArrayList<>();
+        JSONObject sampleBill = new JSONObject();
+        sampleBill.put("transactionName", "沃尔玛");
+        sampleBill.put("merchantType", "生活用品");
+        sampleBill.put("time", "2019-12-31T13:51:25.087");   
+        sampleBill.put("plusOrMinus", "-");   // 
+        sampleBill.put("valueMoney", "73.90");
+        sampleBill.put("currencyCode", "CNY");
+        sampleBill.put("bizNumber", "56123149128845458464212");
+        BillList.add(sampleBill.toString());
+
+        sampleBill.put("transactionName", "扫收钱码付款-给天天早餐");
+        sampleBill.put("merchantType", "餐饮美食");
+        sampleBill.put("time", "2019-12-30T11:43:25.087");   
+        sampleBill.put("plusOrMinus", "-");   // 
+        sampleBill.put("valueMoney", "10.90");
+        sampleBill.put("currencyCode", "USD");
+        sampleBill.put("bizNumber", "56123120884545846421272");
+        BillList.add(sampleBill.toString());
+
+        sampleBill.put("transactionName", "xx地铁票务充值");
+        sampleBill.put("merchantType", "交通出行");
+        sampleBill.put("time", "2019-12-29T13:50:33.087");   
+        sampleBill.put("plusOrMinus", "-");   // 
+        sampleBill.put("valueMoney", "5.00");
+        sampleBill.put("currencyCode", "USD");
+        sampleBill.put("bizNumber", "56123149128845458463156");
+        BillList.add(sampleBill.toString());
+
+        sampleBill.put("transactionName", "转账-007");
+        sampleBill.put("merchantType", "转账充值");
+        sampleBill.put("time", "2019-12-28T08:15:12.087");   
+        sampleBill.put("plusOrMinus", "-");   // 
+        sampleBill.put("valueMoney", "60.23");
+        sampleBill.put("currencyCode", "USD");
+        sampleBill.put("bizNumber", "56123149128845458461111");
+        BillList.add(sampleBill.toString());
+
+        sampleBill.put("transactionName", "转账-superman");
+        sampleBill.put("merchantType", "转账充值");
+        sampleBill.put("time", "2019-12-27T09:33:22.087");   
+        sampleBill.put("plusOrMinus", "+");   // 
+        sampleBill.put("valueMoney", "450.00");
+        sampleBill.put("currencyCode", "CNY");
+        sampleBill.put("bizNumber", "56123149128800334471532");
+        BillList.add(sampleBill.toString());
+
+        sampleBill.put("transactionName", "沃尔玛");
+        sampleBill.put("merchantType", "生活用品");
+        sampleBill.put("time", "2019-12-36T13:51:25.087");   
+        sampleBill.put("plusOrMinus", "-");   // 
+        sampleBill.put("valueMoney", "90.56");
+        sampleBill.put("currencyCode", "PHP");
+        sampleBill.put("bizNumber", "56123149128800334471499");
+        BillList.add(sampleBill.toString());
+
+        obj.put("BillList", BillList);
+
+        result.setResult(obj);
+        result.success("get getUserCardListByPhone success");
+        result.setCode(CommonConstant.SC_OK_200);
+        return result;
+    }
+
+
+    /**
+     * 通过电话 区域代码 查询用户详细信息
+     * @param params
      * @return
      */
-    @RequestMapping(value = "/getUserCardListByPhone", method = RequestMethod.POST)
+    @RequestMapping(value = "/getUserBill", method = RequestMethod.POST)
     public Result<JSONObject> getUserCardListByPhone(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
 
         Result<JSONObject> result = new Result<JSONObject>();
