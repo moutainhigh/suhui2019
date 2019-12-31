@@ -163,6 +163,11 @@ public class OrderMain {
 	private java.lang.Integer autoDispatchState;
 	private java.lang.String autoDispatchText;
 
+	public void changeMoneyToPoints(){
+		this.targetCurrencyMoney = this.targetCurrencyMoney*100;
+		this.sourceCurrencyMoney = this.sourceCurrencyMoney*100;
+	}
+
 	public String checkCreateRequireValue(){
 		String message = "";
 		if(!BaseUtil.Base_HasValue(this.userNo)){

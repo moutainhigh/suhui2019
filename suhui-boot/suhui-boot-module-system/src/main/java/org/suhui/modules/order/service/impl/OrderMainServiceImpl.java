@@ -59,6 +59,8 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         if (BaseUtil.Base_HasValue(checkValue)) {
             return Result.error(511, checkValue);
         }
+        // 转换金额为最小单位
+        orderMain.changeMoneyToPoints();
         // 为订单选择最优承兑商
         Map resutMap = orderAssurerService.getAssurerByOrder(orderMain);
         if (BaseUtil.Base_HasValue(resutMap) && resutMap.get("state").equals("success")) {
