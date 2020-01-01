@@ -549,8 +549,8 @@ public class AppLoginUserApiController {
 
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
-        String phone = params.get("phone")+"" ;
-        String areacode = params.get("areacode")+"" ;
+        final String phone = params.get("phone")+"" ;
+        final String areacode = params.get("areacode")+"" ;
 
         PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(phone , areacode) ;
         if(payUserLogin == null){
@@ -559,8 +559,13 @@ public class AppLoginUserApiController {
             result.setCode(517);
             return result ;
         }
-        String userno = payUserLogin.getUserNo();
-        Integer usertype = payUserLogin.getUserType();
+        final String userno = payUserLogin.getUserNo();
+        final Integer usertype = payUserLogin.getUserType();
+
+        obj.put("phone", phone);
+        obj.put("areacode", areacode);
+        obj.put("userno", userno);
+        obj.put("usertype", usertype);
 
         List<String> BillList = new ArrayList<>();
         JSONObject sampleBill = new JSONObject();
@@ -627,7 +632,7 @@ public class AppLoginUserApiController {
         obj.put("SumList", SumList.toString());
 
         result.setResult(obj);
-        result.success("get getUserCardListByPhone success");
+        result.success("get getUserBillList success");
         result.setCode(CommonConstant.SC_OK_200);
         return result;
     }
@@ -681,4 +686,5 @@ public class AppLoginUserApiController {
         result.setCode(CommonConstant.SC_OK_200);
         return result;
     }
+
 }
