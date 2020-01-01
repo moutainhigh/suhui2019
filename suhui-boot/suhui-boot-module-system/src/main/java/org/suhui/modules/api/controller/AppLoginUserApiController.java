@@ -540,7 +540,6 @@ public class AppLoginUserApiController {
      * 1 transactionName
        2 merchantType
        3 time
-       4 plusOrMinus
        5 valueMoney
        6 currencyCode
        7 sysBizNumber
@@ -582,8 +581,7 @@ public class AppLoginUserApiController {
         sampleBill.put("merchantType", "生活用品");
         sampleBill.put("merchantBizNumber", UUIDGenerator.generate());
         sampleBill.put("time", "2019-12-31T13:51:25.087");   
-        sampleBill.put("plusOrMinus", "-");   // 
-        sampleBill.put("valueMoney", "73.90");
+        sampleBill.put("valueMoney", "-73.90");
         sampleBill.put("currencyCode", "CNY");
         sampleBill.put("sysBizNumber", UUIDGenerator.generate());
         BillList.add(sampleBill.toString());
@@ -592,8 +590,7 @@ public class AppLoginUserApiController {
         sampleBill.put("merchantType", "餐饮美食");
         sampleBill.put("merchantBizNumber", UUIDGenerator.generate());
         sampleBill.put("time", "2019-12-30T11:43:25.087");   
-        sampleBill.put("plusOrMinus", "-");   // 
-        sampleBill.put("valueMoney", "10.90");
+        sampleBill.put("valueMoney", "-10.90");
         sampleBill.put("currencyCode", "USD");
         sampleBill.put("sysBizNumber", UUIDGenerator.generate());
         BillList.add(sampleBill.toString());
@@ -602,8 +599,7 @@ public class AppLoginUserApiController {
         sampleBill.put("merchantType", "交通出行");
         sampleBill.put("merchantBizNumber", UUIDGenerator.generate());
         sampleBill.put("time", "2019-12-29T13:50:33.087");   
-        sampleBill.put("plusOrMinus", "-");   // 
-        sampleBill.put("valueMoney", "5.00");
+        sampleBill.put("valueMoney", "-5.00");
         sampleBill.put("currencyCode", "USD");
         sampleBill.put("sysBizNumber", UUIDGenerator.generate());
         BillList.add(sampleBill.toString());
@@ -612,8 +608,7 @@ public class AppLoginUserApiController {
         sampleBill.put("merchantType", "转账充值");
         sampleBill.put("merchantBizNumber", UUIDGenerator.generate());
         sampleBill.put("time", "2019-12-28T08:15:12.087");   
-        sampleBill.put("plusOrMinus", "-");   // 
-        sampleBill.put("valueMoney", "60.23");
+        sampleBill.put("valueMoney", "-60.23");
         sampleBill.put("currencyCode", "USD");
         sampleBill.put("sysBizNumber", UUIDGenerator.generate());
         BillList.add(sampleBill.toString());
@@ -622,7 +617,6 @@ public class AppLoginUserApiController {
         sampleBill.put("merchantType", "转账充值");
         sampleBill.put("merchantBizNumber", UUIDGenerator.generate());
         sampleBill.put("time", "2019-12-27T09:33:22.087");   
-        sampleBill.put("plusOrMinus", "+");   // 
         sampleBill.put("valueMoney", "450.00");
         sampleBill.put("currencyCode", "CNY");
         sampleBill.put("sysBizNumber", UUIDGenerator.generate());
@@ -632,8 +626,7 @@ public class AppLoginUserApiController {
         sampleBill.put("merchantType", "生活用品");
         sampleBill.put("merchantBizNumber", UUIDGenerator.generate());
         sampleBill.put("time", "2019-12-36T13:51:25.087");   
-        sampleBill.put("plusOrMinus", "-");   // 
-        sampleBill.put("valueMoney", "90.56");
+        sampleBill.put("valueMoney", "-90.56");
         sampleBill.put("currencyCode", "PHP");
         sampleBill.put("sysBizNumber", UUIDGenerator.generate());
         BillList.add(sampleBill.toString());
