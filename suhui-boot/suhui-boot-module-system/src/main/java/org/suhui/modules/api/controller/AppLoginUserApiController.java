@@ -649,6 +649,9 @@ public class AppLoginUserApiController {
      * 通过电话 区域代码 查询用户详细信息
      * @param params
      * @return
+     * 
+     * 目前返回的是Demo数据。升级时，需要返回该用户所有的券
+     * 
      */
     @RequestMapping(value = "/getUserCardListByPhone", method = RequestMethod.POST)
     public Result<JSONObject> getUserCardListByPhone(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
