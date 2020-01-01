@@ -61,6 +61,8 @@ public class ApiLoginSystemActivityController {
        2) 最近的活动信息（最近的几条活动信息）
      * @param
      * @return
+     * 
+     * 目前返回的是Demo数据。升级时，需要返回数据库中的活动信息     * 
      */
     @RequestMapping(value = "/getSystemActivity" , method = RequestMethod.POST)
     public Result<JSONObject>  getSystemActivity(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params) {
