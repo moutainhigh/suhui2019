@@ -70,6 +70,11 @@ public class ApiLoginSystemActivityController {
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
 
+        final String startDate = params.get("startDate") + "";
+        final String endDate = params.get("endDate") + "";
+        obj.put("startDate", startDate);
+        obj.put("endDate", endDate);
+
         List<String> congMsgs = new ArrayList<>();
         final String s1 = new String("恭喜********8432抢到5‰汇率券");
         final String s2 = new String("恭喜********2575抢到5‰汇率券");
