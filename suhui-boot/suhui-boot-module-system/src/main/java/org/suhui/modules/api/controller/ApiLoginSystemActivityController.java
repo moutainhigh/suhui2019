@@ -56,6 +56,13 @@ import org.suhui.modules.suhui.suhui.entity.*;
 public class ApiLoginSystemActivityController {
 
     /**
+     * 
+     *    这些信息用来解释给前端听：
+          status    // 0: 未开始  1：正在进行 2：已经结束       活动目前是开始/正在进行/已经结束
+          cardType  // currencyTicket:汇率券 , 其他类型待设计  活动里面发的卡的类型
+          type      // 0: 汇率券抢券活动, 1: xx, 2: xxx       指活动的类型
+     * 
+     * 
      * 获取系统中的活动信息
        1）最新的系统祝贺信息（用户获得汇率券）
        2) 最近的活动信息（最近的几条活动信息）
@@ -86,10 +93,10 @@ public class ApiLoginSystemActivityController {
         JSONObject sampleCard = new JSONObject();
         sampleCard.put("name", "千分之五汇率券抢券活动");
         sampleCard.put("status", "2");   // 0: 未开始  1：正在进行 2：已经结束  
-        sampleCard.put("type", 0);       // 汇率券抢券活动
+        sampleCard.put("type", 0);       // 0: 汇率券抢券活动, 1: xx, 2: xxx
         sampleCard.put("time", java.time.LocalDateTime.now().toString());
         Map<String, String> details = new HashMap<String,String>();
-        details.put("cardType", "currencyTicket");
+        details.put("cardType", "currencyTicket"); // currencyTicket:汇率券 ....
         details.put("rate", "0.005");
         sampleCard.put("cardDetails", details);
 
