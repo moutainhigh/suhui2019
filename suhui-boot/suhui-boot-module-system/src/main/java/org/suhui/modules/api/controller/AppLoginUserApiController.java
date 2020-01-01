@@ -543,6 +543,9 @@ public class AppLoginUserApiController {
        5 valueMoney
        6 currencyCode
        7 bizNumber
+     
+      **
+      目前返回的是Demo数据。升级时，需要返回在startDate 和 endDate之间的所有数据，并计算各个币种的账单和
      */
     @RequestMapping(value = "/getUserBillList", method = RequestMethod.POST)
     public Result<JSONObject> getUserBillList(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
@@ -551,6 +554,8 @@ public class AppLoginUserApiController {
         JSONObject obj = new JSONObject();
         final String phone = params.get("phone")+"" ;
         final String areacode = params.get("areacode")+"" ;
+        final String startDate = params.get("startDate") + "";
+        final String endDate = params.get("endDate") + "";
 
         PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(phone , areacode) ;
         if(payUserLogin == null){
@@ -566,6 +571,8 @@ public class AppLoginUserApiController {
         obj.put("areacode", areacode);
         obj.put("userno", userno);
         obj.put("usertype", usertype);
+        obj.put("startDate", startDate);
+        obj.put("endDate", endDate);
 
         List<String> BillList = new ArrayList<>();
         JSONObject sampleBill = new JSONObject();
