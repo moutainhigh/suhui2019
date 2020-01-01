@@ -11,7 +11,7 @@ https://www.getpostman.com/collections/44fe386784d2bbd2fa2e
 
 个人中心新增API
 POST
-http://3.93.15.101:3333/api/login/user/getUserBillList  //用了获取用户一段时间内的账单信息
+http://3.93.15.101:3333/api/login/user/getUserBillList  //用于获取用户一段时间内的账单信息
 
 2 充值提现    
 https://www.getpostman.com/collections/ff6f2d91d7529a4a7456     
@@ -26,6 +26,7 @@ http://3.93.15.101:3333/api/login/accountTypeCode/getList
 4 活动信息（为了配合新的活动页面，从后端返回Demo数据）
 https://www.getpostman.com/collections/a44ccff2f8fbf535d277
 目前仅有2个API
+
 
 
 #### Description    
