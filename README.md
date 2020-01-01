@@ -9,7 +9,7 @@ The repo for suihui fundTransfer project.
 1 登陆注册(个人中心)    
 https://www.getpostman.com/collections/44fe386784d2bbd2fa2e
 
-个人中心新增API
+个人中心新增API（账单模块Demo）
 POST
 http://3.93.15.101:3333/api/login/user/getUserBillList  //用于获取用户一段时间内的账单信息
 
@@ -17,9 +17,9 @@ http://3.93.15.101:3333/api/login/user/getUserBillList  //用于获取用户一�
 https://www.getpostman.com/collections/ff6f2d91d7529a4a7456     
 
 3 支付汇总      
-https://www.getpostman.com/collections/d8bdd353cae7552b8766
+https://www.getpostman.com/collections/6a25e3addf7f15d563f1
 
-支付汇总 新增API（请贺贺将此API添加到支付汇总，重新发布postman文档）
+支付汇总 新增API
 POST
 http://3.93.15.101:3333/api/login/accountTypeCode/getList
 
