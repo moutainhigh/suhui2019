@@ -604,7 +604,7 @@ public class AppLoginUserApiController {
         sampleBill.put("sysBizNumber", UUIDGenerator.generate());
         BillList.add(sampleBill.toString());
 
-        sampleBill.put("transactionName", "转账-007");
+        sampleBill.put("transactionName", "转账-比尔盖茨");
         sampleBill.put("merchantType", "转账充值");
         sampleBill.put("merchantBizNumber", UUIDGenerator.generate());
         sampleBill.put("time", "2019-12-28T08:15:12.087");   
@@ -613,7 +613,7 @@ public class AppLoginUserApiController {
         sampleBill.put("sysBizNumber", UUIDGenerator.generate());
         BillList.add(sampleBill.toString());
 
-        sampleBill.put("transactionName", "转账-superman");
+        sampleBill.put("transactionName", "转账-雷军");
         sampleBill.put("merchantType", "转账充值");
         sampleBill.put("merchantBizNumber", UUIDGenerator.generate());
         sampleBill.put("time", "2019-12-27T09:33:22.087");   
