@@ -17,6 +17,7 @@ import org.suhui.modules.suhui.suhui.service.IPayUserInfoService;
 import org.suhui.modules.suhui.suhui.entity.* ;
 import org.suhui.modules.suhui.suhui.service.IPayUserLoginService;
 import org.suhui.modules.system.entity.SysUser;
+import org.suhui.common.util.UUIDGenerator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -542,7 +543,8 @@ public class AppLoginUserApiController {
        4 plusOrMinus
        5 valueMoney
        6 currencyCode
-       7 bizNumber
+       7 sysBizNumber
+       8 merchantBizNumber
      
       **
       目前返回的是Demo数据。升级时，需要返回在startDate 和 endDate之间的所有数据，并计算各个币种的账单和
@@ -578,56 +580,62 @@ public class AppLoginUserApiController {
         JSONObject sampleBill = new JSONObject();
         sampleBill.put("transactionName", "沃尔玛");
         sampleBill.put("merchantType", "生活用品");
+        sampleBill.put("merchantBizNumber", UUIDGenerator.generate());
         sampleBill.put("time", "2019-12-31T13:51:25.087");   
         sampleBill.put("plusOrMinus", "-");   // 
         sampleBill.put("valueMoney", "73.90");
         sampleBill.put("currencyCode", "CNY");
-        sampleBill.put("bizNumber", "56123149128845458464212");
+        sampleBill.put("sysBizNumber", UUIDGenerator.generate());
         BillList.add(sampleBill.toString());
 
         sampleBill.put("transactionName", "扫收钱码付款-给天天早餐");
         sampleBill.put("merchantType", "餐饮美食");
+        sampleBill.put("merchantBizNumber", UUIDGenerator.generate());
         sampleBill.put("time", "2019-12-30T11:43:25.087");   
         sampleBill.put("plusOrMinus", "-");   // 
         sampleBill.put("valueMoney", "10.90");
         sampleBill.put("currencyCode", "USD");
-        sampleBill.put("bizNumber", "56123120884545846421272");
+        sampleBill.put("sysBizNumber", UUIDGenerator.generate());
         BillList.add(sampleBill.toString());
 
         sampleBill.put("transactionName", "xx地铁票务充值");
         sampleBill.put("merchantType", "交通出行");
+        sampleBill.put("merchantBizNumber", UUIDGenerator.generate());
         sampleBill.put("time", "2019-12-29T13:50:33.087");   
         sampleBill.put("plusOrMinus", "-");   // 
         sampleBill.put("valueMoney", "5.00");
         sampleBill.put("currencyCode", "USD");
-        sampleBill.put("bizNumber", "56123149128845458463156");
+        sampleBill.put("sysBizNumber", UUIDGenerator.generate());
         BillList.add(sampleBill.toString());
 
         sampleBill.put("transactionName", "转账-007");
         sampleBill.put("merchantType", "转账充值");
+        sampleBill.put("merchantBizNumber", UUIDGenerator.generate());
         sampleBill.put("time", "2019-12-28T08:15:12.087");   
         sampleBill.put("plusOrMinus", "-");   // 
         sampleBill.put("valueMoney", "60.23");
         sampleBill.put("currencyCode", "USD");
-        sampleBill.put("bizNumber", "56123149128845458461111");
+        sampleBill.put("sysBizNumber", UUIDGenerator.generate());
         BillList.add(sampleBill.toString());
 
         sampleBill.put("transactionName", "转账-superman");
         sampleBill.put("merchantType", "转账充值");
+        sampleBill.put("merchantBizNumber", UUIDGenerator.generate());
         sampleBill.put("time", "2019-12-27T09:33:22.087");   
         sampleBill.put("plusOrMinus", "+");   // 
         sampleBill.put("valueMoney", "450.00");
         sampleBill.put("currencyCode", "CNY");
-        sampleBill.put("bizNumber", "56123149128800334471532");
+        sampleBill.put("sysBizNumber", UUIDGenerator.generate());
         BillList.add(sampleBill.toString());
 
         sampleBill.put("transactionName", "沃尔玛");
         sampleBill.put("merchantType", "生活用品");
+        sampleBill.put("merchantBizNumber", UUIDGenerator.generate());
         sampleBill.put("time", "2019-12-36T13:51:25.087");   
         sampleBill.put("plusOrMinus", "-");   // 
         sampleBill.put("valueMoney", "90.56");
         sampleBill.put("currencyCode", "PHP");
-        sampleBill.put("bizNumber", "56123149128800334471499");
+        sampleBill.put("sysBizNumber", UUIDGenerator.generate());
         BillList.add(sampleBill.toString());
         obj.put("BillList", BillList);
 
