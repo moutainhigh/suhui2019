@@ -104,7 +104,7 @@ public class OrderMainController {
                               @RequestParam(name = "assurerId", required = true) String assurerId) {
         Result<Object> result = new Result<Object>();
         try {
-            result = orderMainService.dispatchOrderAdmin(orderMain);
+            result = orderMainService.dispatchOrderAdmin(orderId,assurerId);
             return result;
         } catch (Exception e) {
             log.error(e.getMessage(), e);

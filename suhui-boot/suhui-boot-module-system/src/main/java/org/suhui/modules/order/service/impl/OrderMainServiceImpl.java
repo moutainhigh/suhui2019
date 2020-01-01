@@ -87,12 +87,12 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         }
         // 为承兑商选择一个支付账号
         OrderAssurerAccount accountPay = orderAssurerAccountService.getAssurerAccountByOrderPay(assurerId, orderMain.getTargetCurrencyMoney());
-        if (!accountPay.Base_HasValue(accountPay)) {
+        if (!BaseUtil.Base_HasValue(accountPay)) {
             return Result.error(518, "承兑商找不到合适的支付账号");
         }
         // 为承兑商选择一个收款账号
         OrderAssurerAccount accountCollection = orderAssurerAccountService.getAssurerAccountByOrderCollection(assurerId);
-        if (!accountPay.Base_HasValue(accountCollection)) {
+        if (!BaseUtil.Base_HasValue(accountCollection)) {
             return Result.error(519, "承兑商找不到合适的收款账号");
         }
         Map<String, Object> resultMap = new HashMap<>();
