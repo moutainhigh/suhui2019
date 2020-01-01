@@ -632,7 +632,7 @@ public class AppLoginUserApiController {
         obj.put("SumList", SumList.toString());
 
         result.setResult(obj);
-        result.success("get getUserCardListByPhone success");
+        result.success("get getUserBillList success");
         result.setCode(CommonConstant.SC_OK_200);
         return result;
     }
