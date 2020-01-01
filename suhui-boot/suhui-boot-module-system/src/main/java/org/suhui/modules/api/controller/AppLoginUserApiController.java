@@ -638,7 +638,7 @@ public class AppLoginUserApiController {
      * @param params
      * @return
      */
-    @RequestMapping(value = "/getUserBill", method = RequestMethod.POST)
+    @RequestMapping(value = "/getUserCardListByPhone", method = RequestMethod.POST)
     public Result<JSONObject> getUserCardListByPhone(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
 
         Result<JSONObject> result = new Result<JSONObject>();
