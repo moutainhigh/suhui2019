@@ -5,7 +5,6 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="24">
-
           <a-col :md="6" :sm="8">
             <a-form-item label="订单编号">
               <a-input placeholder="请输入订单编号" v-model="queryParam.orderCode"></a-input>
@@ -46,6 +45,8 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button type="primary" icon="download" @click="handleExportXls('订单管理')">导出</a-button>
+      <a-button type="primary" v-has="'order:assurer'" @click="confirmCollection()">已收款</a-button>
+      <a-button type="primary" v-has="'order:assurer'" @click="confirmPay()">已兑付</a-button>
     </div>
 
     <!-- table区域-begin -->
@@ -84,6 +85,7 @@
 <script>
   import OrderMainModal from './modules/OrderMainModal'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import { postAction } from '@/api/manage'
 
   export default {
     name: 'OrderMainList',
@@ -168,7 +170,9 @@
           delete: '/order/orderMain/delete',
           deleteBatch: '/order/orderMain/deleteBatch',
           exportXlsUrl: 'order/orderMain/exportXls',
-          importExcelUrl: 'order/orderMain/importExcel'
+          importExcelUrl: 'order/orderMain/importExcel',
+          confirmCollection: 'order/orderMain/assurerCollection',
+          confirmPay: 'order/orderMain/assurerPay'
         }
       }
     },
@@ -177,7 +181,70 @@
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`
       }
     },
-    methods: {}
+    methods: {
+      confirmCollection: function() {
+        if (!this.selectedRowKeys || this.selectedRowKeys.length === 0) {
+          return this.$warning({
+            title: '请选择一条数据'
+          })
+        }
+        let params = {
+          orderIds: this.selectedRowKeys.join(',')
+        }
+        this.$confirm({
+          title: '确认已收款',
+          content: '确定要对所选中的 ' + this.selectedRowKeys.length + ' 条数据执行确认收款操作吗?',
+          onOk: () => {
+            this.loading = true
+            postAction(this.url.confirmCollection, params).then(res => {
+              if (res.code !== 200) {
+                this.loading = false
+                this.$warning({
+                  title: res.message
+                })
+              } else {
+                this.$success({
+                  title: res.message
+                })
+                this.searchQuery()
+                this.onClearSelected()
+              }
+            })
+          }
+        })
+      },
+      confirmPay: function() {
+        if (!this.selectedRowKeys || this.selectedRowKeys.length === 0) {
+          return this.$warning({
+            title: '请选择一条数据'
+          })
+        }
+        let params = {
+          orderIds: this.selectedRowKeys.join(',')
+        }
+        this.$confirm({
+          title: '确认已兑付',
+          content: '确定要对所选中的 ' + this.selectedRowKeys.length + ' 条数据执行确认兑付操作吗?',
+          onOk: () => {
+            this.loading = true
+            postAction(this.url.confirmPay, params).then(res => {
+              if (res.code !== 200) {
+                this.loading = false
+                this.$warning({
+                  title: res.message
+                })
+              } else {
+                this.$success({
+                  title: res.message
+                })
+                this.searchQuery()
+                this.onClearSelected()
+              }
+            })
+          }
+        })
+      }
+    }
   }
 </script>
 <style scoped>

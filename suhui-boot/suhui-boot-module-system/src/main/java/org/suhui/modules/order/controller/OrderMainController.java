@@ -1,5 +1,7 @@
 package org.suhui.modules.order.controller;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -8,7 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.suhui.common.api.vo.Result;
+import org.suhui.common.constant.CommonConstant;
 import org.suhui.common.system.query.QueryGenerator;
 import org.suhui.common.aspect.annotation.AutoLog;
 import org.suhui.common.util.oConvertUtils;
@@ -47,8 +53,12 @@ import org.suhui.modules.utils.BaseUtil;
 @RestController
 @RequestMapping("/order/orderMain")
 public class OrderMainController {
+
     @Autowired
     private IOrderMainService orderMainService;
+
+    @Value(value = "${jeecg.path.upload}")
+    private String uploadpath;
 
     /**
      * 分页列表查询
@@ -100,11 +110,11 @@ public class OrderMainController {
     @ApiOperation(value = "订单分配承兑商-后台", notes = "订单分配承兑商-后台")
     @PostMapping(value = "/dispatchOrder")
     public Result<Object> dispatchOrder(HttpServletRequest request,
-                              @RequestParam(name = "orderId", required = true) String orderId,
-                              @RequestParam(name = "assurerId", required = true) String assurerId) {
+                                        @RequestParam(name = "orderId", required = true) String orderId,
+                                        @RequestParam(name = "assurerId", required = true) String assurerId) {
         Result<Object> result = new Result<Object>();
         try {
-            result = orderMainService.dispatchOrderAdmin(orderId,assurerId);
+            result = orderMainService.dispatchOrderAdmin(orderId, assurerId);
             return result;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -138,10 +148,11 @@ public class OrderMainController {
     @AutoLog(value = "承兑商确认已收款")
     @ApiOperation(value = "承兑商确认已收款", notes = "承兑商确认已收款")
     @PostMapping(value = "/assurerCollection")
-    public Result<Object> assurerCollection(HttpServletRequest request, @RequestParam(name = "orderId", required = true) String orderId) {
+    @RequiresPermissions("order:assurer")
+    public Result<Object> assurerCollection(HttpServletRequest request, @RequestBody JSONObject jsonObject) {
         Result<Object> result = new Result<Object>();
         try {
-            result = orderMainService.assurerCollectionConfirm(orderId);
+            result = orderMainService.assurerCollectionConfirm(jsonObject.getString("orderIds"));
             return result;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -156,10 +167,11 @@ public class OrderMainController {
     @AutoLog(value = "承兑商确认已兑付")
     @ApiOperation(value = "承兑商确认已兑付", notes = "承兑商确认已兑付")
     @PostMapping(value = "/assurerPay")
-    public Result<Object> assurerPay(HttpServletRequest request, @RequestParam(name = "orderId", required = true) String orderId) {
+    @RequiresPermissions("order:assurer")
+    public Result<Object> assurerPay(HttpServletRequest request, @RequestBody JSONObject jsonObject) {
         Result<Object> result = new Result<Object>();
         try {
-            result = orderMainService.assurerPayConfirm(orderId);
+            result = orderMainService.assurerPayConfirm(jsonObject.getString("orderIds"));
             return result;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -210,6 +222,44 @@ public class OrderMainController {
 
     }
 
+    /**
+     * 上传图片接口-返回接口访问地址
+     */
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    public Result<Object> uploadImg(HttpServletRequest request, HttpServletResponse response) {
+        Result<Object> result = new Result<>();
+        try {
+            String ctxPath = uploadpath;
+            String fileName = null;
+            String bizPath = "files";
+            String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+            String nowday = new SimpleDateFormat("yyyyMMdd").format(new Date());
+            File file = new File(ctxPath + File.separator + bizPath + File.separator + nowday);
+            if (!file.exists()) {
+                file.mkdirs();// 创建文件根目录
+            }
+            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+            MultipartFile mf = multipartRequest.getFile("file");// 获取上传文件对象
+            String orgName = mf.getOriginalFilename();// 获取文件名
+            fileName = orgName.substring(0, orgName.lastIndexOf(".")) + "_" + System.currentTimeMillis() + orgName.substring(orgName.indexOf("."));
+            String savePath = file.getPath() + File.separator + fileName;
+            File savefile = new File(savePath);
+            FileCopyUtils.copy(mf.getBytes(), savefile);
+            String dbpath = basePath + File.separator + bizPath + File.separator + nowday + File.separator + fileName;
+            if (dbpath.contains("\\")) {
+                dbpath = dbpath.replace("\\", "/");
+            }
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("url", dbpath);
+            result.setResult(jsonObject);
+            result.setCode(CommonConstant.SC_OK_200);
+        } catch (IOException e) {
+            result.setSuccess(false);
+            result.setMessage(e.getMessage());
+            log.error(e.getMessage(), e);
+        }
+        return result;
+    }
 
     /**
      * 编辑
