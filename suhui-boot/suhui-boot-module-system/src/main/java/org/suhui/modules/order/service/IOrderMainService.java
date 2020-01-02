@@ -5,6 +5,7 @@ import org.suhui.common.api.vo.Result;
 import org.suhui.modules.order.entity.OrderMain;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,7 +18,7 @@ public interface IOrderMainService extends IService<OrderMain> {
 
       Result<Object> manageOrderByAuto(OrderMain orderMain);
 
-      Result<Object> userPayConfirm(String orderId);
+      Result<Object> userPayConfirm(String orderId,String voucher);
 
       Result<Object> assurerCollectionConfirm(String orderId);
 
@@ -28,6 +29,5 @@ public interface IOrderMainService extends IService<OrderMain> {
       Result<Object> dispatchOrderAdmin(String orderId,String assurerId);
 
       JSONObject getUserPayMoney(String source, String target, String money, String token);
-
 
 }

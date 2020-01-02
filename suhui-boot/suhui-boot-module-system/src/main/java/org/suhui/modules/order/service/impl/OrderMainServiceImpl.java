@@ -22,10 +22,7 @@ import org.suhui.modules.utils.BaseUtil;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -111,16 +108,17 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
      * 用户确认支付
      */
     @Override
-    public Result<Object> userPayConfirm(String orderId) {
+    public Result<Object> userPayConfirm(String orderId,String voucher) {
         OrderMain orderMain = getById(orderId);
         if (!BaseUtil.Base_HasValue(orderMain)) {
             return Result.error(513, "订单不存在");
         }
-        if (orderMain.getOrderState() != "2") {
+        if (!orderMain.getOrderState().equals("2")) {
             return Result.error(514, "订单状态异常");
         }
         orderMain.setOrderState("3");
         orderMain.setUserPayTime(new Date());
+        orderMain.setUserPayVoucher(voucher);
         updateById(orderMain);
         return Result.ok("操作成功");
     }
@@ -287,6 +285,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         }
         return valueObj;
     }
+
 
     /**
      * 给订单分配一个承兑商和账户

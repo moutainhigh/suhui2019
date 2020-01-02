@@ -1,6 +1,7 @@
 package org.suhui.modules.order.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.suhui.modules.order.entity.OrderMain;
@@ -14,4 +15,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface OrderMainMapper extends BaseMapper<OrderMain> {
 
+    List<OrderMain> findByUserId(Map map);
 }
