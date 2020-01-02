@@ -202,7 +202,40 @@ http://3.93.15.101:3333   用户名密码：suhuiadmin   suhuiadmin
 
 ## start frontend    
 
+linux
 
+```
+# first install yarn
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt update
+sudo apt install yarn
+yarn  add node-pre-gyp@0.10.0
+yarn global add serve
+
+yarn install
+yarn upgrade caniuse-lite browserslist
+
+yarn run build
+
+
+# 这个不用
+yarn run serve
+
+
+```
+
+
+```#
+# first install npm
+sudo apt install npm
+
+# 
+cd ant-design-suhui-vue
+npm install
+npm run build
+
+```
 
 mac
 ```
@@ -216,10 +249,8 @@ yarn upgrade
 yarn global add node-pre-gyp@0.10.0
 
 yarn global add serve
-
-
-
 yarn install
+yarn run serve
 
 # install nginx
 brew install nginx 
