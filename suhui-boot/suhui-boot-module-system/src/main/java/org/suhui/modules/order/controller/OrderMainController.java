@@ -19,6 +19,7 @@ import org.suhui.common.system.query.QueryGenerator;
 import org.suhui.common.aspect.annotation.AutoLog;
 import org.suhui.common.util.oConvertUtils;
 import org.suhui.modules.order.entity.OrderMain;
+import org.suhui.modules.order.mapper.OrderMainMapper;
 import org.suhui.modules.order.service.IOrderMainService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -56,6 +57,9 @@ public class OrderMainController {
 
     @Autowired
     private IOrderMainService orderMainService;
+
+    @Autowired
+    private OrderMainMapper orderMainMapper;
 
     @Value(value = "${jeecg.path.upload}")
     private String uploadpath;
@@ -129,10 +133,11 @@ public class OrderMainController {
     @AutoLog(value = "用户确认已支付")
     @ApiOperation(value = "用户确认已支付", notes = "用户确认已支付")
     @PostMapping(value = "/userPay")
-    public Result<Object> userPay(HttpServletRequest request, @RequestParam(name = "orderId", required = true) String orderId) {
+    public Result<Object> userPay(HttpServletRequest request, @RequestParam(name = "orderId", required = true) String orderId
+                                    , @RequestParam(name = "voucher", required = true) String voucher) {
         Result<Object> result = new Result<Object>();
         try {
-            result = orderMainService.userPayConfirm(orderId);
+            result = orderMainService.userPayConfirm(orderId,voucher);
             return result;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -196,6 +201,27 @@ public class OrderMainController {
             log.error(e.getMessage(), e);
             result.error500("操作失败");
         }
+        return result;
+    }
+
+    /**
+     * 通过用户id查询订单
+     */
+    @AutoLog(value = "订单表-通过用户id查询订单")
+    @ApiOperation(value = "订单表-通过用户id查询订单", notes = "订单表-通过用户id查询订单")
+    @GetMapping(value = "/queryByUserId")
+    public Result<List<OrderMain>> queryByUserId(@RequestParam(name = "userId", required = true) String userId) {
+        Result<List<OrderMain>> result = new Result<List<OrderMain>>();
+        Map<String,String> param = new HashMap<>();
+        param.put("userId", userId);
+        List<OrderMain> orderMains = orderMainMapper.findByUserId(param);
+        if (BaseUtil.Base_HasValue(orderMains)) {
+            for (int i = 0; i < orderMains.size(); i++) {
+                orderMains.get(i).changeMoneyToBig();
+            }
+        }
+        result.setResult(orderMains);
+        result.setSuccess(true);
         return result;
     }
 
@@ -345,6 +371,7 @@ public class OrderMainController {
         if (orderMain == null) {
             result.error500("未找到对应实体");
         } else {
+            orderMain.changeMoneyToBig();
             result.setResult(orderMain);
             result.setSuccess(true);
         }

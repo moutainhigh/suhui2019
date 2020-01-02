@@ -162,10 +162,16 @@ public class OrderMain {
 	private java.lang.String assurerPayAccountId;
 	private java.lang.Integer autoDispatchState;
 	private java.lang.String autoDispatchText;
+	private java.lang.String userPayVoucher;
 
 	public void changeMoneyToPoints(){
 		this.targetCurrencyMoney = this.targetCurrencyMoney*100;
 		this.sourceCurrencyMoney = this.sourceCurrencyMoney*100;
+	}
+
+	public void changeMoneyToBig(){
+		this.targetCurrencyMoney = this.targetCurrencyMoney/100;
+		this.sourceCurrencyMoney = this.sourceCurrencyMoney/100;
 	}
 
 	public String checkCreateRequireValue(){
@@ -479,5 +485,13 @@ public class OrderMain {
 
 	public void setAssurerPayAccountId(String assurerPayAccountId) {
 		this.assurerPayAccountId = assurerPayAccountId;
+	}
+
+	public String getUserPayVoucher() {
+		return userPayVoucher;
+	}
+
+	public void setUserPayVoucher(String userPayVoucher) {
+		this.userPayVoucher = userPayVoucher;
 	}
 }
