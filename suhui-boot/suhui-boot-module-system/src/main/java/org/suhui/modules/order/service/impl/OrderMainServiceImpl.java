@@ -85,6 +85,9 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         if (!BaseUtil.Base_HasValue(orderAssurer)) {
             return Result.error(515, "承兑商不存在");
         }
+        if (!orderMain.getOrderState().equals("1")) {
+            return Result.error(512, "已分配状态的订单才可进行该操作");
+        }
         // 为承兑商选择一个支付账号
         OrderAssurerAccount accountPay = orderAssurerAccountService.getAssurerAccountByOrderPay(assurerId, orderMain.getTargetCurrencyMoney());
         if (!BaseUtil.Base_HasValue(accountPay)) {
@@ -113,10 +116,10 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         if (!BaseUtil.Base_HasValue(orderMain)) {
             return Result.error(513, "订单不存在");
         }
-        if (orderMain.getOrderState() != 2) {
+        if (orderMain.getOrderState() != "2") {
             return Result.error(514, "订单状态异常");
         }
-        orderMain.setOrderState(3);
+        orderMain.setOrderState("3");
         orderMain.setUserPayTime(new Date());
         updateById(orderMain);
         return Result.ok("操作成功");
@@ -137,12 +140,12 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
                 check = false;
                 break;
             }
-            if (orderMain.getOrderState() != 3) {
+            if (!orderMain.getOrderState().equals("3")) {
                 result = Result.error(514, "【待承兑商收款】状态的订单可执行该操作");
                 check = false;
                 break;
             }
-            orderMain.setOrderState(4);
+            orderMain.setOrderState("4");
             orderMain.setAssurerCollectionTime(new Date());
             updateById(orderMain);
         }
@@ -167,12 +170,12 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
                 result = Result.error(513, "订单不存在");
                 break;
             }
-            if (orderMain.getOrderState() != 4) {
+            if (!orderMain.getOrderState().equals("4")) {
                 check = false;
                 result = Result.error(514, "【待承兑商兑付】状态的订单可执行该操作");
                 break;
             }
-            orderMain.setOrderState(5);
+            orderMain.setOrderState("5");
             orderMain.setAssurerPayTime(new Date());
             updateById(orderMain);
         }
@@ -191,10 +194,10 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         if (!BaseUtil.Base_HasValue(orderMain)) {
             return Result.error(513, "订单不存在");
         }
-        if (orderMain.getOrderState() != 5) {
+        if (!orderMain.getOrderState().equals("5") ) {
             return Result.error(514, "订单状态异常");
         }
-        orderMain.setOrderState(6);
+        orderMain.setOrderState("6");
         orderMain.setUserCollectionTime(new Date());
         updateById(orderMain);
         return orderFinishChangeAussurerMoney(orderMain);
@@ -301,18 +304,18 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             orderMain.setAssurerPayAccountId(pay.getId());
             orderMain.setAssurerPayAccount(pay.getAccountNo());
             orderMain.setAssurerPayMethod(pay.getAccountType());
-            orderMain.setOrderState(2);
-            orderMain.setAutoDispatchState(1);
+            orderMain.setOrderState("2");
             // 锁定承兑商金额
             lockAssurerMoney(orderMain.getTargetCurrencyMoney(), orderAssurer);
             // 锁定承兑账户金额
             lockAssurerAccountMoney(orderMain.getTargetCurrencyMoney(), pay);
         } else {
-            orderMain.setOrderState(1);
+            orderMain.setOrderState("1");
             orderMain.setAutoDispatchState(0);
             orderMain.setAutoDispatchText(resutMap.get("message").toString());
         }
         if (!BaseUtil.Base_HasValue(orderMain.getId())) {
+            orderMain.setAutoDispatchState(1);
             orderMain.setOrderCode(getOrderNoByUUID());
             save(orderMain);
         } else {

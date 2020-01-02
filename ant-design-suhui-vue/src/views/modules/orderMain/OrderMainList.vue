@@ -12,7 +12,7 @@
           </a-col>
           <a-col :md="6" :sm="8">
             <a-form-item label="订单状态">
-              <a-input placeholder="请输入订单状态" v-model="queryParam.orderState"></a-input>
+              <j-dict-select-tag v-model="queryParam.orderState" placeholder="请选择订单状态" dictCode="orderState"/>
             </a-form-item>
           </a-col>
           <template v-if="toggleSearchStatus">
@@ -70,7 +70,9 @@
         @change="handleTableChange">
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleDetail(record)">查看详情</a>
+          <a @click="handleDetail(record)">详情</a>
+           <a-divider type="vertical"/>
+            <a v-has="'order:admin'" @click="openDispatch(record)">调度</a>
         </span>
 
       </a-table>
@@ -79,23 +81,29 @@
 
     <!-- 表单区域 -->
     <orderMain-modal ref="modalForm" @ok="modalFormOk"></orderMain-modal>
+    <OrderDispatch-modal ref="OrderDispatchForm"  @ok="modalFormOk"></OrderDispatch-modal>
   </a-card>
-</template>
 
+</template>
 <script>
   import OrderMainModal from './modules/OrderMainModal'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import { postAction } from '@/api/manage'
-
+  import {initDictOptions, filterDictText} from '@/components/dict/JDictSelectUtil'
+  import OrderDispatchModal from "./modules/orderDispatchModal";
   export default {
     name: 'OrderMainList',
     mixins: [JeecgListMixin],
     components: {
-      OrderMainModal
+      OrderMainModal,
+      OrderDispatchModal
     },
     data() {
       return {
+        dispatchTitle: '分配承兑商',
         description: '订单管理管理页面',
+        visibleDispatch:false,
+        orderStateDictOptions: [],
         // 表头
         columns: [
           {
@@ -116,7 +124,11 @@
           {
             title: '订单状态',
             align: 'center',
-            dataIndex: 'orderState'
+            dataIndex: 'orderState',
+            customRender: (text) => {
+              //字典值替换通用方法
+              return filterDictText(this.orderStateDictOptions, text+"");
+            }
           },
           {
             title: '用户姓名',
@@ -134,14 +146,13 @@
             dataIndex: 'sourceCurrency'
           },
           {
-            title: '源币种金额',
-            align: 'center',
-            dataIndex: 'sourceCurrencyMoney'
-          },
-          {
             title: '目标币种',
             align: 'center',
             dataIndex: 'targetCurrency'
+          },{
+            title: '目标币种金额',
+            align: 'center',
+            dataIndex: 'targetCurrencyMoney'
           },
           {
             title: '汇率',
@@ -181,7 +192,20 @@
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`
       }
     },
+    created() {
+      this.initDictConfig();
+    },
     methods: {
+      openDispatch(record){
+        this.$refs.OrderDispatchForm.dispatchList(record);
+      },
+      initDictConfig() {
+        initDictOptions('orderState').then((res) => {
+          if (res.success) {
+            this.orderStateDictOptions = res.result;
+          }
+        });
+      },
       confirmCollection: function() {
         if (!this.selectedRowKeys || this.selectedRowKeys.length === 0) {
           return this.$warning({

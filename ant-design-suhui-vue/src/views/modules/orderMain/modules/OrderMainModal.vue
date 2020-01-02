@@ -12,7 +12,7 @@
       <a-card :bordered="false">
         <detail-list title="订单信息" :col="col">
           <detail-list-item term="订单编号">{{ model.orderCode }}</detail-list-item>
-          <detail-list-item term="状态">{{ model.orderState }}</detail-list-item>
+          <!--<detail-list-item term="状态">{{ model.orderState }}</detail-list-item>-->
           <detail-list-item term="源币种">{{ model.sourceCurrency }}</detail-list-item>
           <detail-list-item term="源币种金额">{{ model.sourceCurrencyMoney }}</detail-list-item>
           <detail-list-item term="汇率">{{ model.exchangeRate }}</detail-list-item>
@@ -52,6 +52,7 @@
   const DetailListItem = DetailList.Item
   import pick from 'lodash.pick'
   import moment from 'moment'
+  import { initDictOptions, filterDictText } from '@/components/dict/JDictSelectUtil'
 
   export default {
     components: {
@@ -81,8 +82,8 @@
         // this.form.resetFields();
         this.resetScreenSize()
         this.model = Object.assign({}, record)
-        console.log(this.model)
         this.visible = true
+
         // this.$nextTick(() => {
         //   this.form.setFieldsValue(pick(this.model,'orderCode','orderState','userNo','userName','userContact','sourceCurrency','targetCurrency','sourceCurrencyMoney','targetCurrencyMoney','exchangeRate','userPayMethod','userCollectionMethod','userCollectionAccount','assurerId','assurerName','assurerCollectionMethod','assurerCollectionAccount','assurerPayMethod','assurerPayAccount','orderText','delFlag','autoDispatchState','autoDispatchText'))
         //   //时间格式化
@@ -92,6 +93,7 @@
         //   this.form.setFieldsValue({assurerPayTime:this.model.assurerPayTime?moment(this.model.assurerPayTime):null})
         //   console.log(this.form);
         //   console.log(this.model);
+
         // });
       },
       // 根据屏幕变化,设置抽屉尺寸

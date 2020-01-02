@@ -43,7 +43,7 @@ public class OrderMain {
 	/**订单状态(待分配1、待用户支付2、待承兑商收款3、待承兑商兑付4、待用户确认收款5、已完成6、已作废0)*/
 	@Excel(name = "订单状态(待分配1、待用户支付2、待承兑商收款3、待承兑商兑付4、待用户确认收款5、已完成6、已作废0)", width = 15)
     @ApiModelProperty(value = "订单状态(待分配1、待用户支付2、待承兑商收款3、待承兑商兑付4、待用户确认收款5、已完成6、已作废0)")
-	private java.lang.Integer orderState;
+	private java.lang.String orderState;
 	/**userNo*/
 	@Excel(name = "userNo", width = 15)
     @ApiModelProperty(value = "userNo")
@@ -225,11 +225,11 @@ public class OrderMain {
 		this.orderCode = orderCode;
 	}
 
-	public Integer getOrderState() {
+	public String getOrderState() {
 		return orderState;
 	}
 
-	public void setOrderState(Integer orderState) {
+	public void setOrderState(String orderState) {
 		this.orderState = orderState;
 	}
 

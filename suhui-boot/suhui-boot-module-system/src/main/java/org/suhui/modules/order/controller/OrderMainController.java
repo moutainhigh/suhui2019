@@ -109,12 +109,12 @@ public class OrderMainController {
     @AutoLog(value = "订单分配承兑商-后台")
     @ApiOperation(value = "订单分配承兑商-后台", notes = "订单分配承兑商-后台")
     @PostMapping(value = "/dispatchOrder")
+    @RequiresPermissions("order:admin")
     public Result<Object> dispatchOrder(HttpServletRequest request,
-                                        @RequestParam(name = "orderId", required = true) String orderId,
-                                        @RequestParam(name = "assurerId", required = true) String assurerId) {
+                                        @RequestBody JSONObject jsonObject) {
         Result<Object> result = new Result<Object>();
         try {
-            result = orderMainService.dispatchOrderAdmin(orderId, assurerId);
+            result = orderMainService.dispatchOrderAdmin(jsonObject.getString("orderId"), jsonObject.getString("assurerId"));
             return result;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -223,7 +223,7 @@ public class OrderMainController {
     }
 
     /**
-     * 上传图片接口-返回接口访问地址
+     * 上传图片接口-返回图片访问地址
      */
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public Result<Object> uploadImg(HttpServletRequest request, HttpServletResponse response) {

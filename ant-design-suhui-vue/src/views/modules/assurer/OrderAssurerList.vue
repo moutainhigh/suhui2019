@@ -6,8 +6,8 @@
       <a-form layout="inline">
         <a-row :gutter="24">
           <a-col :span="6">
-            <a-form-item label="用户编号">
-              <a-input placeholder="请输入用户编号" v-model="queryParam.userNo"></a-input>
+            <a-form-item label="承兑商状态">
+              <j-dict-select-tag v-model="queryParam.assurerState" placeholder="请选择承兑商状态" dictCode="assurer_state"/>
             </a-form-item>
           </a-col>
           <a-col :span="6">
@@ -15,10 +15,21 @@
               <a-input placeholder="请输入承兑商名称" v-model="queryParam.assurerName"></a-input>
             </a-form-item>
           </a-col>
+          <template v-if="toggleSearchStatus">
+            <a-col :md="6" :sm="8">
+              <a-form-item label="在线状态">
+                <j-dict-select-tag v-model="queryParam.onlineState" placeholder="请选择在线状态" dictCode="online_state"/>
+              </a-form-item>
+            </a-col>
+          </template>
           <a-col :span="8" >
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+                <a @click="handleToggleSearch" style="margin-left: 8px">
+                {{ toggleSearchStatus ? '收起' : '展开' }}
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+              </a>
             </span>
           </a-col>
 
@@ -79,6 +90,7 @@
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import OrderAssurerModal from './modules/OrderAssurerModal'
+  import {initDictOptions, filterDictText} from '@/components/dict/JDictSelectUtil'
 
   export default {
     name: "OrderAssurerList",
@@ -89,6 +101,8 @@
     data () {
       return {
         description: '去管理页面',
+        onlineStateDictOptions: [],
+        assurerStateDictOptions: [],
         // 表头
         columns: [
           {
@@ -104,12 +118,20 @@
           {
             title: '在线状态',
             align:"center",
-            dataIndex: 'onlineState'
+            dataIndex: 'onlineState',
+            customRender: (text) => {
+              //字典值替换通用方法
+              return filterDictText(this.onlineStateDictOptions, text+"");
+            }
           },
           {
-            title: '业务状态',
+            title: '承兑商状态',
             align:"center",
-            dataIndex: 'assurerState'
+            dataIndex: 'assurerState',
+            customRender: (text) => {
+              //字典值替换通用方法
+              return filterDictText(this.assurerStateDictOptions, text);
+            }
           },
           {
             title: '承兑商名称',
@@ -174,12 +196,22 @@
         }
       },
 
-
+    created() {
+      this.initDictConfig();
+    },
     methods: {
-
       initDictConfig() {
+        initDictOptions('online_state').then((res) => {
+          if (res.success) {
+            this.onlineStateDictOptions = res.result;
+          }
+        });
+        initDictOptions('assurer_state').then((res) => {
+          if (res.success) {
+            this.assurerStateDictOptions = res.result;
+          }
+        });
       }
-
     }
   }
 </script>
