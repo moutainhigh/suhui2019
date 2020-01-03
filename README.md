@@ -216,6 +216,9 @@ yarn global add serve
 yarn install
 yarn upgrade caniuse-lite browserslist
 
+yarn run serve
+
+
 yarn run build
 
 
@@ -251,6 +254,7 @@ yarn global add node-pre-gyp@0.10.0
 yarn global add serve
 yarn install
 yarn run serve
+
 
 # install nginx
 brew install nginx 
