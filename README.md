@@ -27,6 +27,27 @@ https://documenter.getpostman.com/view/1895285/SVmySxzg?version=latest
 #### Description    
 速汇项目
 
+部署方式
+```
+前期采用： nginx + JAR
+后端服务通过JAR方式运行
+前端项目build后的静态资源，部署到nginx中
+
+后期可以采用： nginx + tomcat + JAR
+也即Nginx负载均衡多个tomcat
+
+1 install nginx(ubuntu)
+sudo apt-get install nginx  (安装完后可以用sudo lsof -i -P -n | grep LISTEN 看到nginx进程及端口)
+
+安装好的文件位置：
+/usr/sbin/nginx：主程序
+/etc/nginx：存放配置文件        nginx.conf 
+/usr/share/nginx：存放静态文件  ./html下存放编译好的js文件
+/var/log/nginx：存放日志
+
+
+
+```
 
 
 #### Software Architecture
@@ -57,6 +78,7 @@ http://3.93.15.101:11000
 http://3.93.15.101:11000/job/suhuibackend/configure
 
 # nohup java -jar -Xms64m -Xmx512m /root/mailCheck_fat.jar > /root/mail.log &
+
 
 
 # set git and jenkins using ssh public and private keys
@@ -164,12 +186,14 @@ sudo lsof -i -P -n | grep LISTEN
 
 redis pass:suhuiadmin
 
-# see all keys in Redis
+# see 10 keys in Redis 
+SCAN 0 count 10
+
+# see all keys in Redis   如果Redis里有20万个key，那么非常慢。
 KEYS * 
 
 # set key 123
 set key 123
-
 
 ```
 
@@ -202,6 +226,10 @@ http://3.93.15.101:3333   用户名密码：suhuiadmin   suhuiadmin
 
 ## start frontend    
 
+
+
+
+
 linux
 
 ```
@@ -222,7 +250,7 @@ yarn run serve
 yarn run build
 
 
-# 这个不用
+# 这个仅在调试的时候使用
 yarn run serve
 
 
