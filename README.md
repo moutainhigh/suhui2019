@@ -27,6 +27,12 @@ http://3.93.15.101:3333/api/login/accountTypeCode/getList
 https://www.getpostman.com/collections/a44ccff2f8fbf535d277
 目前仅有2个API
 
+5 订单模块
+
+订单管理初版的前端页面已经可以在线上试用了，大家可以试用一下
+
+https://www.getpostman.com/collections/13a8373eb2d97ff525ae
+
 
 
 #### Description    
