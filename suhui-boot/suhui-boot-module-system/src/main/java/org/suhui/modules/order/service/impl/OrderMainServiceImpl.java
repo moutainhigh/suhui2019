@@ -21,6 +21,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.suhui.modules.utils.BaseUtil;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -275,8 +276,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
                 String rate = data.getString("rate_now");
                 BigDecimal a1 = new BigDecimal(money);
                 BigDecimal b1 = new BigDecimal(rate);
-                BigDecimal rate_now_divide = a1.multiply(b1);
-                Double value = rate_now_divide.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+                Double value = a1.divide(b1, 2,BigDecimal.ROUND_UP).doubleValue();
                 valueObj.put("money", value);
                 valueObj.put("rate", rate);
             }

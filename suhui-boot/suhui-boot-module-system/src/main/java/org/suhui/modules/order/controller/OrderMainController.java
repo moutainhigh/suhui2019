@@ -209,7 +209,7 @@ public class OrderMainController {
      */
     @AutoLog(value = "订单表-通过用户id查询订单")
     @ApiOperation(value = "订单表-通过用户id查询订单", notes = "订单表-通过用户id查询订单")
-    @GetMapping(value = "/queryByUserId")
+    @PostMapping(value = "/orderByUser")
     public Result<List<OrderMain>> queryByUserId(@RequestParam(name = "userId", required = true) String userId) {
         Result<List<OrderMain>> result = new Result<List<OrderMain>>();
         Map<String,String> param = new HashMap<>();
@@ -364,7 +364,7 @@ public class OrderMainController {
      */
     @AutoLog(value = "订单表-通过id查询")
     @ApiOperation(value = "订单表-通过id查询", notes = "订单表-通过id查询")
-    @GetMapping(value = "/queryById")
+    @PostMapping(value = "/order")
     public Result<OrderMain> queryById(@RequestParam(name = "id", required = true) String id) {
         Result<OrderMain> result = new Result<OrderMain>();
         OrderMain orderMain = orderMainService.getById(id);
