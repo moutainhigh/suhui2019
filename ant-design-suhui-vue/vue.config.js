@@ -23,7 +23,7 @@ module.exports = {
   */
   configureWebpack: {},
 
-  chainWebpack: (config) => {
+  chainWebpack: config => {
     config.resolve.alias
       .set('@$', resolve('src'))
       .set('@api', resolve('src/api'))
@@ -39,14 +39,13 @@ module.exports = {
       less: {
         modifyVars: {
           /* less 变量覆盖，用于自定义 ant design 主题 */
-
           /*
           'primary-color': '#F5222D',
           'link-color': '#F5222D',
           'border-radius-base': '4px',
           */
         },
-        javascriptEnabled: true,
+        javascriptEnabled: true
       }
     }
   },
@@ -54,7 +53,7 @@ module.exports = {
   devServer: {
     port: 3000,
     proxy: {
-     /* '/api': {
+      /* '/api': {
         target: 'https://mock.ihx.me/mock/5baf3052f7da7e07e04a5116/antd-pro', //mock API接口系统
         ws: false,
         changeOrigin: true,
@@ -63,10 +62,10 @@ module.exports = {
         }
       },*/
       '/': {
-        target: 'http://192.168.1.102:3333', //请求本地 需要jeecg-boot后台项目
+        target: 'http://3.93.15.101:3333', //请求本地 需要jeecg-boot后台项目
         ws: false,
         changeOrigin: true
-      },
+      }
     }
   },
 
