@@ -94,7 +94,8 @@ public class ShiroConfig {
 
 		filterChainDefinitionMap.put("/api/login/payCharge/rechargeCallback", "anon"); //支付回调接口
 		filterChainDefinitionMap.put("/api/login/payWithDraw/withdrawCallback", "anon"); //提现回调接口
-
+		filterChainDefinitionMap.put("/assurer/user/**", "anon");
+		filterChainDefinitionMap.put("/order/orderAssurer/**", "anon");
 
 		// 添加自己的过滤器并且取名为jwt
 		Map<String, Filter> filterMap = new HashMap<String, Filter>(1);

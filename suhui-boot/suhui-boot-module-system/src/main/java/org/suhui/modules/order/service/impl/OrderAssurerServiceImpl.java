@@ -117,6 +117,24 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         return resultMap;
     }
 
+    @Override
+    public OrderAssurer getAssurerByUserNo(String userNo) {
+        OrderAssurer orderAssurer = orderAssurerMapper.getAssurerByUserNo(userNo);
+        return orderAssurer;
+    }
+
+    /**
+     * 改变在线状态
+     */
+    @Override
+    public OrderAssurer updateAssurer(OrderAssurer data) {
+        if(!BaseUtil.Base_HasValue(data.getId())){
+            return null;
+        }
+        updateById(data);
+        return data;
+    }
+
 
     /**
      * 为承兑商排序，目前默认以费率排序，后期可加入其它排序规则

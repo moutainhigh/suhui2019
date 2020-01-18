@@ -84,6 +84,12 @@ public class OrderMainController {
         QueryWrapper<OrderMain> queryWrapper = QueryGenerator.initQueryWrapper(orderMain, req.getParameterMap());
         Page<OrderMain> page = new Page<OrderMain>(pageNo, pageSize);
         IPage<OrderMain> pageList = orderMainService.page(page, queryWrapper);
+        List<OrderMain> orderMains = pageList.getRecords();
+        if (BaseUtil.Base_HasValue(orderMains)) {
+            for(int i=0;i<orderMains.size();i++){
+                orderMains.get(i).changeMoneyToBig();
+            }
+        }
         result.setSuccess(true);
         result.setResult(pageList);
         return result;

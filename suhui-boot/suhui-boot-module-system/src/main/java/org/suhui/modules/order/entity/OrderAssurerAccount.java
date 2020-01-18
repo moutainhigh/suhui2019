@@ -78,6 +78,18 @@ public class OrderAssurerAccount implements Serializable {
 		return serialVersionUID;
 	}
 
+
+	public void changeMoneyToPoints(){
+		this.payLimit = this.payLimit*100;
+	}
+
+	public void changeMoneyToBig(){
+		this.payLimit = this.payLimit/100;
+		this.payUsedLimit = this.payUsedLimit/100;
+		this.payCanUseLimit = this.payCanUseLimit/100;
+		this.payLockMoney = this.payLockMoney/100;
+	}
+
 	public String getId() {
 		return id;
 	}

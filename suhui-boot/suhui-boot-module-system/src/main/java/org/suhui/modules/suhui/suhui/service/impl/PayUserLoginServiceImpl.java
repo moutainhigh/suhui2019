@@ -24,4 +24,9 @@ public class PayUserLoginServiceImpl extends ServiceImpl<PayUserLoginMapper, Pay
     public PayUserLogin getUserByPhone(String phone , String areacode) {
         return payUserLoginMapper.getUserByPhone(phone ,areacode);
     }
+
+    @Override
+    public PayUserLogin getUserByPhoneAndUserType(String phone , String areacode, Integer usertype) {
+        return payUserLoginMapper.getUserByPhoneAndUserType(phone ,areacode,usertype);
+    }
 }

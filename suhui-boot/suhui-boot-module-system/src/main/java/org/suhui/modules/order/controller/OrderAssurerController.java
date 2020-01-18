@@ -22,6 +22,7 @@ import org.suhui.common.system.query.QueryGenerator;
 import org.suhui.common.util.oConvertUtils;
 import org.suhui.modules.order.entity.OrderAssurerAccount;
 import org.suhui.modules.order.entity.OrderAssurer;
+import org.suhui.modules.order.entity.OrderMain;
 import org.suhui.modules.order.vo.OrderAssurerPage;
 import org.suhui.modules.order.service.IOrderAssurerService;
 import org.suhui.modules.order.service.IOrderAssurerAccountService;
@@ -36,8 +37,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import com.alibaba.fastjson.JSON;
+import org.suhui.modules.utils.BaseUtil;
 
- /**
+/**
  * @Description: 承兑商
  * @Author: jeecg-boot
  * @Date:   2019-12-29
@@ -51,7 +53,43 @@ public class OrderAssurerController {
 	private IOrderAssurerService orderAssurerService;
 	@Autowired
 	private IOrderAssurerAccountService orderAssurerAccountService;
-	
+
+
+	/**
+	 * 通过userNo查询承兑商数据
+	 */
+	@PostMapping(value = "/queryAssurerByUserNo")
+	public Result<OrderAssurer> queryAssurerByUserNo( @RequestBody OrderAssurer data) {
+		Result<OrderAssurer> result = new Result<OrderAssurer>();
+		OrderAssurer orderAssurer = orderAssurerService.getAssurerByUserNo(data.getUserNo());
+		if(orderAssurer==null) {
+			result.error500("该承兑商不存在");
+		}else {
+			result.setResult(orderAssurer);
+			result.setSuccess(true);
+			result.setCode(200);
+		}
+		return result;
+	}
+
+	/**
+	 * 更新承兑商数据
+	 */
+	@PostMapping(value = "/updateAssurer")
+	public Result<OrderAssurer> updateAssurer( @RequestBody OrderAssurer data) {
+		Result<OrderAssurer> result = new Result<OrderAssurer>();
+		OrderAssurer orderAssurer = orderAssurerService.updateAssurer(data);
+		if(orderAssurer==null) {
+			result.error500("该承兑商不存在");
+		}else {
+			result.setResult(orderAssurer);
+			result.setSuccess(true);
+			result.setCode(200);
+		}
+		return result;
+	}
+
+
 	/**
 	  * 分页列表查询
 	 * @param orderAssurer
@@ -69,6 +107,12 @@ public class OrderAssurerController {
 		QueryWrapper<OrderAssurer> queryWrapper = QueryGenerator.initQueryWrapper(orderAssurer, req.getParameterMap());
 		Page<OrderAssurer> page = new Page<OrderAssurer>(pageNo, pageSize);
 		IPage<OrderAssurer> pageList = orderAssurerService.page(page, queryWrapper);
+		List<OrderAssurer> orderAssurers = pageList.getRecords();
+		if (BaseUtil.Base_HasValue(orderAssurers)) {
+			for(int i=0;i<orderAssurers.size();i++){
+				orderAssurers.get(i).changeMoneyToBig();
+			}
+		}
 		result.setSuccess(true);
 		result.setResult(pageList);
 		return result;
@@ -180,6 +224,11 @@ public class OrderAssurerController {
 	public Result<List<OrderAssurerAccount>> queryOrderAssurerAccountListByMainId(@RequestParam(name="id",required=true) String id) {
 		Result<List<OrderAssurerAccount>> result = new Result<List<OrderAssurerAccount>>();
 		List<OrderAssurerAccount> orderAssurerAccountList = orderAssurerAccountService.selectByMainId(id);
+		if(BaseUtil.Base_HasValue(orderAssurerAccountList)){
+			for(int i=0;i<orderAssurerAccountList.size();i++){
+				orderAssurerAccountList.get(i).changeMoneyToBig();
+			}
+		}
 		result.setResult(orderAssurerAccountList);
 		result.setSuccess(true);
 		return result;

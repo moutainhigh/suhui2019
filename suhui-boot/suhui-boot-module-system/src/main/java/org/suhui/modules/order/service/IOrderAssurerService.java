@@ -1,9 +1,11 @@
 package org.suhui.modules.order.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.suhui.modules.order.entity.OrderAssurerAccount;
 import org.suhui.modules.order.entity.OrderAssurer;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.suhui.modules.order.entity.OrderMain;
+import org.suhui.modules.order.mapper.OrderAssurerMapper;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -17,6 +19,7 @@ import java.util.Map;
  * @Version: V1.0
  */
 public interface IOrderAssurerService extends IService<OrderAssurer> {
+
 
 	/**
 	 * 添加一对多
@@ -45,4 +48,10 @@ public interface IOrderAssurerService extends IService<OrderAssurer> {
 	 */
 	Map<String,Object> getAssurerByOrder(OrderMain orderMain);
 
+	/**
+	 * 通过用户编号查询承兑商
+	 */
+	OrderAssurer getAssurerByUserNo(String userNo);
+
+	OrderAssurer updateAssurer(OrderAssurer data);
 }

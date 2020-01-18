@@ -55,11 +55,25 @@ public class OrderAssurer implements Serializable {
 	private java.util.Date updateTime;
 	/**删除状态（0，正常，1已删除）*/
 	private java.lang.String delFlag;
+	private java.lang.String assurerPhone;
 	private java.lang.Integer onlineState;
 	private java.lang.Integer payLockMoney;
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
 	}
+
+
+	public void changeMoneyToPoints(){
+		this.totalLimit = this.totalLimit*100;
+	}
+
+	public void changeMoneyToBig(){
+		this.canUseLimit = this.canUseLimit/100;
+		this.usedLimit = this.usedLimit/100;
+		this.totalLimit = this.totalLimit/100;
+		this.payLockMoney = this.payLockMoney/100;
+	}
+
 
 	public String getId() {
 		return id;
@@ -195,5 +209,13 @@ public class OrderAssurer implements Serializable {
 
 	public void setPayLockMoney(Integer payLockMoney) {
 		this.payLockMoney = payLockMoney;
+	}
+
+	public String getAssurerPhone() {
+		return assurerPhone;
+	}
+
+	public void setAssurerPhone(String assurerPhone) {
+		this.assurerPhone = assurerPhone;
 	}
 }
