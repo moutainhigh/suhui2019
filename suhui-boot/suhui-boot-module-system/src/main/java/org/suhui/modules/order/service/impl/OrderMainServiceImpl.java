@@ -18,6 +18,7 @@ import org.suhui.modules.order.mapper.OrderMainMapper;
 import org.suhui.modules.order.service.IOrderMainService;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.suhui.modules.suhui.suhui.service.IPayIdentityChannelAccountService;
 import org.suhui.modules.utils.BaseUtil;
 
 import java.math.BigDecimal;
@@ -41,6 +42,8 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
     @Autowired
     OrderAssurerAccountServiceImpl orderAssurerAccountService;
 
+    @Autowired
+    private IPayIdentityChannelAccountService iPayIdentityChannelAccountService;
 
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
     private static final AtomicInteger atomicInteger = new AtomicInteger(1000000);
@@ -109,7 +112,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
      * 用户确认支付
      */
     @Override
-    public Result<Object> userPayConfirm(String orderId,String voucher) {
+    public Result<Object> userPayConfirm(String orderId, String voucher) {
         OrderMain orderMain = getById(orderId);
         if (!BaseUtil.Base_HasValue(orderMain)) {
             return Result.error(513, "订单不存在");
@@ -193,7 +196,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         if (!BaseUtil.Base_HasValue(orderMain)) {
             return Result.error(513, "订单不存在");
         }
-        if (!orderMain.getOrderState().equals("5") ) {
+        if (!orderMain.getOrderState().equals("5")) {
             return Result.error(514, "订单状态异常");
         }
         orderMain.setOrderState("6");
@@ -276,7 +279,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
                 String rate = data.getString("rate_now");
                 BigDecimal a1 = new BigDecimal(money);
                 BigDecimal b1 = new BigDecimal(rate);
-                Double value = a1.divide(b1, 2,BigDecimal.ROUND_UP).doubleValue();
+                Double value = a1.divide(b1, 2, BigDecimal.ROUND_UP).doubleValue();
                 valueObj.put("money", value);
                 valueObj.put("rate", rate);
             }
@@ -308,6 +311,17 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             lockAssurerMoney(orderMain.getTargetCurrencyMoney(), orderAssurer);
             // 锁定承兑账户金额
             lockAssurerAccountMoney(orderMain.getTargetCurrencyMoney(), pay);
+
+            Map map = new HashMap();
+            map.put("userno", orderMain.getUserNo());
+            map.put("usertype", 0);
+            map.put("channeltype", 1);
+            // 查询用户支付账号
+            List<Map> mapDb = iPayIdentityChannelAccountService.getChannelAccountInfoByUserNo(map);
+            if (BaseUtil.Base_HasValue(mapDb)) {
+                Map payAccountMap = mapDb.get(0);
+                orderMain.setUserPayAccount(payAccountMap.get("channel_account_no").toString());
+            }
         } else {
             orderMain.setOrderState("1");
             orderMain.setAutoDispatchState(0);

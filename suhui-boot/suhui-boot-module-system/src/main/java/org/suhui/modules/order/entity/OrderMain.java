@@ -163,6 +163,7 @@ public class OrderMain {
 	private java.lang.Integer autoDispatchState;
 	private java.lang.String autoDispatchText;
 	private java.lang.String userPayVoucher;
+	private java.lang.String userPayAccount;
 
 	public void changeMoneyToPoints(){
 		this.targetCurrencyMoney = this.targetCurrencyMoney*100;
@@ -493,5 +494,13 @@ public class OrderMain {
 
 	public void setUserPayVoucher(String userPayVoucher) {
 		this.userPayVoucher = userPayVoucher;
+	}
+
+	public String getUserPayAccount() {
+		return userPayAccount;
+	}
+
+	public void setUserPayAccount(String userPayAccount) {
+		this.userPayAccount = userPayAccount;
 	}
 }
