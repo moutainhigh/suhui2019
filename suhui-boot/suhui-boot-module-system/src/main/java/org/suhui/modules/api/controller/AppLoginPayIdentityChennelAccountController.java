@@ -77,6 +77,7 @@ public class AppLoginPayIdentityChennelAccountController {
         String status = params.get("status")+"" ;//状态 1-绑定中 99-已解绑 100-已绑定
 
         String remark = params.get("remark")+"" ; //备注
+        String areacode = params.get("areacode")+"" ;
         //String bindtime = params.get("bindtime")+"" ;//绑定时间
        // String unbindtime = params.get("unbindtime")+"" ; //解绑时间
 
@@ -91,6 +92,7 @@ public class AppLoginPayIdentityChennelAccountController {
         payIdentityChannelAccount.setKeyMsg(keymsg) ;
         payIdentityChannelAccount.setStatus(Integer.parseInt(status) );
         payIdentityChannelAccount.setRemark(remark) ;
+        payIdentityChannelAccount.setAreacode(areacode) ;// 设置区域编码
         if(status == null){
 
         }else if(status.equals("1") || status.equals("100")){
@@ -158,6 +160,7 @@ public class AppLoginPayIdentityChennelAccountController {
        // String bindtime = params.get("bindtime")+"" ;//绑定时间
        // String unbindtime = params.get("unbindtime")+"" ; //解绑时间
         String id = params.get("id")+"" ;
+        String areacode = params.get("areacode") +"" ;
 
         PayIdentityChannelAccount payIdentityChannelAccount  = new PayIdentityChannelAccount() ;
 
@@ -171,6 +174,8 @@ public class AppLoginPayIdentityChennelAccountController {
         payIdentityChannelAccount.setStatus(Integer.parseInt(status) );
         payIdentityChannelAccount.setRemark(remark) ;
         payIdentityChannelAccount.setId(Integer.parseInt(id)) ;
+        payIdentityChannelAccount.setAreacode(areacode) ;
+
         if(status == null){
 
         }else if(status.equals("1") || status.equals("100")){

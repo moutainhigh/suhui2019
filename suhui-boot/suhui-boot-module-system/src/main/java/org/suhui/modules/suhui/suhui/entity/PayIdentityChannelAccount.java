@@ -80,4 +80,9 @@ public class PayIdentityChannelAccount {
 	/**updateTime*/
     @ApiModelProperty(value = "updateTime")
 	private Date updateTime;
+
+	@Excel(name = "areacode", width = 15)
+	@ApiModelProperty(value = "国家编码")
+	private String areacode;
+
 }
