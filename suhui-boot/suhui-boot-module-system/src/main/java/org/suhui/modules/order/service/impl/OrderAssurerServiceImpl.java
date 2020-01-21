@@ -1,5 +1,6 @@
 package org.suhui.modules.order.service.impl;
 
+import org.suhui.common.api.vo.Result;
 import org.suhui.modules.order.entity.OrderAssurer;
 import org.suhui.modules.order.entity.OrderAssurerAccount;
 import org.suhui.modules.order.entity.OrderMain;
@@ -133,6 +134,40 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         }
         updateById(data);
         return data;
+    }
+
+    /**
+     * 批量审核承兑商
+     */
+    @Override
+    public Result<Object> auditPassAssurer(String ids) {
+        String[] idArr = ids.split(",");
+        Result<Object> result = new Result<>();
+        boolean check = true;
+        for (String orderId : idArr) {
+            OrderAssurer orderAssurer = getById(orderId);
+            if (!BaseUtil.Base_HasValue(orderAssurer)) {
+                result = Result.error(513, "承兑商不存在");
+                check = false;
+                break;
+            }
+            if (!orderAssurer.getAssurerState().equals("to_audit")) {
+                result = Result.error(514, "【待审核】状态的承兑商可执行该操作");
+                check = false;
+                break;
+            }
+            if (orderAssurer.getTotalLimit() <= 0) {
+                result = Result.error(514, "承兑商总限额必须大于0");
+                check = false;
+                break;
+            }
+            orderAssurer.setAssurerState("normal");
+            updateById(orderAssurer);
+        }
+        if (!check) {
+            return result;
+        }
+        return Result.ok("操作成功");
     }
 
 

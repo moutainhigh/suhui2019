@@ -1,6 +1,7 @@
 package org.suhui.modules.order.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.suhui.common.api.vo.Result;
 import org.suhui.modules.order.entity.OrderAssurerAccount;
 import org.suhui.modules.order.entity.OrderAssurer;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -54,4 +55,6 @@ public interface IOrderAssurerService extends IService<OrderAssurer> {
 	OrderAssurer getAssurerByUserNo(String userNo);
 
 	OrderAssurer updateAssurer(OrderAssurer data);
+
+	Result<Object> auditPassAssurer(String ids);
 }

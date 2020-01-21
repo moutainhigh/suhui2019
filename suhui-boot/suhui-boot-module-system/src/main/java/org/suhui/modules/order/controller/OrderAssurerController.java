@@ -11,6 +11,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSONObject;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -89,6 +91,18 @@ public class OrderAssurerController {
 		return result;
 	}
 
+	@PostMapping(value = "/auditPass")
+	public Result<Object> auditPass(@RequestBody JSONObject jsonObject) {
+		Result<Object> result = new Result<Object>();
+		try {
+			result = orderAssurerService.auditPassAssurer(jsonObject.getString("assurerIds"));
+			return result;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			result.error500("操作失败");
+		}
+		return result;
+	}
 
 	/**
 	  * 分页列表查询
@@ -153,6 +167,7 @@ public class OrderAssurerController {
 		if(orderAssurerEntity==null) {
 			result.error500("未找到对应实体");
 		}else {
+			orderAssurer.changeMoneyToPoints();
 			boolean ok = orderAssurerService.updateById(orderAssurer);
 			orderAssurerService.updateMain(orderAssurer, orderAssurerPage.getOrderAssurerAccountList());
 			result.success("修改成功!");

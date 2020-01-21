@@ -89,8 +89,8 @@
             <a-form-item
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
-              label="总额度">
-              <a-input placeholder="请输入总额度" disabled style="width:100%"
+              label="总限额">
+              <a-input placeholder="请输入总限额" style="width:100%"
                        v-decorator="[ 'totalLimit', validatorRules.totalLimit ]"/>
             </a-form-item>
           </a-col>

@@ -39,7 +39,8 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button type="primary" icon="download" @click="handleExportXls('去')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('承兑商管理')">导出</a-button>
+      <a-button type="primary"  v-has="'audit:pass'" @click="auditPass()">审核通过</a-button>
       <!--<a-dropdown v-if="selectedRowKeys.length > 0">-->
         <!--<a-menu slot="overlay">-->
           <!--<a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>-->
@@ -91,6 +92,7 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import OrderAssurerModal from './modules/OrderAssurerModal'
   import {initDictOptions, filterDictText} from '@/components/dict/JDictSelectUtil'
+  import { postAction } from '@/api/manage'
 
   export default {
     name: "OrderAssurerList",
@@ -100,7 +102,7 @@
     },
     data () {
       return {
-        description: '去管理页面',
+        description: '',
         onlineStateDictOptions: [],
         assurerStateDictOptions: [],
         // 表头
@@ -187,6 +189,7 @@
               deleteBatch: "/order/orderAssurer/deleteBatch",
               exportXlsUrl: "order/orderAssurer/exportXls",
               importExcelUrl: "order/orderAssurer/importExcel",
+              auditPass: "order/orderAssurer/auditPass",
            },
         }
       },
@@ -200,6 +203,37 @@
       this.initDictConfig();
     },
     methods: {
+      auditPass(){
+        if (!this.selectedRowKeys || this.selectedRowKeys.length === 0) {
+          return this.$warning({
+            title: '请选择一条数据'
+          })
+        }
+        let params = {
+          assurerIds: this.selectedRowKeys.join(',')
+        }
+        this.$confirm({
+          title: '确认已收款',
+          content: '确定要对所选中的 ' + this.selectedRowKeys.length + ' 条数据执行审核通过操作吗?',
+          onOk: () => {
+            this.loading = true
+            postAction(this.url.auditPass, params).then(res => {
+              if (res.code !== 200) {
+                this.loading = false
+                this.$warning({
+                  title: res.message
+                })
+              } else {
+                this.$success({
+                  title: res.message
+                })
+                this.searchQuery()
+                this.onClearSelected()
+              }
+            })
+          }
+        })
+      },
       initDictConfig() {
         initDictOptions('online_state').then((res) => {
           if (res.success) {
