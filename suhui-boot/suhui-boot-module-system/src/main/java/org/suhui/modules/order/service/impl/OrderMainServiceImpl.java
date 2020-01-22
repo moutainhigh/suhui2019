@@ -53,7 +53,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
      */
     @Override
     @Transactional
-    public Result<Object> manageOrderByAuto(OrderMain orderMain) {
+    public Result<Object> manageOrderByAuto(OrderMain orderMain, String token) {
         Result<Object> result = new Result<Object>();
         // 判断必填项是否有值
         String checkValue = orderMain.checkCreateRequireValue();
@@ -62,6 +62,12 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         }
         // 转换金额为最小单位
         orderMain.changeMoneyToPoints();
+        // 获取用户需支付金额以及费率
+        JSONObject rateObj = this.getUserPayMoney(orderMain.getSourceCurrency(), orderMain.getTargetCurrency(), orderMain.getTargetCurrencyMoney().toString(), token);
+        if (BaseUtil.Base_HasValue(rateObj)) {
+            orderMain.setSourceCurrencyMoney(rateObj.getInteger("money"));
+            orderMain.setExchangeRate(rateObj.getDouble("rate"));
+        }
         // 为订单选择最优承兑商
         Map resutMap = orderAssurerService.getAssurerByOrder(orderMain);
         if (BaseUtil.Base_HasValue(resutMap) && resutMap.get("state").equals("success")) {
@@ -69,6 +75,8 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         } else {
             dispatchAssurerToOrder(orderMain, resutMap);
         }
+        orderMain.changeMoneyToBig();
+        result.setResult(orderMain);
         result.success("订单创建成功");
         return result;
     }

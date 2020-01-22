@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public interface IOrderMainService extends IService<OrderMain> {
 
-      Result<Object> manageOrderByAuto(OrderMain orderMain);
+      Result<Object> manageOrderByAuto(OrderMain orderMain,String token);
 
       Result<Object> userPayConfirm(String orderId,String voucher);
 

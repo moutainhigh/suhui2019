@@ -103,8 +103,9 @@ public class OrderMainController {
     @PostMapping(value = "/add")
     public Result<Object> add(HttpServletRequest request, @RequestBody OrderMain orderMain) {
         Result<Object> result = new Result<Object>();
+        String accessToken = request.getHeader("X-Access-Token");
         try {
-            result = orderMainService.manageOrderByAuto(orderMain);
+            result = orderMainService.manageOrderByAuto(orderMain,accessToken);
             return result;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
