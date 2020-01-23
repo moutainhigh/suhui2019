@@ -101,9 +101,30 @@ public class OrderMainController {
     @AutoLog(value = "创建订单-app")
     @ApiOperation(value = "创建订单-app", notes = "创建订单-app")
     @PostMapping(value = "/add")
-    public Result<Object> add(HttpServletRequest request, @RequestBody OrderMain orderMain) {
+    public Result<Object> add(HttpServletRequest request,
+                              @RequestParam(name = "userNo") String userNo,
+                              @RequestParam(name = "userName") String userName,
+                              @RequestParam(name = "userContact") String userContact,
+                              @RequestParam(name = "sourceCurrency") String sourceCurrency,
+                              @RequestParam(name = "targetCurrency") String targetCurrency,
+                              @RequestParam(name = "exchangeRate") String exchangeRate,
+                              @RequestParam(name = "targetCurrencyMoney") String targetCurrencyMoney,
+                              @RequestParam(name = "userPayMethod") String userPayMethod,
+                              @RequestParam(name = "userCollectionMethod") String userCollectionMethod,
+                              @RequestParam(name = "userCollectionAccount") String userCollectionAccount) {
         Result<Object> result = new Result<Object>();
         String accessToken = request.getHeader("X-Access-Token");
+        OrderMain orderMain = new OrderMain();
+        orderMain.setUserNo(userNo);
+        orderMain.setUserName(userName);
+        orderMain.setUserContact(userContact);
+        orderMain.setSourceCurrency(sourceCurrency);
+        orderMain.setTargetCurrency(targetCurrency);
+        orderMain.setExchangeRate(Double.parseDouble(exchangeRate));
+        orderMain.setTargetCurrencyMoney(Integer.parseInt(targetCurrencyMoney));
+        orderMain.setUserPayMethod(userPayMethod);
+        orderMain.setUserCollectionMethod(userCollectionMethod);
+        orderMain.setUserCollectionAccount(userCollectionAccount);
         try {
             result = orderMainService.manageOrderByAuto(orderMain,accessToken);
             return result;
