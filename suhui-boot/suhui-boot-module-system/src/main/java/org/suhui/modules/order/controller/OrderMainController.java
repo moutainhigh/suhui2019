@@ -181,7 +181,6 @@ public class OrderMainController {
     @AutoLog(value = "承兑商确认已收款")
     @ApiOperation(value = "承兑商确认已收款", notes = "承兑商确认已收款")
     @PostMapping(value = "/assurerCollection")
-    @RequiresPermissions("order:assurer")
     public Result<Object> assurerCollection(HttpServletRequest request, @RequestBody JSONObject jsonObject) {
         Result<Object> result = new Result<Object>();
         try {
@@ -200,7 +199,6 @@ public class OrderMainController {
     @AutoLog(value = "承兑商确认已兑付")
     @ApiOperation(value = "承兑商确认已兑付", notes = "承兑商确认已兑付")
     @PostMapping(value = "/assurerPay")
-    @RequiresPermissions("order:assurer")
     public Result<Object> assurerPay(HttpServletRequest request, @RequestBody JSONObject jsonObject) {
         Result<Object> result = new Result<Object>();
         try {
