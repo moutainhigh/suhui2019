@@ -22,7 +22,7 @@ public interface IOrderMainService extends IService<OrderMain> {
 
       Result<Object> assurerCollectionConfirm(String orderId);
 
-      Result<Object> assurerPayConfirm(String orderId);
+      Result<Object> assurerPayConfirm(String orderId,String fileList);
 
       Result<Object> userCollectionConfirm(String orderId);
 

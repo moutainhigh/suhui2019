@@ -202,7 +202,7 @@ public class OrderMainController {
     public Result<Object> assurerPay(HttpServletRequest request, @RequestBody JSONObject jsonObject) {
         Result<Object> result = new Result<Object>();
         try {
-            result = orderMainService.assurerPayConfirm(jsonObject.getString("orderIds"));
+            result = orderMainService.assurerPayConfirm(jsonObject.getString("orderId"),jsonObject.getString("fileList"));
             return result;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
