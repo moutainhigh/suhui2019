@@ -220,6 +220,7 @@ public class OrderMain {
     private java.lang.String autoDispatchText;
     private java.lang.String userPayVoucher;
     private java.lang.String userPayAccount;
+    private java.lang.String assurerPayVoucher;
 
     public void changeMoneyToPoints() {
         if (BaseUtil.Base_HasValue(this.targetCurrencyMoney) && this.targetCurrencyMoney > 0) {
@@ -563,5 +564,13 @@ public class OrderMain {
 
     public void setUserPayAccount(String userPayAccount) {
         this.userPayAccount = userPayAccount;
+    }
+
+    public String getAssurerPayVoucher() {
+        return assurerPayVoucher;
+    }
+
+    public void setAssurerPayVoucher(String assurerPayVoucher) {
+        this.assurerPayVoucher = assurerPayVoucher;
     }
 }

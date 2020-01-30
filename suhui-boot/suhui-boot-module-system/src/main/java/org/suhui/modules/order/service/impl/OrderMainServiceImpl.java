@@ -168,29 +168,20 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
      * 承兑商确认已兑付
      */
     @Override
-    public Result<Object> assurerPayConfirm(String orderIds) {
-        String[] idArr = orderIds.split(",");
+    public Result<Object> assurerPayConfirm(String orderId, String fileList) {
         Result<Object> result = new Result<>();
-        boolean check = true;
-        for (String orderId : idArr) {
-            OrderMain orderMain = getById(orderId);
-            if (!BaseUtil.Base_HasValue(orderMain)) {
-                check = false;
-                result = Result.error(513, "订单不存在");
-                break;
-            }
-            if (!orderMain.getOrderState().equals("4")) {
-                check = false;
-                result = Result.error(514, "【待承兑商兑付】状态的订单可执行该操作");
-                break;
-            }
-            orderMain.setOrderState("5");
-            orderMain.setAssurerPayTime(new Date());
-            updateById(orderMain);
+
+        OrderMain orderMain = getById(orderId);
+        if (!BaseUtil.Base_HasValue(orderMain)) {
+            return Result.error(513, "订单不存在");
         }
-        if (!check) {
-            return result;
+        if (!orderMain.getOrderState().equals("4")) {
+            return Result.error(514, "【待承兑商兑付】状态的订单可执行该操作");
         }
+        orderMain.setOrderState("5");
+        orderMain.setAssurerPayVoucher(fileList);
+        orderMain.setAssurerPayTime(new Date());
+        updateById(orderMain);
         return Result.ok("操作成功");
     }
 
