@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.suhui.common.api.vo.Result;
 import org.suhui.common.constant.CommonConstant;
 import org.suhui.common.system.query.QueryGenerator;
