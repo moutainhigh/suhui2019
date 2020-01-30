@@ -290,7 +290,11 @@ public class OrderMainController {
             if (!file.exists()) {
                 file.mkdirs();// 创建文件根目录
             }
+
             MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+            StandardServletMultipartResolver resolver = new StandardServletMultipartResolver();
+            multipartRequest = resolver.resolveMultipart(request); 
+
             MultipartFile mf = multipartRequest.getFile("file");// 获取上传文件对象
             String orgName = mf.getOriginalFilename();// 获取文件名
             fileName = orgName.substring(0, orgName.lastIndexOf(".")) + "_" + System.currentTimeMillis() + orgName.substring(orgName.indexOf("."));
