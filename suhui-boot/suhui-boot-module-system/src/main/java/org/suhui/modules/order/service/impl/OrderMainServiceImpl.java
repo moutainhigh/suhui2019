@@ -305,6 +305,8 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             orderMain.setAssurerPayAccount(pay.getAccountNo());
             orderMain.setAssurerPayMethod(pay.getAccountType());
             orderMain.setOrderState("2");
+            orderMain.setAssurerCollectionBank(collection.getOpenBank());
+            orderMain.setAssurerCollectionBankBranch(collection.getOpenBankBranch());
             // 锁定承兑商金额
             lockAssurerMoney(orderMain.getTargetCurrencyMoney(), orderAssurer);
             // 锁定承兑账户金额

@@ -221,6 +221,10 @@ public class OrderMain {
     private java.lang.String userPayVoucher;
     private java.lang.String userPayAccount;
     private java.lang.String assurerPayVoucher;
+    private java.lang.String userCollectionBank;
+    private java.lang.String userCollectionBankBranch;
+    private java.lang.String assurerCollectionBank;
+    private java.lang.String assurerCollectionBankBranch;
 
     public void changeMoneyToPoints() {
         if (BaseUtil.Base_HasValue(this.targetCurrencyMoney) && this.targetCurrencyMoney > 0) {
@@ -572,5 +576,37 @@ public class OrderMain {
 
     public void setAssurerPayVoucher(String assurerPayVoucher) {
         this.assurerPayVoucher = assurerPayVoucher;
+    }
+
+    public String getUserCollectionBank() {
+        return userCollectionBank;
+    }
+
+    public void setUserCollectionBank(String userCollectionBank) {
+        this.userCollectionBank = userCollectionBank;
+    }
+
+    public String getUserCollectionBankBranch() {
+        return userCollectionBankBranch;
+    }
+
+    public void setUserCollectionBankBranch(String userCollectionBankBranch) {
+        this.userCollectionBankBranch = userCollectionBankBranch;
+    }
+
+    public String getAssurerCollectionBank() {
+        return assurerCollectionBank;
+    }
+
+    public void setAssurerCollectionBank(String assurerCollectionBank) {
+        this.assurerCollectionBank = assurerCollectionBank;
+    }
+
+    public String getAssurerCollectionBankBranch() {
+        return assurerCollectionBankBranch;
+    }
+
+    public void setAssurerCollectionBankBranch(String assurerCollectionBankBranch) {
+        this.assurerCollectionBankBranch = assurerCollectionBankBranch;
     }
 }

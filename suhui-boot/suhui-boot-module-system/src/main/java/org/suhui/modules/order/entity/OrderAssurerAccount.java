@@ -73,7 +73,7 @@ public class OrderAssurerAccount implements Serializable {
     @Excel(name = "删除状态（0，正常，1已删除）", width = 15)
 	private java.lang.String delFlag;
 	private java.lang.Integer payLockMoney;
-
+	private java.lang.String openBankBranch;
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
 	}
@@ -224,5 +224,13 @@ public class OrderAssurerAccount implements Serializable {
 
 	public void setPayLockMoney(Integer payLockMoney) {
 		this.payLockMoney = payLockMoney;
+	}
+
+	public String getOpenBankBranch() {
+		return openBankBranch;
+	}
+
+	public void setOpenBankBranch(String openBankBranch) {
+		this.openBankBranch = openBankBranch;
 	}
 }
