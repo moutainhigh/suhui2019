@@ -32,6 +32,11 @@
           <detail-list-item term="收款账号">{{ model.userCollectionAccount }}</detail-list-item>
           <detail-list-item term="确认收款时间">{{ model.userCollectionTime }}</detail-list-item>
         </detail-list>
+        <detail-list title="用户付款凭证" :col="col" v-if="model.userPayVoucher">
+          <div class="img-model">
+            <img v-for="(item,i) in model.userPayVoucher.split('，')" @click="handlePreview(item)" :src="item"/>
+          </div>
+        </detail-list>
         <detail-list title="承兑商信息" :col="col" v-if="model.assurerId">
           <detail-list-item term="承兑商名称">{{ model.assurerName }}</detail-list-item>
           <detail-list-item term="收款方式">{{ model.assurerCollectionMethod }}</detail-list-item>
@@ -41,6 +46,14 @@
           <detail-list-item term="兑付账号">{{ model.assurerPayAccount }}</detail-list-item>
           <detail-list-item term="确认兑付时间">{{ model.assurerPayTime }}</detail-list-item>
         </detail-list>
+        <detail-list title="承兑商付款凭证" :col="col" v-if="model.assurerPayVoucher">
+          <div class="img-model">
+            <img v-for="(item,i) in model.assurerPayVoucher.split('，')" @click="handlePreview(item)" :src="item"/>
+          </div>
+        </detail-list>
+        <a-modal :visible="previewVisible" :footer="null" @cancel="cancelPreview">
+          <img alt="example" style="width: 100%" :src="previewImage" />
+        </a-modal>
       </a-card>
     </a-spin>
   </a-drawer>
@@ -65,12 +78,21 @@
         col: 1,
         visible: false,
         drawerWidth: 700,
+        previewVisible: false,
+        previewImage: '',
         model: {},
         // form: this.$form.createForm(this),
         confirmLoading: false
       }
     },
     methods: {
+      cancelPreview () {
+        this.previewVisible = false
+      },
+      handlePreview (url) {
+        this.previewImage = url;
+        this.previewVisible = true
+      },
       close() {
         this.$emit('close')
         this.visible = false
@@ -116,5 +138,15 @@
     font-size: 16px;
     font-weight: 500;
     margin-bottom: 16px;
+  }
+  .img-model{
+    margin-bottom: 10px;
+  }
+  .img-model  img{
+    display: inline-block;
+    max-width: 150px;
+    max-height: 150px;
+    margin-right: 8px;
+    cursor: pointer;
   }
 </style>
