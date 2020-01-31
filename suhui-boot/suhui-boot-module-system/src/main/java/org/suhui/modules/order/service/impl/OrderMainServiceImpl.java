@@ -75,6 +75,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         } else {
             dispatchAssurerToOrder(orderMain, resutMap);
         }
+        orderMain.changeMoneyToBig();
         result.setResult(orderMain);
         result.success("订单创建成功");
         return result;
