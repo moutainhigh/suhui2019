@@ -35,7 +35,7 @@ public class OrderAssurerAccountServiceImpl extends ServiceImpl<OrderAssurerAcco
      *为承兑商选择一个支付账户
      */
     @Override
-    public OrderAssurerAccount getAssurerAccountByOrderPay(String assurerId, int orderMoney) {
+    public OrderAssurerAccount getAssurerAccountByOrderPay(String assurerId, Double orderMoney) {
         OrderAssurerAccount orderAssurerAccount = null;
         List<OrderAssurerAccount> list = orderAssurerAccountMapper.selectByMainId(assurerId);
         if (!BaseUtil.Base_HasValue(list)) {

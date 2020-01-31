@@ -43,16 +43,16 @@ public class OrderAssurerAccount implements Serializable {
 	private java.lang.String useType;
 	/**每日支付限额*/
     @Excel(name = "每日支付限额", width = 15)
-	private java.lang.Integer payLimit;
+	private java.lang.Double payLimit;
 	/**支付已用额度*/
     @Excel(name = "支付已用额度", width = 15)
-	private java.lang.Integer payUsedLimit;
+	private java.lang.Double payUsedLimit;
 	/**支付可用额度(日)*/
     @Excel(name = "支付可用额度(日)", width = 15)
-	private java.lang.Integer payCanUseLimit;
+	private java.lang.Double payCanUseLimit;
 	/**收款已用额度(日)*/
     @Excel(name = "收款已用额度(日)", width = 15)
-	private java.lang.Integer collectionUsedLimit;
+	private java.lang.Double collectionUsedLimit;
 	/**创建人*/
     @Excel(name = "创建人", width = 15)
 	private java.lang.String createBy;
@@ -72,7 +72,7 @@ public class OrderAssurerAccount implements Serializable {
 	/**删除状态（0，正常，1已删除）*/
     @Excel(name = "删除状态（0，正常，1已删除）", width = 15)
 	private java.lang.String delFlag;
-	private java.lang.Integer payLockMoney;
+	private java.lang.Double payLockMoney;
 	private java.lang.String openBankBranch;
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
@@ -146,35 +146,35 @@ public class OrderAssurerAccount implements Serializable {
 		this.useType = useType;
 	}
 
-	public Integer getPayLimit() {
+	public Double getPayLimit() {
 		return payLimit;
 	}
 
-	public void setPayLimit(Integer payLimit) {
+	public void setPayLimit(Double payLimit) {
 		this.payLimit = payLimit;
 	}
 
-	public Integer getPayUsedLimit() {
+	public Double getPayUsedLimit() {
 		return payUsedLimit;
 	}
 
-	public void setPayUsedLimit(Integer payUsedLimit) {
+	public void setPayUsedLimit(Double payUsedLimit) {
 		this.payUsedLimit = payUsedLimit;
 	}
 
-	public Integer getPayCanUseLimit() {
+	public Double getPayCanUseLimit() {
 		return payCanUseLimit;
 	}
 
-	public void setPayCanUseLimit(Integer payCanUseLimit) {
+	public void setPayCanUseLimit(Double payCanUseLimit) {
 		this.payCanUseLimit = payCanUseLimit;
 	}
 
-	public Integer getCollectionUsedLimit() {
+	public Double getCollectionUsedLimit() {
 		return collectionUsedLimit;
 	}
 
-	public void setCollectionUsedLimit(Integer collectionUsedLimit) {
+	public void setCollectionUsedLimit(Double collectionUsedLimit) {
 		this.collectionUsedLimit = collectionUsedLimit;
 	}
 
@@ -218,11 +218,11 @@ public class OrderAssurerAccount implements Serializable {
 		this.delFlag = delFlag;
 	}
 
-	public Integer getPayLockMoney() {
+	public Double getPayLockMoney() {
 		return payLockMoney;
 	}
 
-	public void setPayLockMoney(Integer payLockMoney) {
+	public void setPayLockMoney(Double payLockMoney) {
 		this.payLockMoney = payLockMoney;
 	}
 

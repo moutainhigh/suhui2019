@@ -91,7 +91,7 @@ public class OrderMain {
      */
     @Excel(name = "源币种金额", width = 15)
     @ApiModelProperty(value = "源币种金额")
-    private java.lang.Integer sourceCurrencyMoney;
+    private java.lang.Double sourceCurrencyMoney;
     /**
      * 用户支付方式(支付宝alipay、银行卡bank_card)
      */
@@ -164,7 +164,7 @@ public class OrderMain {
      */
     @Excel(name = "目标币种金额", width = 15)
     @ApiModelProperty(value = "目标币种金额")
-    private java.lang.Integer targetCurrencyMoney;
+    private java.lang.Double targetCurrencyMoney;
     /**
      * 承兑商兑付时间
      */
@@ -354,11 +354,11 @@ public class OrderMain {
         this.exchangeRate = exchangeRate;
     }
 
-    public Integer getSourceCurrencyMoney() {
+    public Double getSourceCurrencyMoney() {
         return sourceCurrencyMoney;
     }
 
-    public void setSourceCurrencyMoney(Integer sourceCurrencyMoney) {
+    public void setSourceCurrencyMoney(Double sourceCurrencyMoney) {
         this.sourceCurrencyMoney = sourceCurrencyMoney;
     }
 
@@ -442,11 +442,11 @@ public class OrderMain {
         this.assurerCollectionTime = assurerCollectionTime;
     }
 
-    public Integer getTargetCurrencyMoney() {
+    public Double getTargetCurrencyMoney() {
         return targetCurrencyMoney;
     }
 
-    public void setTargetCurrencyMoney(Integer targetCurrencyMoney) {
+    public void setTargetCurrencyMoney(Double targetCurrencyMoney) {
         this.targetCurrencyMoney = targetCurrencyMoney;
     }
 

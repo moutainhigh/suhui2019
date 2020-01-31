@@ -34,11 +34,11 @@ public class OrderAssurer implements Serializable {
 	/**费率*/
 	private java.lang.Double assurerRate;
 	/**可用额度*/
-	private java.lang.Integer canUseLimit;
+	private java.lang.Double canUseLimit;
 	/**已用额度*/
-	private java.lang.Integer usedLimit;
+	private java.lang.Double usedLimit;
 	/**总额度=已用额度+可用额度*/
-	private java.lang.Integer totalLimit;
+	private java.lang.Double totalLimit;
 	/**策略(单一制(one)、多单制(more))*/
 	private java.lang.String assurerStrategy;
 	/**创建人*/
@@ -57,7 +57,7 @@ public class OrderAssurer implements Serializable {
 	private java.lang.String delFlag;
 	private java.lang.String assurerPhone;
 	private java.lang.Integer onlineState;
-	private java.lang.Integer payLockMoney;
+	private java.lang.Double payLockMoney;
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
 	}
@@ -123,27 +123,27 @@ public class OrderAssurer implements Serializable {
 		this.assurerRate = assurerRate;
 	}
 
-	public Integer getCanUseLimit() {
+	public Double getCanUseLimit() {
 		return canUseLimit;
 	}
 
-	public void setCanUseLimit(Integer canUseLimit) {
+	public void setCanUseLimit(Double canUseLimit) {
 		this.canUseLimit = canUseLimit;
 	}
 
-	public Integer getUsedLimit() {
+	public Double getUsedLimit() {
 		return usedLimit;
 	}
 
-	public void setUsedLimit(Integer usedLimit) {
+	public void setUsedLimit(Double usedLimit) {
 		this.usedLimit = usedLimit;
 	}
 
-	public Integer getTotalLimit() {
+	public Double getTotalLimit() {
 		return totalLimit;
 	}
 
-	public void setTotalLimit(Integer totalLimit) {
+	public void setTotalLimit(Double totalLimit) {
 		this.totalLimit = totalLimit;
 	}
 
@@ -203,11 +203,11 @@ public class OrderAssurer implements Serializable {
 		this.onlineState = onlineState;
 	}
 
-	public Integer getPayLockMoney() {
+	public Double getPayLockMoney() {
 		return payLockMoney;
 	}
 
-	public void setPayLockMoney(Integer payLockMoney) {
+	public void setPayLockMoney(Double payLockMoney) {
 		this.payLockMoney = payLockMoney;
 	}
 

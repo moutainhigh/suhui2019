@@ -114,7 +114,9 @@ public class OrderMainController {
                               @RequestParam(name = "targetCurrencyMoney") String targetCurrencyMoney,
                               @RequestParam(name = "userPayMethod") String userPayMethod,
                               @RequestParam(name = "userCollectionMethod") String userCollectionMethod,
-                              @RequestParam(name = "userCollectionAccount") String userCollectionAccount) {
+                              @RequestParam(name = "userCollectionAccount") String userCollectionAccount,
+                              @RequestParam(name = "userCollectionBank") String userCollectionBank,
+                              @RequestParam(name = "userCollectionBankBranch") String userCollectionBankBranch) {
         Result<Object> result = new Result<Object>();
         String accessToken = request.getHeader("X-Access-Token");
         OrderMain orderMain = new OrderMain();
@@ -124,10 +126,12 @@ public class OrderMainController {
         orderMain.setSourceCurrency(sourceCurrency);
         orderMain.setTargetCurrency(targetCurrency);
         orderMain.setExchangeRate(Double.parseDouble(exchangeRate));
-        orderMain.setTargetCurrencyMoney(Integer.parseInt(targetCurrencyMoney));
+        orderMain.setTargetCurrencyMoney(Double.parseDouble(targetCurrencyMoney));
         orderMain.setUserPayMethod(userPayMethod);
         orderMain.setUserCollectionMethod(userCollectionMethod);
         orderMain.setUserCollectionAccount(userCollectionAccount);
+        orderMain.setUserCollectionBank(userCollectionBank);
+        orderMain.setUserCollectionBankBranch(userCollectionBankBranch);
         try {
             result = orderMainService.manageOrderByAuto(orderMain,accessToken);
             return result;

@@ -65,7 +65,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         // 获取用户需支付金额以及费率
         JSONObject rateObj = this.getUserPayMoney(orderMain.getSourceCurrency(), orderMain.getTargetCurrency(), orderMain.getTargetCurrencyMoney().toString(), token);
         if (BaseUtil.Base_HasValue(rateObj)) {
-            orderMain.setSourceCurrencyMoney(rateObj.getInteger("money"));
+            orderMain.setSourceCurrencyMoney(rateObj.getDouble("money"));
             orderMain.setExchangeRate(rateObj.getDouble("rate"));
         }
         // 为订单选择最优承兑商
@@ -220,11 +220,11 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         if (!BaseUtil.Base_HasValue(oaap)) {
             return Result.error(517, "承兑商支付账户不存在");
         }
-        Integer orderMoney = orderMain.getTargetCurrencyMoney();
+        Double orderMoney = orderMain.getTargetCurrencyMoney();
         // 更新已使用金额 = 已用金额+该订单金额
-        Integer userdLimit = orderAssurer.getUsedLimit() + orderMoney;
+        Double userdLimit = orderAssurer.getUsedLimit() + orderMoney;
         // 更新锁定金额
-        Integer payLockMoney = orderAssurer.getPayLockMoney() - orderMoney;
+        Double payLockMoney = orderAssurer.getPayLockMoney() - orderMoney;
         if (userdLimit + orderAssurer.getCanUseLimit() + payLockMoney != orderAssurer.getTotalLimit()) {
             return Result.error(520, "承兑商金额异常(已用金额+可用金额+锁定金额不等于总金额)");
         }
@@ -234,9 +234,9 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         // 目前支付宝账户才进行锁定金额
         if ("alipay".equals(oaap.getAccountType())) {
             // 更新账户已使用金额 = 已用金额+该订单金额
-            Integer usedLimitAccount = oaap.getPayUsedLimit() + orderMoney;
+            Double usedLimitAccount = oaap.getPayUsedLimit() + orderMoney;
             // 更新账户锁定金额
-            Integer payLockMoneyAccount = oaap.getPayLockMoney() - orderMoney;
+            Double payLockMoneyAccount = oaap.getPayLockMoney() - orderMoney;
             if (usedLimitAccount + oaap.getPayCanUseLimit() + oaap.getPayLockMoney() != oaap.getPayLimit()) {
                 return Result.error(520, "承兑商账户金额异常(已用金额+可用金额+锁定金额不等于总金额)");
             }
@@ -349,9 +349,9 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
     /**
      * 锁定承运商支付金额
      */
-    public void lockAssurerMoney(int money, OrderAssurer orderAssurer) {
-        int lockMoney = orderAssurer.getPayLockMoney() + money;
-        int canUseLimit = orderAssurer.getCanUseLimit() - money;
+    public void lockAssurerMoney(Double money, OrderAssurer orderAssurer) {
+        Double lockMoney = orderAssurer.getPayLockMoney() + money;
+        Double canUseLimit = orderAssurer.getCanUseLimit() - money;
         orderAssurer.setCanUseLimit(canUseLimit);
         orderAssurer.setPayLockMoney(lockMoney);
         orderAssurerService.updateById(orderAssurer);
@@ -360,10 +360,10 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
     /**
      * 锁定承运商账号支付金额
      */
-    public void lockAssurerAccountMoney(int money, OrderAssurerAccount orderAssurerAccount) {
+    public void lockAssurerAccountMoney(Double money, OrderAssurerAccount orderAssurerAccount) {
         if (orderAssurerAccount.getAccountType().equals("alipay")) {
-            int lockMoney = orderAssurerAccount.getPayLockMoney() + money;
-            int canUseLimit = orderAssurerAccount.getPayCanUseLimit() - money;
+            Double lockMoney = orderAssurerAccount.getPayLockMoney() + money;
+            Double canUseLimit = orderAssurerAccount.getPayCanUseLimit() - money;
             orderAssurerAccount.setPayCanUseLimit(canUseLimit);
             orderAssurerAccount.setPayLockMoney(lockMoney);
             orderAssurerAccountService.updateById(orderAssurerAccount);
