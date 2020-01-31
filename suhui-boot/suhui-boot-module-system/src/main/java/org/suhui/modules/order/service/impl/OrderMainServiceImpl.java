@@ -277,7 +277,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
                 String rate = data.getString("rate_now");
                 BigDecimal a1 = new BigDecimal(money);
                 BigDecimal b1 = new BigDecimal(rate);
-                Double value = a1.divide(b1, 2, BigDecimal.ROUND_UP).doubleValue();
+                Double value = a1.divide(b1, 0, BigDecimal.ROUND_UP).doubleValue();
                 valueObj.put("money", value);
                 valueObj.put("rate", rate);
             }
