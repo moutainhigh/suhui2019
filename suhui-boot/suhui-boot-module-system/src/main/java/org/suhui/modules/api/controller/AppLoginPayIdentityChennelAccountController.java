@@ -248,9 +248,9 @@ public class AppLoginPayIdentityChennelAccountController {
         String channeltype = params.get("channeltype") + ""; // 支付通道类型
 
         Map map = new HashMap() ;
-        map.put("userno" ,userno) ;
-        map.put("usertype" ,usertype) ;
-        map.put("areacode" ,areacode) ;
+        map.put("userno" , userno) ;
+        map.put("usertype" , usertype) ;
+        map.put("areacode" , areacode) ;
         List<Map> mapDb = iPayIdentityChannelAccountService.getChannelAccountInfoByUserNo(map) ;
 
         obj.put("data" ,mapDb) ;
