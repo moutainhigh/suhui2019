@@ -1,5 +1,6 @@
 package org.suhui.modules.order.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -69,7 +70,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             orderMain.setExchangeRate(rateObj.getDouble("rate"));
         }
         // 查询用户收款账号
-        orderMain = this.getUserCollectionAccount(orderMain);
+        orderMain = this.getUserCollectionAccount(orderMain,token);
         // 为订单选择最优承兑商
         Map resutMap = orderAssurerService.getAssurerByOrder(orderMain);
         if (BaseUtil.Base_HasValue(resutMap) && resutMap.get("state").equals("success")) {
@@ -88,7 +89,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
      * 订单分配承兑商-后台
      */
     @Override
-    public Result<Object> dispatchOrderAdmin(String orderId, String assurerId) {
+    public Result<Object> dispatchOrderAdmin(String orderId, String assurerId,String token) {
         OrderMain orderMain = getById(orderId);
         OrderAssurer orderAssurer = orderAssurerService.getById(assurerId);
         if (!BaseUtil.Base_HasValue(orderMain)) {
@@ -101,7 +102,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             return Result.error(512, "已分配状态的订单才可进行该操作");
         }
         // 查询用户收款账号
-        orderMain = this.getUserCollectionAccount(orderMain);
+        orderMain = this.getUserCollectionAccount(orderMain,token);
         // 为承兑商选择一个支付账号
         OrderAssurerAccount accountPay = orderAssurerAccountService.getAssurerAccountByOrderPay(assurerId, orderMain.getTargetCurrencyMoney(),orderMain.getUserCollectionMethod());
         if (!BaseUtil.Base_HasValue(accountPay)) {
@@ -428,7 +429,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
     }
 
 
-    OrderMain getUserCollectionAccount(OrderMain orderMain) {
+    OrderMain getUserCollectionAccount(OrderMain orderMain,String token) {
         Map map = new HashMap();
         map.put("userno", orderMain.getUserNo());
         map.put("usertype", 0);
@@ -445,6 +446,32 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             orderMain.setUserCollectionAccount(payAccountMap.get("channel_account_no").toString());
             orderMain.setUserCollectionBank("");
             orderMain.setUserCollectionBankBranch("");
+            try {
+                RestTemplate restTemplate = new RestTemplate();
+                String url = "http://localhost:3333/api/login/ChannelTypeCode/getList";
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+                headers.add("X-Access-Token", token);
+                MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
+                HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(paramMap, headers);
+                ResponseEntity<JSONObject> response = restTemplate.postForEntity(url, request, JSONObject.class);
+                if (response.getBody().getInteger("code") == 200) {
+                    JSONObject result = response.getBody().getJSONObject("result");
+                    JSONArray dataArr = result.getJSONArray("channelList");
+                    System.out.println(dataArr);
+                    if(BaseUtil.Base_HasValue(dataArr)){
+                        for(int i=0;i<dataArr.size();i++){
+                            JSONObject jsonObject =dataArr.getJSONObject(i);
+                            if(jsonObject.getInteger("channelType") == type){
+                                orderMain.setUserCollectionBank(jsonObject.getString("channelName"));
+                                orderMain.setUserCollectionBankBranch("");
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                return null;
+            }
         }
         return orderMain;
     }

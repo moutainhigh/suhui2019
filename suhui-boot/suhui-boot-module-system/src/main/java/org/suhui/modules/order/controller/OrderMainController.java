@@ -150,8 +150,9 @@ public class OrderMainController {
     public Result<Object> dispatchOrder(HttpServletRequest request,
                                         @RequestBody JSONObject jsonObject) {
         Result<Object> result = new Result<Object>();
+        String accessToken = request.getHeader("X-Access-Token");
         try {
-            result = orderMainService.dispatchOrderAdmin(jsonObject.getString("orderId"), jsonObject.getString("assurerId"));
+            result = orderMainService.dispatchOrderAdmin(jsonObject.getString("orderId"), jsonObject.getString("assurerId"),accessToken);
             return result;
         } catch (Exception e) {
             log.error(e.getMessage(), e);

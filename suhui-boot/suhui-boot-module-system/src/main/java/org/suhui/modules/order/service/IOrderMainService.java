@@ -26,7 +26,7 @@ public interface IOrderMainService extends IService<OrderMain> {
 
       Result<Object> userCollectionConfirm(String orderId);
 
-      Result<Object> dispatchOrderAdmin(String orderId,String assurerId);
+      Result<Object> dispatchOrderAdmin(String orderId,String assurerId,String token);
 
       Result<Object> revokeOrderAdmin(String orderId);
 
