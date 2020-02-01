@@ -84,7 +84,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         Map<String, Object> resultMap = new HashMap<>();
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("order_money", orderMain.getTargetCurrencyMoney());
-        // 选择一个合适的承兑商
+        // 选择多个合适的承兑商
         List<OrderAssurer> orderAssurers = orderAssurerMapper.getAssurerByOrderData(paramMap);
         if (!BaseUtil.Base_HasValue(orderAssurers)) {
             resultMap.put("state","error");
@@ -96,7 +96,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         for (int i = 0; i < orderAssurers.size(); i++) {
             OrderAssurer assurer = orderAssurers.get(i);
             // 为承兑商选择一个支付账号,同时排除掉没有账号得承兑商和账号支付宝金额不足的承兑商
-            OrderAssurerAccount account = orderAssurerAccountService.getAssurerAccountByOrderPay(assurer.getId(), orderMain.getTargetCurrencyMoney());
+            OrderAssurerAccount account = orderAssurerAccountService.getAssurerAccountByOrderPay(assurer.getId(), orderMain.getTargetCurrencyMoney(),orderMain.getUserCollectionMethod());
             if (BaseUtil.Base_HasValue(account)) {
                 orderAssurer = assurer;
                 orderAssurerAccount = account;
@@ -110,7 +110,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
             return resultMap;
         }
         // 为承兑商选择一个收款账户
-        OrderAssurerAccount orderAssurerAccountCollection = orderAssurerAccountService.getAssurerAccountByOrderCollection(orderAssurer.getId());
+        OrderAssurerAccount orderAssurerAccountCollection = orderAssurerAccountService.getAssurerAccountByOrderCollection(orderAssurer.getId(),orderMain.getUserPayMethod());
         resultMap.put("state","success");
         resultMap.put("orderAssurer", orderAssurer);
         resultMap.put("orderAssurerAccountPay", orderAssurerAccount);
