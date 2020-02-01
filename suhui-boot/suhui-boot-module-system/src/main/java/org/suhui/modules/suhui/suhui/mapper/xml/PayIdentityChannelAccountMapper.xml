@@ -5,7 +5,7 @@
 
     <select id="getChannelAccountInfoByUserNo" resultType="map" parameterType="map">
             SELECT
-                channel_account_no ,areacode
+                channel_account_no ,areacode ,channel_type 
             FROM
                 pay_identity_channel_account pica
             LEFT JOIN pay_identity_info pii ON pica.identity_no = pii.identity_no
