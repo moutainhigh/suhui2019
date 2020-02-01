@@ -236,22 +236,19 @@ public class AppLoginPayIdentityChennelAccountController {
      * @param params
      * @return
      */
-    @RequestMapping(value = "/searchByAreacode", method = RequestMethod.POST)
+    @RequestMapping(value = "/getUserAllChannel", method = RequestMethod.POST)
     @Transactional
-    public Result<JSONObject> searchByAreacode(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
+    public Result<JSONObject> getUserAllChannel(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
         //用户退出逻辑
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
 
         String userno = params.get("userno") + "";
         String usertype = params.get("usertype") + "";
-        String channeltype = params.get("channeltype") + ""; // 支付通道类型
-        String areacode = params.get("areacode") + ""; // 支付通道类型
 
         Map map = new HashMap() ;
         map.put("userno" , userno) ;
         map.put("usertype" , usertype) ;
-        map.put("areacode" , areacode) ;
         List<Map> mapDb = iPayIdentityChannelAccountService.getChannelAccountInfoByUserNo(map) ;
 
         obj.put("data" ,mapDb) ;
@@ -261,6 +258,5 @@ public class AppLoginPayIdentityChennelAccountController {
 
         return result ;
     }
-
 
 }

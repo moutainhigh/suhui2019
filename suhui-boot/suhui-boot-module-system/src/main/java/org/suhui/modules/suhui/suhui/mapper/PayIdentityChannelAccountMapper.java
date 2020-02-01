@@ -16,4 +16,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface PayIdentityChannelAccountMapper extends BaseMapper<PayIdentityChannelAccount> {
 
     public List<Map<String,String>> getChannelAccountInfoByUserNo(Map<String,String> map);
+
 }
