@@ -246,6 +246,7 @@ public class AppLoginPayIdentityChennelAccountController {
         String userno = params.get("userno") + "";
         String usertype = params.get("usertype") + "";
         String channeltype = params.get("channeltype") + ""; // 支付通道类型
+        String areacode = params.get("areacode") + ""; // 支付通道类型
 
         Map map = new HashMap() ;
         map.put("userno" , userno) ;
