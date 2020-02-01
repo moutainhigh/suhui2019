@@ -225,6 +225,10 @@ public class OrderMain {
     private java.lang.String userCollectionBankBranch;
     private java.lang.String assurerCollectionBank;
     private java.lang.String assurerCollectionBankBranch;
+    private java.lang.String userPayBank;
+    private java.lang.String userPayBankBranch;
+    private java.lang.String assurerPayBank;
+    private java.lang.String assurerPayBankBranch;
 
     public void changeMoneyToPoints() {
         if (BaseUtil.Base_HasValue(this.targetCurrencyMoney) && this.targetCurrencyMoney > 0) {
@@ -270,10 +274,7 @@ public class OrderMain {
         if (!BaseUtil.Base_HasValue(this.userPayMethod)) {
             message += "缺少值用户支付方式,";
         }
-        if (!BaseUtil.Base_HasValue(this.userCollectionMethod)) {
-            message += "缺少值用户收款方式,";
-        }
-        if (!BaseUtil.Base_HasValue(this.userCollectionAccount)) {
+        if (!BaseUtil.Base_HasValue(this.userPayAccount)) {
             message += "缺少值用户收款账号,";
         }
         if (BaseUtil.Base_HasValue(message)) {
@@ -608,5 +609,37 @@ public class OrderMain {
 
     public void setAssurerCollectionBankBranch(String assurerCollectionBankBranch) {
         this.assurerCollectionBankBranch = assurerCollectionBankBranch;
+    }
+
+    public String getUserPayBank() {
+        return userPayBank;
+    }
+
+    public void setUserPayBank(String userPayBank) {
+        this.userPayBank = userPayBank;
+    }
+
+    public String getUserPayBankBranch() {
+        return userPayBankBranch;
+    }
+
+    public void setUserPayBankBranch(String userPayBankBranch) {
+        this.userPayBankBranch = userPayBankBranch;
+    }
+
+    public String getAssurerPayBank() {
+        return assurerPayBank;
+    }
+
+    public void setAssurerPayBank(String assurerPayBank) {
+        this.assurerPayBank = assurerPayBank;
+    }
+
+    public String getAssurerPayBankBranch() {
+        return assurerPayBankBranch;
+    }
+
+    public void setAssurerPayBankBranch(String assurerPayBankBranch) {
+        this.assurerPayBankBranch = assurerPayBankBranch;
     }
 }

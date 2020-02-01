@@ -1,5 +1,6 @@
 package org.suhui.modules.order.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -68,6 +69,8 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             orderMain.setSourceCurrencyMoney(rateObj.getDouble("money"));
             orderMain.setExchangeRate(rateObj.getDouble("rate"));
         }
+        // 查询用户收款账号
+        orderMain = this.getUserCollectionAccount(orderMain, token);
         // 为订单选择最优承兑商
         Map resutMap = orderAssurerService.getAssurerByOrder(orderMain);
         if (BaseUtil.Base_HasValue(resutMap) && resutMap.get("state").equals("success")) {
@@ -81,11 +84,12 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         return result;
     }
 
+
     /**
      * 订单分配承兑商-后台
      */
     @Override
-    public Result<Object> dispatchOrderAdmin(String orderId, String assurerId) {
+    public Result<Object> dispatchOrderAdmin(String orderId, String assurerId, String token) {
         OrderMain orderMain = getById(orderId);
         OrderAssurer orderAssurer = orderAssurerService.getById(assurerId);
         if (!BaseUtil.Base_HasValue(orderMain)) {
@@ -97,13 +101,15 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         if (!orderMain.getOrderState().equals("1")) {
             return Result.error(512, "已分配状态的订单才可进行该操作");
         }
+        // 查询用户收款账号
+        orderMain = this.getUserCollectionAccount(orderMain, token);
         // 为承兑商选择一个支付账号
-        OrderAssurerAccount accountPay = orderAssurerAccountService.getAssurerAccountByOrderPay(assurerId, orderMain.getTargetCurrencyMoney());
+        OrderAssurerAccount accountPay = orderAssurerAccountService.getAssurerAccountByOrderPay(assurerId, orderMain.getTargetCurrencyMoney(), orderMain.getUserCollectionMethod());
         if (!BaseUtil.Base_HasValue(accountPay)) {
             return Result.error(518, "承兑商找不到合适的支付账号");
         }
         // 为承兑商选择一个收款账号
-        OrderAssurerAccount accountCollection = orderAssurerAccountService.getAssurerAccountByOrderCollection(assurerId);
+        OrderAssurerAccount accountCollection = orderAssurerAccountService.getAssurerAccountByOrderCollection(assurerId, orderMain.getUserPayMethod());
         if (!BaseUtil.Base_HasValue(accountCollection)) {
             return Result.error(519, "承兑商找不到合适的收款账号");
         }
@@ -114,6 +120,66 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         resultMap.put("orderAssurerAccountCollection", accountCollection);
         dispatchAssurerToOrder(orderMain, resultMap);
         return Result.ok("订单分配成功");
+    }
+
+    /**
+     * 取消订单
+     */
+    @Override
+    public Result<Object> revokeOrderAdmin(String orderId) {
+        OrderMain orderMain = getById(orderId);
+        if (!BaseUtil.Base_HasValue(orderMain)) {
+            return Result.error(513, "订单不存在");
+        }
+        if (!orderMain.getOrderState().equals("1") && !orderMain.getOrderState().equals("2")) {
+            return Result.error(514, "订单状态异常");
+        }
+        orderMain.setOrderState("0");
+        orderMain.setUserCollectionTime(new Date());
+        updateById(orderMain);
+        OrderAssurer orderAssurer = orderAssurerService.getById(orderMain.getAssurerId());
+        OrderAssurerAccount oaac = orderAssurerAccountService.getById(orderMain.getAssurerCollectionAccountId());
+        OrderAssurerAccount oaap = orderAssurerAccountService.getById(orderMain.getAssurerPayAccountId());
+        if (!BaseUtil.Base_HasValue(orderAssurer)) {
+            return Result.error(515, "承兑商不存在");
+        }
+        if (!BaseUtil.Base_HasValue(oaac)) {
+            return Result.error(516, "承兑商收款账户不存在");
+        }
+        if (!BaseUtil.Base_HasValue(oaap)) {
+            return Result.error(517, "承兑商支付账户不存在");
+        }
+        Double orderMoney = orderMain.getTargetCurrencyMoney();
+
+        // 更新可用金额
+        Double canUseLimit = orderAssurer.getCanUseLimit() + orderMoney;
+
+        // 更新锁定金额
+        Double payLockMoney = orderAssurer.getPayLockMoney() - orderMoney;
+        if (canUseLimit + orderAssurer.getUsedLimit() + payLockMoney != orderAssurer.getTotalLimit()) {
+            return Result.error(520, "承兑商金额异常(已用金额+可用金额+锁定金额不等于总金额)");
+        }
+        orderAssurer.setCanUseLimit(canUseLimit);
+        orderAssurer.setPayLockMoney(payLockMoney);
+        orderAssurerService.updateById(orderAssurer);
+        // 目前支付宝账户才进行锁定金额
+        if ("alipay".equals(oaap.getAccountType())) {
+            // 更新账户已使用金额 = 已用金额+该订单金额
+            Double canUseLimitAccount = oaap.getPayCanUseLimit() + orderMoney;
+            // 更新账户锁定金额
+            Double payLockMoneyAccount = oaap.getPayLockMoney() - orderMoney;
+            if (canUseLimitAccount + oaap.getPayUsedLimit() + oaap.getPayLockMoney() != oaap.getPayLimit()) {
+                return Result.error(520, "承兑商账户金额异常(已用金额+可用金额+锁定金额不等于总金额)");
+            }
+            oaap.setPayCanUseLimit(canUseLimitAccount);
+            oaap.setPayLockMoney(payLockMoneyAccount);
+        }
+        // 收款账户已用金额增加
+        if (!oaac.getId().equals(oaap.getId())) {
+            orderAssurerAccountService.updateById(oaac);
+        }
+        orderAssurerAccountService.updateById(oaap);
+        return Result.ok("操作成功");
     }
 
     /**
@@ -302,27 +368,18 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             orderMain.setAssurerCollectionAccount(collection.getAccountNo());
             orderMain.setAssurerCollectionAccountId(collection.getId());
             orderMain.setAssurerCollectionMethod(collection.getAccountType());
+            orderMain.setAssurerCollectionBank(collection.getOpenBank());
+            orderMain.setAssurerCollectionBankBranch(collection.getOpenBankBranch());
             orderMain.setAssurerPayAccountId(pay.getId());
             orderMain.setAssurerPayAccount(pay.getAccountNo());
             orderMain.setAssurerPayMethod(pay.getAccountType());
+            orderMain.setAssurerPayBank(pay.getOpenBank());
+            orderMain.setAssurerPayBankBranch(pay.getOpenBankBranch());
             orderMain.setOrderState("2");
-            orderMain.setAssurerCollectionBank(collection.getOpenBank());
-            orderMain.setAssurerCollectionBankBranch(collection.getOpenBankBranch());
             // 锁定承兑商金额
             lockAssurerMoney(orderMain.getTargetCurrencyMoney(), orderAssurer);
             // 锁定承兑账户金额
             lockAssurerAccountMoney(orderMain.getTargetCurrencyMoney(), pay);
-
-            Map map = new HashMap();
-            map.put("userno", orderMain.getUserNo());
-            map.put("usertype", 0);
-            map.put("channeltype", 1);
-            // 查询用户支付账号
-            List<Map> mapDb = iPayIdentityChannelAccountService.getChannelAccountInfoByUserNo(map);
-            if (BaseUtil.Base_HasValue(mapDb)) {
-                Map payAccountMap = mapDb.get(0);
-                orderMain.setUserPayAccount(payAccountMap.get("channel_account_no").toString());
-            }
         } else {
             orderMain.setOrderState("1");
             orderMain.setAutoDispatchState(0);
@@ -369,6 +426,47 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             orderAssurerAccount.setPayLockMoney(lockMoney);
             orderAssurerAccountService.updateById(orderAssurerAccount);
         }
+    }
+
+
+    OrderMain getUserCollectionAccount(OrderMain orderMain, String token) {
+        Map map = new HashMap();
+        map.put("userno", orderMain.getUserNo());
+        map.put("usertype", 0);
+        map.put("channeltype", 1);
+        List<Map> mapDb = iPayIdentityChannelAccountService.getChannelAccountInfoByUserNo(map);
+        if (BaseUtil.Base_HasValue(mapDb)) {
+            Map payAccountMap = mapDb.get(0);
+            Integer type = Integer.parseInt(payAccountMap.get("channel_type").toString());
+            if (type > 100) {
+                orderMain.setUserCollectionMethod("bank_card");
+                RestTemplate restTemplate = new RestTemplate();
+                String url = "http://localhost:3333/api/login/ChannelTypeCode/getList";
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+                headers.add("X-Access-Token", token);
+                MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
+                HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(paramMap, headers);
+                ResponseEntity<JSONObject> response = restTemplate.postForEntity(url, request, JSONObject.class);
+                if (response.getBody().getInteger("code") == 200) {
+                    JSONObject result = response.getBody().getJSONObject("result");
+                    JSONArray dataArr = result.getJSONArray("channelList");
+                    if (BaseUtil.Base_HasValue(dataArr)) {
+                        for (int i = 0; i < dataArr.size(); i++) {
+                            JSONObject jsonObject =JSONObject.parseObject(dataArr.get(i).toString());
+                            if (jsonObject.getInteger("channelType") == type) {
+                                orderMain.setUserCollectionBank(jsonObject.getString("channelName"));
+                                orderMain.setUserCollectionBankBranch("");
+                            }
+                        }
+                    }
+                }
+            } else if (type < 100) {
+                orderMain.setUserCollectionMethod("alipay");
+            }
+            orderMain.setUserCollectionAccount(payAccountMap.get("channel_account_no").toString());
+        }
+        return orderMain;
     }
 
 }

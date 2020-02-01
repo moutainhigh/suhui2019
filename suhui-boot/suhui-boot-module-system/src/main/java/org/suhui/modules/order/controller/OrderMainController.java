@@ -113,10 +113,9 @@ public class OrderMainController {
                               @RequestParam(name = "exchangeRate") String exchangeRate,
                               @RequestParam(name = "targetCurrencyMoney") String targetCurrencyMoney,
                               @RequestParam(name = "userPayMethod") String userPayMethod,
-                              @RequestParam(name = "userCollectionMethod") String userCollectionMethod,
-                              @RequestParam(name = "userCollectionAccount") String userCollectionAccount,
-                              @RequestParam(name = "userCollectionBank") String userCollectionBank,
-                              @RequestParam(name = "userCollectionBankBranch") String userCollectionBankBranch) {
+                              @RequestParam(name = "userPayAccount") String userPayAccount,
+                              @RequestParam(name = "userPayBank") String userPayBank,
+                              @RequestParam(name = "userPayBankBranch") String userPayBankBranch) {
         Result<Object> result = new Result<Object>();
         String accessToken = request.getHeader("X-Access-Token");
         OrderMain orderMain = new OrderMain();
@@ -128,10 +127,9 @@ public class OrderMainController {
         orderMain.setExchangeRate(Double.parseDouble(exchangeRate));
         orderMain.setTargetCurrencyMoney(Double.parseDouble(targetCurrencyMoney));
         orderMain.setUserPayMethod(userPayMethod);
-        orderMain.setUserCollectionMethod(userCollectionMethod);
-        orderMain.setUserCollectionAccount(userCollectionAccount);
-        orderMain.setUserCollectionBank(userCollectionBank);
-        orderMain.setUserCollectionBankBranch(userCollectionBankBranch);
+        orderMain.setUserPayAccount(userPayAccount);
+        orderMain.setUserPayBank(userPayBank);
+        orderMain.setUserPayBankBranch(userPayBankBranch);
         try {
             result = orderMainService.manageOrderByAuto(orderMain,accessToken);
             return result;
@@ -152,8 +150,9 @@ public class OrderMainController {
     public Result<Object> dispatchOrder(HttpServletRequest request,
                                         @RequestBody JSONObject jsonObject) {
         Result<Object> result = new Result<Object>();
+        String accessToken = request.getHeader("X-Access-Token");
         try {
-            result = orderMainService.dispatchOrderAdmin(jsonObject.getString("orderId"), jsonObject.getString("assurerId"));
+            result = orderMainService.dispatchOrderAdmin(jsonObject.getString("orderId"), jsonObject.getString("assurerId"),accessToken);
             return result;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -229,6 +228,24 @@ public class OrderMainController {
         Result<Object> result = new Result<Object>();
         try {
             result = orderMainService.userCollectionConfirm(orderId);
+            return result;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("操作失败");
+        }
+        return result;
+    }
+
+    /**
+     * 取消订单
+     */
+    @AutoLog(value = "取消订单")
+    @ApiOperation(value = "取消订单", notes = "取消订单")
+    @PostMapping(value = "/revokeOrder")
+    public Result<Object> revokeOrder(HttpServletRequest request, @RequestParam(name = "orderId", required = true) String orderId) {
+        Result<Object> result = new Result<Object>();
+        try {
+            result = orderMainService.revokeOrderAdmin(orderId);
             return result;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
