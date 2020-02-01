@@ -231,4 +231,32 @@ public class AppLoginPayIdentityChennelAccountController {
         return result ;
     }
 
+    /**
+     * 账号绑定 信息 修改
+     * @param params
+     * @return
+     */
+    @RequestMapping(value = "/getUserAllChannel", method = RequestMethod.POST)
+    @Transactional
+    public Result<JSONObject> getUserAllChannel(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
+        //用户退出逻辑
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+
+        String userno = params.get("userno") + "";
+        String usertype = params.get("usertype") + "";
+
+        Map map = new HashMap() ;
+        map.put("userno" , userno) ;
+        map.put("usertype" , usertype) ;
+        List<Map> mapDb = iPayIdentityChannelAccountService.getChannelAccountInfoByUserNo(map) ;
+
+        obj.put("data" ,mapDb) ;
+        result.setResult(obj);
+        result.setMessage("查询列表成功");
+        result.setSuccess(true);
+
+        return result ;
+    }
+
 }
