@@ -238,7 +238,7 @@ public class AppLoginPayIdentityChennelAccountController {
      */
     @RequestMapping(value = "/searchByAreacode", method = RequestMethod.POST)
     @Transactional
-    public Result<JSONObject> search(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
+    public Result<JSONObject> searchByAreacode(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params ) {
         //用户退出逻辑
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
