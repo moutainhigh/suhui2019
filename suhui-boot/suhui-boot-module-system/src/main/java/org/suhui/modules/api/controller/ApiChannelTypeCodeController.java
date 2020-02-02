@@ -71,7 +71,7 @@ public class ApiChannelTypeCodeController {
         // 中国的电子钱包        
         channel.put("channelAreacode", "+86");   
         
-        channel.put("channelType", "0");
+        channel.put("channelType", "1");
         channel.put("channelName", "支付宝");
         channel.put("channelNameLong", "支付宝(中国)+86");
         channel.put("notes", "digital wallet");   
