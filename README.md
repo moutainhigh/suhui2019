@@ -17,8 +17,7 @@ http://3.93.15.101:3333/api/login/user/getUserBillList  //用于获取用户一�
 https://www.getpostman.com/collections/ff6f2d91d7529a4a7456     
 
 3 支付汇总      
-https://www.getpostman.com/collections/6a25e3addf7f15d563f1
-
+https://www.getpostman.com/collections/0ac0f67529035641592d
 支付汇总 新增API
 POST
 http://3.93.15.101:3333/api/login/accountTypeCode/getList
