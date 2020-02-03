@@ -71,8 +71,9 @@ public class ApiChannelTypeCodeController {
         // 中国的电子钱包        
         channel.put("channelAreacode", "+86");   
         
-        channel.put("channelType", "0");
+        channel.put("channelType", "1");
         channel.put("channelName", "支付宝");
+        channel.put("channelNameLong", "支付宝(中国)+86");
         channel.put("notes", "digital wallet");   
         channelList.add(channel.toString());
         ////////////////////////////所有银行
@@ -82,9 +83,11 @@ public class ApiChannelTypeCodeController {
         channel.put("notes", "bank account");   
         channel.put("channelType", "101");
         channel.put("channelName", "工商银行");
+        channel.put("channelNameLong", "工商银行(中国)+86");
         channelList.add(channel.toString());
         channel.put("channelType", "102");
         channel.put("channelName", "中国银行");
+        channel.put("channelNameLong", "中国银行(中国)+86");
         channelList.add(channel.toString());
 
         // 韩国的银行
@@ -92,9 +95,11 @@ public class ApiChannelTypeCodeController {
 
         channel.put("channelType", "201");
         channel.put("channelName", "有利银行");
+        channel.put("channelNameLong", "有利银行(韩国)+82");
         channelList.add(channel.toString());
         channel.put("channelType", "202");
         channel.put("channelName", "国民银行");
+        channel.put("channelNameLong", "国民银行(韩国)+82");
         channelList.add(channel.toString());
 
         obj.put("channelList", channelList);
