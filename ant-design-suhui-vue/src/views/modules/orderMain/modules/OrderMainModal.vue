@@ -10,7 +10,7 @@
     cancelText="关闭">
     <a-spin :spinning="confirmLoading">
       <a-card :bordered="false">
-        <detail-list title="订单信息" :col="col">
+        <detail-list title="----------------------------订单信息----------------------------" :col="col">
           <detail-list-item term="订单编号">{{ model.orderCode }}</detail-list-item>
           <!--<detail-list-item term="状态">{{ model.orderState }}</detail-list-item>-->
           <detail-list-item term="源币种">{{ model.sourceCurrency }}</detail-list-item>
@@ -18,38 +18,92 @@
           <detail-list-item term="汇率">{{ model.exchangeRate }}</detail-list-item>
           <detail-list-item term="目标币种">{{ model.targetCurrency }}</detail-list-item>
           <detail-list-item term="目标币种金额">{{ model.targetCurrencyMoney }}</detail-list-item>
-          <detail-list-item term="自动分配状态">{{ model.autoDispatchState }}</detail-list-item>
+          <detail-list-item term="自动分配状态">
+            <span v-if="model.autoDispatchState === 1">
+              成功
+            </span>
+            <span v-if="model.autoDispatchState === 0">
+              失败
+            </span>
+          </detail-list-item>
           <detail-list-item v-if="model.autoDispatchState === 0" term="自动分配失败说明">{{ model.autoDispatchText }}
           </detail-list-item>
           <detail-list-item v-if="model.orderText" term="备注">{{ model.orderText }}</detail-list-item>
         </detail-list>
-        <detail-list title="用户信息" :col="col">
+        <detail-list title="----------------------------用户信息----------------------------" :col="col">
           <detail-list-item term="用户姓名">{{ model.userName }}</detail-list-item>
           <detail-list-item term="联系方式">{{ model.userContact }}</detail-list-item>
-          <detail-list-item term="支付方式">{{ model.userPayMethod }}</detail-list-item>
-          <detail-list-item term="确认支付时间">{{ model.userPayTime }}</detail-list-item>
-          <detail-list-item term="收款方式">{{ model.userCollectionMethod }}</detail-list-item>
-          <detail-list-item term="收款账号">{{ model.userCollectionAccount }}</detail-list-item>
-          <detail-list-item term="确认收款时间">{{ model.userCollectionTime }}</detail-list-item>
         </detail-list>
-        <detail-list title="用户付款凭证" :col="col" v-if="model.userPayVoucher">
+        <detail-list title="----------------------------用户支付信息----------------------------" :col="col">
+          <detail-list-item term="支付方式">
+            <span v-if="model.userPayMethod ==='alipay'">
+              支付宝
+            </span>
+            <span v-if="model.userPayMethod ==='bank_card'">
+              银行卡
+            </span>
+          </detail-list-item>
+          <detail-list-item term="账户">{{ model.userPayAccount }}</detail-list-item>
+          <detail-list-item term="账户所属区号">{{ model.userPayAreaCode }}</detail-list-item>
+          <detail-list-item term="账户开户行" v-if="model.userPayMethod !=='alipay'">{{ model.userPayBank }}</detail-list-item>
+          <detail-list-item term="账户开户网点" v-if="model.userPayMethod !=='alipay'">{{ model.userPayBankBranch }}</detail-list-item>
+          <detail-list-item term="确认支付时间">{{ model.userPayTime }}</detail-list-item>
+        </detail-list>
+        <detail-list title="----------------------------用户支付凭证----------------------------" :col="col" v-if="model.userPayVoucher">
           <div class="img-model">
             <img v-for="(item,i) in model.userPayVoucher.split('，')" @click="handlePreview(item)" :src="item"/>
           </div>
         </detail-list>
-        <detail-list title="承兑商信息" :col="col" v-if="model.assurerId">
+        <detail-list title="----------------------------用户收款信息----------------------------" :col="col">
+          <detail-list-item term="收款方式">
+              <span v-if="model.userCollectionMethod ==='alipay'">
+              支付宝
+            </span>
+            <span v-if="model.userCollectionMethod ==='bank_card'">
+              银行卡
+            </span>
+          </detail-list-item>
+          <detail-list-item term="收款账号">{{ model.userCollectionAccount }}</detail-list-item>
+          <detail-list-item term="账户所属区号">{{ model.userCollectionAreaCode }}</detail-list-item>
+          <detail-list-item term="账户开户行" v-if="model.userCollectionMethod !=='alipay'">{{ model.userCollectionBank }}</detail-list-item>
+          <detail-list-item term="账户开户网点" v-if="model.userCollectionMethod !=='alipay'">{{ model.userCollectionBankBranch }}</detail-list-item>
+          <detail-list-item term="确认收款时间">{{ model.userCollectionTime }}</detail-list-item>
+        </detail-list>
+        <detail-list title="----------------------------承兑商信息----------------------------" :col="col" v-if="model.assurerId">
           <detail-list-item term="承兑商名称">{{ model.assurerName }}</detail-list-item>
-          <detail-list-item term="收款方式">{{ model.assurerCollectionMethod }}</detail-list-item>
-          <detail-list-item term="收款账号">{{ model.assurerCollectionAccount }}</detail-list-item>
-          <detail-list-item term="确认收款时间">{{ model.assurerCollectionTime }}</detail-list-item>
-          <detail-list-item term="兑付方式">{{ model.assurerPayMethod }}</detail-list-item>
-          <detail-list-item term="兑付账号">{{ model.assurerPayAccount }}</detail-list-item>
+        </detail-list>
+        <detail-list title="----------------------------承兑商兑付信息----------------------------" :col="col" v-if="model.assurerId">
+          <detail-list-item term="兑付方式">
+             <span v-if="model.assurerPayMethod ==='alipay'">
+              支付宝
+            </span>
+            <span v-if="model.assurerPayMethod ==='bank_card'">
+              银行卡
+            </span>
+          </detail-list-item>
+          <detail-list-item term="兑付账户">{{ model.assurerPayAccount }}</detail-list-item>
+          <detail-list-item term="账户开户行" v-if="model.assurerPayMethod !=='alipay'">{{ model.assurerPayBank }}</detail-list-item>
+          <detail-list-item term="账户开户网点" v-if="model.assurerPayMethod !=='alipay'">{{ model.assurerPayBankBranch }}</detail-list-item>
           <detail-list-item term="确认兑付时间">{{ model.assurerPayTime }}</detail-list-item>
         </detail-list>
-        <detail-list title="承兑商付款凭证" :col="col" v-if="model.assurerPayVoucher">
+        <detail-list title="----------------------------承兑商兑付凭证----------------------------" :col="col" v-if="model.assurerPayVoucher">
           <div class="img-model">
             <img v-for="(item,i) in model.assurerPayVoucher.split('，')" @click="handlePreview(item)" :src="item"/>
           </div>
+        </detail-list>
+        <detail-list title="----------------------------承兑商收款信息----------------------------" :col="col" v-if="model.assurerId">
+          <detail-list-item term="收款方式">
+             <span v-if="model.assurerCollectionMethod ==='alipay'">
+              支付宝
+            </span>
+            <span v-if="model.assurerCollectionMethod ==='bank_card'">
+              银行卡
+            </span>
+          </detail-list-item>
+          <detail-list-item term="收款账户">{{ model.assurerCollectionAccount }}</detail-list-item>
+          <detail-list-item term="账户开户行" v-if="model.assurerCollectionMethod !=='alipay'">{{ model.assurerCollectionBank }}</detail-list-item>
+          <detail-list-item term="账户开户网点" v-if="model.assurerCollectionMethod !=='alipay'">{{ model.assurerCollectionBankBranch }}</detail-list-item>
+          <detail-list-item term="确认收款时间">{{ model.assurerCollectionTime }}</detail-list-item>
         </detail-list>
         <a-modal :visible="previewVisible" :footer="null" @cancel="cancelPreview">
           <img alt="example" style="width: 100%" :src="previewImage" />
