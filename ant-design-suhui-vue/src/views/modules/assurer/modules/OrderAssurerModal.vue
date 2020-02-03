@@ -118,7 +118,7 @@
 
       <!-- 子表单区域 -->
       <a-tabs v-model="activeKey" @change="handleChangeTabs">
-        <a-tab-pane tab="客户明细" :key="refKeys[0]" :forceRender="true">
+        <a-tab-pane tab="账户明细" :key="refKeys[0]" :forceRender="true">
           <j-editable-table
             :ref="refKeys[0]"
             :loading="orderAssurerAccountTable.loading"

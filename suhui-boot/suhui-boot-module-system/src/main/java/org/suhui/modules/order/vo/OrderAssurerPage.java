@@ -38,13 +38,13 @@ public class OrderAssurerPage {
 	private java.lang.Double assurerRate;
 	/**可用额度*/
   	@Excel(name = "可用额度", width = 15)
-	private java.lang.Integer canUseLimit;
+	private java.lang.Double canUseLimit;
 	/**已用额度*/
   	@Excel(name = "已用额度", width = 15)
-	private java.lang.Integer usedLimit;
+	private java.lang.Double usedLimit;
 	/**总额度=已用额度+可用额度*/
   	@Excel(name = "总额度=已用额度+可用额度", width = 15)
-	private java.lang.Integer totalLimit;
+	private java.lang.Double totalLimit;
 	/**策略(单一制(one)、多单制(more))*/
   	@Excel(name = "策略(单一制(one)、多单制(more))", width = 15)
 	private java.lang.String assurerStrategy;
