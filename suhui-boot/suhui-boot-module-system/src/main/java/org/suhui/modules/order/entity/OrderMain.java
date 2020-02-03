@@ -229,6 +229,8 @@ public class OrderMain {
     private java.lang.String userPayBankBranch;
     private java.lang.String assurerPayBank;
     private java.lang.String assurerPayBankBranch;
+    private java.lang.String userPayAreaCode;
+    private java.lang.String userCollectionAreaCode;
 
     public void changeMoneyToPoints() {
         if (BaseUtil.Base_HasValue(this.targetCurrencyMoney) && this.targetCurrencyMoney > 0) {
@@ -641,5 +643,21 @@ public class OrderMain {
 
     public void setAssurerPayBankBranch(String assurerPayBankBranch) {
         this.assurerPayBankBranch = assurerPayBankBranch;
+    }
+
+    public String getUserPayAreaCode() {
+        return userPayAreaCode;
+    }
+
+    public void setUserPayAreaCode(String userPayAreaCode) {
+        this.userPayAreaCode = userPayAreaCode;
+    }
+
+    public String getUserCollectionAreaCode() {
+        return userCollectionAreaCode;
+    }
+
+    public void setUserCollectionAreaCode(String userCollectionAreaCode) {
+        this.userCollectionAreaCode = userCollectionAreaCode;
     }
 }

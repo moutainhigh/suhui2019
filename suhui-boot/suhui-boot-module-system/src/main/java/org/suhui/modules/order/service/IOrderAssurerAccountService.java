@@ -14,7 +14,7 @@ public interface IOrderAssurerAccountService extends IService<OrderAssurerAccoun
 
 	public List<OrderAssurerAccount> selectByMainId(String mainId);
 
-	OrderAssurerAccount getAssurerAccountByOrderPay(String assurerId,Double orderMoney,String userCollectionMethod);
+	OrderAssurerAccount getAssurerAccountByOrderPay(String assurerId,Double orderMoney,String userCollectionMethod,String userCollectionAreaCode);
 
-	OrderAssurerAccount getAssurerAccountByOrderCollection(String assurerId,String userPayMethod);
+	OrderAssurerAccount getAssurerAccountByOrderCollection(String assurerId,String userPayMethod,String userPayAreaCode);
 }

@@ -74,6 +74,7 @@ public class OrderAssurerAccount implements Serializable {
 	private java.lang.String delFlag;
 	private java.lang.Double payLockMoney;
 	private java.lang.String openBankBranch;
+	private java.lang.String areaCode;
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
 	}
@@ -232,5 +233,13 @@ public class OrderAssurerAccount implements Serializable {
 
 	public void setOpenBankBranch(String openBankBranch) {
 		this.openBankBranch = openBankBranch;
+	}
+
+	public String getAreaCode() {
+		return areaCode;
+	}
+
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
 	}
 }

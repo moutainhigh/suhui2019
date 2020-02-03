@@ -104,12 +104,12 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         // 查询用户收款账号
         orderMain = this.getUserCollectionAccount(orderMain, token);
         // 为承兑商选择一个支付账号
-        OrderAssurerAccount accountPay = orderAssurerAccountService.getAssurerAccountByOrderPay(assurerId, orderMain.getTargetCurrencyMoney(), orderMain.getUserCollectionMethod());
+        OrderAssurerAccount accountPay = orderAssurerAccountService.getAssurerAccountByOrderPay(assurerId, orderMain.getTargetCurrencyMoney(), orderMain.getUserCollectionMethod(),orderMain.getUserCollectionAreaCode());
         if (!BaseUtil.Base_HasValue(accountPay)) {
             return Result.error(518, "承兑商找不到合适的支付账号");
         }
         // 为承兑商选择一个收款账号
-        OrderAssurerAccount accountCollection = orderAssurerAccountService.getAssurerAccountByOrderCollection(assurerId, orderMain.getUserPayMethod());
+        OrderAssurerAccount accountCollection = orderAssurerAccountService.getAssurerAccountByOrderCollection(assurerId, orderMain.getUserPayMethod(),orderMain.getUserPayAreaCode());
         if (!BaseUtil.Base_HasValue(accountCollection)) {
             return Result.error(519, "承兑商找不到合适的收款账号");
         }
@@ -386,7 +386,6 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             orderMain.setAutoDispatchText(resutMap.get("message").toString());
         }
         if (!BaseUtil.Base_HasValue(orderMain.getId())) {
-            orderMain.setAutoDispatchState(1);
             orderMain.setOrderCode(getOrderNoByUUID());
             save(orderMain);
         } else {
@@ -438,6 +437,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         if (BaseUtil.Base_HasValue(mapDb)) {
             Map payAccountMap = mapDb.get(0);
             Integer type = Integer.parseInt(payAccountMap.get("channel_type").toString());
+            orderMain.setUserCollectionAreaCode(payAccountMap.get("areacode").toString());
             if (type > 100) {
                 orderMain.setUserCollectionMethod("bank_card");
                 RestTemplate restTemplate = new RestTemplate();

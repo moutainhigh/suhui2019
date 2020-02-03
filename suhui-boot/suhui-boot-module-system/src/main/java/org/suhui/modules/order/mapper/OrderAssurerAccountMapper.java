@@ -14,7 +14,7 @@ public interface OrderAssurerAccountMapper extends BaseMapper<OrderAssurerAccoun
 
 	public boolean deleteByMainId(String mainId);
     
-	public List<OrderAssurerAccount> selectByMainId(@Param("mainId") String mainId,@Param("accountType") String accountType);
+	public List<OrderAssurerAccount> selectByMainId(@Param("mainId") String mainId,@Param("accountType") String accountType,@Param("areaCode") String areaCode);
 
 	List<OrderAssurerAccount> selectByAssurerIdToOrder(String assurerId);
 }

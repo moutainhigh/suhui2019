@@ -17,5 +17,8 @@
 		<if test="accountType!=null and accountType != '' ">
 			and account_type = #{accountType}
 		</if>
+		<if test="areaCode!=null and areaCode != '' ">
+			and area_code = #{areaCode}
+		</if>
 	</select>
 </mapper>

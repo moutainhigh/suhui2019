@@ -28,16 +28,16 @@ public class OrderAssurerAccountServiceImpl extends ServiceImpl<OrderAssurerAcco
 
     @Override
     public List<OrderAssurerAccount> selectByMainId(String mainId) {
-        return orderAssurerAccountMapper.selectByMainId(mainId,"");
+        return orderAssurerAccountMapper.selectByMainId(mainId,"","");
     }
 
     /**
      *为承兑商选择一个支付账户
      */
     @Override
-    public OrderAssurerAccount getAssurerAccountByOrderPay(String assurerId, Double orderMoney,String userCollectionMethod) {
+    public OrderAssurerAccount getAssurerAccountByOrderPay(String assurerId, Double orderMoney,String userCollectionMethod,String userCollectionAreaCode) {
         OrderAssurerAccount orderAssurerAccount = null;
-        List<OrderAssurerAccount> list = orderAssurerAccountMapper.selectByMainId(assurerId,userCollectionMethod);
+        List<OrderAssurerAccount> list = orderAssurerAccountMapper.selectByMainId(assurerId,userCollectionMethod,userCollectionAreaCode);
         if (!BaseUtil.Base_HasValue(list)) {
             return null;
         }
@@ -61,9 +61,9 @@ public class OrderAssurerAccountServiceImpl extends ServiceImpl<OrderAssurerAcco
      * 为承兑商选择一个收款账户-选择收款额度小的
      */
     @Override
-    public OrderAssurerAccount getAssurerAccountByOrderCollection(String assurerId,String userPayMethod) {
+    public OrderAssurerAccount getAssurerAccountByOrderCollection(String assurerId,String userPayMethod,String userPayAreaCode) {
         // 用户选择哪种支付方式,就提供承兑商哪种收款方式
-        List<OrderAssurerAccount> list = orderAssurerAccountMapper.selectByMainId(assurerId,userPayMethod);
+        List<OrderAssurerAccount> list = orderAssurerAccountMapper.selectByMainId(assurerId,userPayMethod,userPayAreaCode);
         if (!BaseUtil.Base_HasValue(list)) {
             return null;
         }
