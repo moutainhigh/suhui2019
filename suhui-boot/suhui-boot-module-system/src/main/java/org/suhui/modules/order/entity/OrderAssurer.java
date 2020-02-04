@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.suhui.modules.utils.BaseUtil;
 
 /**
  * @Description: 去
@@ -64,10 +65,18 @@ public class OrderAssurer implements Serializable {
 
 
 	public void changeMoneyToPoints(){
-		this.totalLimit = this.totalLimit*100;
-		this.canUseLimit = this.canUseLimit*100;
-		this.usedLimit = this.usedLimit*100;
-		this.payLockMoney = this.payLockMoney*100;
+        if(BaseUtil.Base_HasValue(this.totalLimit)){
+            this.totalLimit = this.totalLimit*100;
+        }
+        if(BaseUtil.Base_HasValue(this.canUseLimit)){
+            this.canUseLimit = this.canUseLimit*100;
+        }
+        if(BaseUtil.Base_HasValue(this.usedLimit)){
+            this.usedLimit = this.usedLimit*100;
+        }
+		if(BaseUtil.Base_HasValue(this.payLockMoney)){
+            this.payLockMoney = this.payLockMoney*100;
+        }
 	}
 
 	public void changeMoneyToBig(){
