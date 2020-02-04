@@ -8,6 +8,8 @@ import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.jeecgframework.poi.excel.annotation.Excel;
+import org.suhui.modules.utils.BaseUtil;
+
 import java.util.Date;
 
 /**
@@ -81,14 +83,33 @@ public class OrderAssurerAccount implements Serializable {
 
 
 	public void changeMoneyToPoints(){
-		this.payLimit = this.payLimit*100;
+		if (BaseUtil.Base_HasValue(this.payLimit) && this.payLimit > 0) {
+			this.payLimit = this.payLimit * 100;
+		}
+		if (BaseUtil.Base_HasValue(this.payUsedLimit) && this.payUsedLimit > 0) {
+			this.payUsedLimit = this.payUsedLimit * 100;
+		}
+		if (BaseUtil.Base_HasValue(this.payCanUseLimit) && this.payCanUseLimit > 0) {
+			this.payCanUseLimit = this.payCanUseLimit * 100;
+		}
+		if (BaseUtil.Base_HasValue(this.payLockMoney) && this.payLockMoney > 0) {
+			this.payLockMoney = this.payLockMoney * 100;
+		}
 	}
 
 	public void changeMoneyToBig(){
-		this.payLimit = this.payLimit/100;
-		this.payUsedLimit = this.payUsedLimit/100;
-		this.payCanUseLimit = this.payCanUseLimit/100;
-		this.payLockMoney = this.payLockMoney/100;
+		if (BaseUtil.Base_HasValue(this.payLimit) && this.payLimit > 0) {
+			this.payLimit = this.payLimit / 100;
+		}
+		if (BaseUtil.Base_HasValue(this.payUsedLimit) && this.payUsedLimit > 0) {
+			this.payUsedLimit = this.payUsedLimit / 100;
+		}
+		if (BaseUtil.Base_HasValue(this.payCanUseLimit) && this.payCanUseLimit > 0) {
+			this.payCanUseLimit = this.payCanUseLimit / 100;
+		}
+		if (BaseUtil.Base_HasValue(this.payLockMoney) && this.payLockMoney > 0) {
+			this.payLockMoney = this.payLockMoney / 100;
+		}
 	}
 
 	public String getId() {
