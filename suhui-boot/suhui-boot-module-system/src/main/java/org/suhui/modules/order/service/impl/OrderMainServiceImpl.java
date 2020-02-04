@@ -71,6 +71,9 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         }
         // 查询用户收款账号
         orderMain = this.getUserCollectionAccount(orderMain, token);
+        if(!BaseUtil.Base_HasValue(orderMain)){
+            return Result.error(517, "获取用户收款账户失败");
+        }
         // 为订单选择最优承兑商
         Map resutMap = orderAssurerService.getAssurerByOrder(orderMain);
         if (BaseUtil.Base_HasValue(resutMap) && resutMap.get("state").equals("success")) {
@@ -103,6 +106,9 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         }
         // 查询用户收款账号
         orderMain = this.getUserCollectionAccount(orderMain, token);
+        if(!BaseUtil.Base_HasValue(orderMain)){
+            return Result.error(517, "获取用户收款账户失败");
+        }
         // 为承兑商选择一个支付账号
         OrderAssurerAccount accountPay = orderAssurerAccountService.getAssurerAccountByOrderPay(assurerId, orderMain.getTargetCurrencyMoney(), orderMain.getUserCollectionMethod(),orderMain.getUserCollectionAreaCode());
         if (!BaseUtil.Base_HasValue(accountPay)) {
@@ -433,9 +439,26 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         map.put("userno", orderMain.getUserNo());
         map.put("usertype", 0);
         map.put("channeltype", 1);
+        Map keyMap = new HashMap();
+        keyMap.put("CNY","+86");
+        keyMap.put("KRW","+82");
+        keyMap.put("USD","+1");
+        String collectionArea = keyMap.get(orderMain.getTargetCurrency()).toString();
+        if(!BaseUtil.Base_HasValue(collectionArea)){
+            return null;
+        }
         List<Map> mapDb = iPayIdentityChannelAccountService.getChannelAccountInfoByUserNo(map);
         if (BaseUtil.Base_HasValue(mapDb)) {
-            Map payAccountMap = mapDb.get(0);
+            Map payAccountMap = new HashMap();
+            for(int i=0;i<mapDb.size();i++){
+                Map map1 = mapDb.get(i);
+                if(map1.get("areacode").toString().equals(collectionArea)){
+                    payAccountMap = map1;
+                }
+            }
+            if(!BaseUtil.Base_HasValue(payAccountMap)){
+                return null;
+            }
             Integer type = Integer.parseInt(payAccountMap.get("channel_type").toString());
             orderMain.setUserCollectionAreaCode(payAccountMap.get("areacode").toString());
             if (type > 100) {
