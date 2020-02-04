@@ -438,7 +438,6 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         Map map = new HashMap();
         map.put("userno", orderMain.getUserNo());
         map.put("usertype", 0);
-        map.put("channeltype", 1);
         Map keyMap = new HashMap();
         keyMap.put("CNY","+86");
         keyMap.put("KRW","+82");
