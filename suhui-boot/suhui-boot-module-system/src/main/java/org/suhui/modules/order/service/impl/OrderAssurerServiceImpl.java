@@ -87,16 +87,18 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         // 选择多个合适的承兑商
         List<OrderAssurer> orderAssurers = orderAssurerMapper.getAssurerByOrderData(paramMap);
         if (!BaseUtil.Base_HasValue(orderAssurers)) {
-            resultMap.put("state","error");
-            resultMap.put("message","未找到合适的承兑商");
+            resultMap.put("state", "error");
+            resultMap.put("message", "未找到合适的承兑商");
             return resultMap;
         }
+        // 按费率排序
+        orderAssurers = this.orderAssurersList(orderAssurers);
         OrderAssurer orderAssurer = null;
         OrderAssurerAccount orderAssurerAccount = null;
         for (int i = 0; i < orderAssurers.size(); i++) {
             OrderAssurer assurer = orderAssurers.get(i);
             // 为承兑商选择一个支付账号,同时排除掉没有账号得承兑商和账号支付宝金额不足的承兑商
-            OrderAssurerAccount account = orderAssurerAccountService.getAssurerAccountByOrderPay(assurer.getId(), orderMain.getTargetCurrencyMoney(),orderMain.getUserCollectionMethod(),orderMain.getUserCollectionAreaCode());
+            OrderAssurerAccount account = orderAssurerAccountService.getAssurerAccountByOrderPay(assurer.getId(), orderMain.getTargetCurrencyMoney(), orderMain.getUserCollectionMethod(), orderMain.getUserCollectionAreaCode());
             if (BaseUtil.Base_HasValue(account)) {
                 orderAssurer = assurer;
                 orderAssurerAccount = account;
@@ -105,13 +107,13 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         }
         // 如果没找到账号,说明没有承兑商合适
         if (!BaseUtil.Base_HasValue(orderAssurerAccount)) {
-            resultMap.put("state","error");
-            resultMap.put("message","未找到合适的承兑商账户");
+            resultMap.put("state", "error");
+            resultMap.put("message", "未找到合适的承兑商账户");
             return resultMap;
         }
         // 为承兑商选择一个收款账户
-        OrderAssurerAccount orderAssurerAccountCollection = orderAssurerAccountService.getAssurerAccountByOrderCollection(orderAssurer.getId(),orderMain.getUserPayMethod(),orderMain.getUserPayAreaCode());
-        resultMap.put("state","success");
+        OrderAssurerAccount orderAssurerAccountCollection = orderAssurerAccountService.getAssurerAccountByOrderCollection(orderAssurer.getId(), orderMain.getUserPayMethod(), orderMain.getUserPayAreaCode());
+        resultMap.put("state", "success");
         resultMap.put("orderAssurer", orderAssurer);
         resultMap.put("orderAssurerAccountPay", orderAssurerAccount);
         resultMap.put("orderAssurerAccountCollection", orderAssurerAccountCollection);
@@ -129,7 +131,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
      */
     @Override
     public OrderAssurer updateAssurer(OrderAssurer data) {
-        if(!BaseUtil.Base_HasValue(data.getId())){
+        if (!BaseUtil.Base_HasValue(data.getId())) {
             return null;
         }
         updateById(data);

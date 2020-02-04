@@ -65,6 +65,9 @@ public class OrderAssurer implements Serializable {
 
 	public void changeMoneyToPoints(){
 		this.totalLimit = this.totalLimit*100;
+		this.canUseLimit = this.canUseLimit*100;
+		this.usedLimit = this.usedLimit*100;
+		this.payLockMoney = this.payLockMoney*100;
 	}
 
 	public void changeMoneyToBig(){

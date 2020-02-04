@@ -186,8 +186,20 @@
               validateRules: [{ required: true, message: '${title}不能为空' }]
             },
             {
+              title: '区号',
+              key: 'areaCode',
+              type: FormTypes.normal,
+              defaultValue: '',
+              placeholder: '请输入${title}'
+            }, {
               title: '开户行',
               key: 'openBank',
+              type: FormTypes.normal,
+              defaultValue: '',
+              placeholder: '请输入${title}'
+            },{
+              title: '开户网点',
+              key: 'openBankBranch',
               type: FormTypes.normal,
               defaultValue: '',
               placeholder: '请输入${title}'
@@ -276,7 +288,7 @@
       /** 调用完edit()方法之后会自动调用此方法 */
       editAfter() {
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model, 'userNo', 'assurerName', 'countryCode', 'onlineState', 'assurerState', 'assurerRate', 'canUseLimit', 'usedLimit', 'totalLimit', 'assurerStrategy', 'payLockMoney', 'delFlag'))
+          this.form.setFieldsValue(pick(this.model, 'userNo', 'assurerName', 'openBank','openBankBranch','countryCode', 'areaCode','onlineState', 'assurerState', 'assurerRate', 'canUseLimit', 'usedLimit', 'totalLimit', 'assurerStrategy', 'payLockMoney', 'delFlag'))
           // 时间格式化
         })
         // 加载子表数据
