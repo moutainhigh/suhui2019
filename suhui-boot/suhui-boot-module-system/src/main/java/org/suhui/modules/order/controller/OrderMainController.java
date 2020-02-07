@@ -262,10 +262,10 @@ public class OrderMainController {
     @AutoLog(value = "订单表-通过用户id查询订单")
     @ApiOperation(value = "订单表-通过用户id查询订单", notes = "订单表-通过用户id查询订单")
     @PostMapping(value = "/orderByUser")
-    public Result<List<OrderMain>> queryByUserId(@RequestParam(name = "userId", required = true) String userId) {
+    public Result<List<OrderMain>> queryByUserId(@RequestParam(name = "userNo", required = true) String userNo) {
         Result<List<OrderMain>> result = new Result<List<OrderMain>>();
         Map<String,String> param = new HashMap<>();
-        param.put("userId", userId);
+        param.put("userId", userNo);
         List<OrderMain> orderMains = orderMainMapper.findByUserId(param);
         if (BaseUtil.Base_HasValue(orderMains)) {
             for (int i = 0; i < orderMains.size(); i++) {
