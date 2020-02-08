@@ -95,15 +95,23 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         orderAssurers = this.orderAssurersList(orderAssurers);
         OrderAssurer orderAssurer = null;
         OrderAssurerAccount orderAssurerAccount = null;
+        List<OrderAssurer> useList = new ArrayList<>();
         for (int i = 0; i < orderAssurers.size(); i++) {
             OrderAssurer assurer = orderAssurers.get(i);
             // 为承兑商选择一个支付账号,同时排除掉没有账号得承兑商和账号支付宝金额不足的承兑商
             OrderAssurerAccount account = orderAssurerAccountService.getAssurerAccountByOrderPay(assurer.getId(), orderMain.getTargetCurrencyMoney(), orderMain.getUserCollectionMethod(), orderMain.getUserCollectionAreaCode());
             if (BaseUtil.Base_HasValue(account)) {
-                orderAssurer = assurer;
-                orderAssurerAccount = account;
-                break;
+                if(!BaseUtil.Base_HasValue(useList)){
+                    useList.add(assurer);
+                }else if(assurer.getAssurerRate() == useList.get(0).getAssurerRate()){
+                    // 如果与第一个承兑商费率一样，则随机选择承兑商
+                    useList.add(assurer);
+                }
             }
+        }
+        if(BaseUtil.Base_HasValue(useList)){
+            orderAssurer = useList.get(BaseUtil.getRandomInt(0,useList.size()));
+            orderAssurerAccount = orderAssurerAccountService.getAssurerAccountByOrderPay(orderAssurer.getId(), orderMain.getTargetCurrencyMoney(), orderMain.getUserCollectionMethod(), orderMain.getUserCollectionAreaCode());
         }
         // 如果没找到账号,说明没有承兑商合适
         if (!BaseUtil.Base_HasValue(orderAssurerAccount)) {

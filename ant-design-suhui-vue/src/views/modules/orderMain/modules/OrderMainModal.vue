@@ -51,7 +51,7 @@
         </detail-list>
         <detail-list title="----------------------------用户支付凭证----------------------------" :col="col" v-if="model.userPayVoucher">
           <div class="img-model">
-            <img v-for="(item,i) in model.userPayVoucher.split('，')" @click="handlePreview(item)" :src="item"/>
+            <img v-for="(item,i) in model.userPayVoucher.split(',')" @click="handlePreview(item)" :src="item"/>
           </div>
         </detail-list>
         <detail-list title="----------------------------用户收款信息----------------------------" :col="col">
@@ -88,7 +88,7 @@
         </detail-list>
         <detail-list title="----------------------------承兑商兑付凭证----------------------------" :col="col" v-if="model.assurerPayVoucher">
           <div class="img-model">
-            <img v-for="(item,i) in model.assurerPayVoucher.split('，')" @click="handlePreview(item)" :src="item"/>
+            <img v-for="(item,i) in model.assurerPayVoucher.split(',')" @click="handlePreview(item)" :src="item"/>
           </div>
         </detail-list>
         <detail-list title="----------------------------承兑商收款信息----------------------------" :col="col" v-if="model.assurerId">

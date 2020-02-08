@@ -127,6 +127,12 @@ public class BaseUtil {
 
     }
 
+    public static int getRandomInt(int num1,int num2)
+    {
+        int n=num1+(int)(Math.random()*(num2-num1));
+        return n;
+    }
+
     public static String Base_GetDataToMd5(JSONObject jsonObject, String Keys) {
         String[] tmpKeys = Base_Split(Keys, ",");
         String resultMd5 = "";

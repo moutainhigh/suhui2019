@@ -6,6 +6,7 @@ import org.suhui.modules.order.mapper.OrderAssurerAccountMapper;
 import org.suhui.modules.order.service.IOrderAssurerAccountService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -28,42 +29,50 @@ public class OrderAssurerAccountServiceImpl extends ServiceImpl<OrderAssurerAcco
 
     @Override
     public List<OrderAssurerAccount> selectByMainId(String mainId) {
-        return orderAssurerAccountMapper.selectByMainId(mainId,"","");
+        return orderAssurerAccountMapper.selectByMainId(mainId, "", "");
     }
 
     /**
-     *为承兑商选择一个支付账户
+     * 为承兑商选择一个支付账户
      */
     @Override
-    public OrderAssurerAccount getAssurerAccountByOrderPay(String assurerId, Double orderMoney,String userCollectionMethod,String userCollectionAreaCode) {
+    public OrderAssurerAccount getAssurerAccountByOrderPay(String assurerId, Double orderMoney, String userCollectionMethod, String userCollectionAreaCode) {
         OrderAssurerAccount orderAssurerAccount = null;
-        List<OrderAssurerAccount> list = orderAssurerAccountMapper.selectByMainId(assurerId,userCollectionMethod,userCollectionAreaCode);
+        List<OrderAssurerAccount> list = orderAssurerAccountMapper.selectByMainId(assurerId, userCollectionMethod, userCollectionAreaCode);
         if (!BaseUtil.Base_HasValue(list)) {
             return null;
         }
-        // 按当日可用额度排序
-        list = orderAssurerAccounts(list);
-        for (int i = 0; i < list.size(); i++) {
-            OrderAssurerAccount account = list.get(i);
-            // 如果是支付宝账户,并且当日可用金额足够的话,优先选择支付宝账户
-            if ("alipay".equals(account.getAccountType()) && account.getPayCanUseLimit() > orderMoney) {
-                orderAssurerAccount = account;
-                break;
-            } else if ("bank_card".equals(account.getAccountType())) {
-                orderAssurerAccount = account;
-                break;
+        // 收款方式是支付宝
+        if (userCollectionMethod.equals("alipay")) {
+            // 按当日可用额度排序
+//            list = orderAssurerAccounts(list);
+            List<OrderAssurerAccount> useList = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
+                OrderAssurerAccount account = list.get(i);
+                if (account.getPayCanUseLimit() > orderMoney) {
+                    useList.add(account);
+                }
             }
+            if (BaseUtil.Base_HasValue(useList)) {
+                return null;
+            }
+            orderAssurerAccount = useList.get(BaseUtil.getRandomInt(0,useList.size()));
+        } else if (userCollectionMethod.equals("bank_card")) {
+            // 获取随机数
+            int n = BaseUtil.getRandomInt(0, list.size());
+            orderAssurerAccount = list.get(n);
         }
         return orderAssurerAccount;
     }
+
 
     /**
      * 为承兑商选择一个收款账户-选择收款额度小的
      */
     @Override
-    public OrderAssurerAccount getAssurerAccountByOrderCollection(String assurerId,String userPayMethod,String userPayAreaCode) {
+    public OrderAssurerAccount getAssurerAccountByOrderCollection(String assurerId, String userPayMethod, String userPayAreaCode) {
         // 用户选择哪种支付方式,就提供承兑商哪种收款方式
-        List<OrderAssurerAccount> list = orderAssurerAccountMapper.selectByMainId(assurerId,userPayMethod,userPayAreaCode);
+        List<OrderAssurerAccount> list = orderAssurerAccountMapper.selectByMainId(assurerId, userPayMethod, userPayAreaCode);
         if (!BaseUtil.Base_HasValue(list)) {
             return null;
         }
