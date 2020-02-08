@@ -39,6 +39,7 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
+      <a-button @click="handleAdd()" type="primary" icon="plus">添加</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('承兑商管理')">导出</a-button>
       <a-button type="primary"  v-has="'audit:pass'" @click="auditPass()">审核通过</a-button>
       <!--<a-dropdown v-if="selectedRowKeys.length > 0">-->

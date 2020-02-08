@@ -1,5 +1,6 @@
 package org.suhui.modules.order.service;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.suhui.common.api.vo.Result;
 import org.suhui.modules.order.entity.OrderAssurerAccount;
@@ -55,6 +56,8 @@ public interface IOrderAssurerService extends IService<OrderAssurer> {
 	OrderAssurer getAssurerByUserNo(String userNo);
 
 	OrderAssurer updateAssurer(OrderAssurer data);
+
+	OrderAssurer addAssurerMain(JSONObject data);
 
 	Result<Object> auditPassAssurer(String ids);
 }

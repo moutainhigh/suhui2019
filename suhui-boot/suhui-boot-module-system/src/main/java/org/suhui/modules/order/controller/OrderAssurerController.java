@@ -155,6 +155,19 @@ public class OrderAssurerController {
         return result;
     }
 
+    @PostMapping(value = "/addAssurer")
+    public Result<OrderAssurer> addAssurer(@RequestBody JSONObject jsonObject) {
+        Result<OrderAssurer> result = new Result<OrderAssurer>();
+        OrderAssurer orderAssurer = orderAssurerService.addAssurerMain(jsonObject);
+        if (!BaseUtil.Base_HasValue(orderAssurer)) {
+            result.error500("操作失败");
+            return result;
+        }
+        result.success("添加成功！");
+        result.setResult(orderAssurer);
+        return result;
+    }
+
     /**
      * 编辑
      *
@@ -171,6 +184,13 @@ public class OrderAssurerController {
             result.error500("未找到对应实体");
         } else {
             orderAssurer.changeMoneyToPoints();
+            if (BaseUtil.Base_HasValue(orderAssurer.getCanUseLimit()) || orderAssurer.getCanUseLimit() == 0) {
+                if (!BaseUtil.Base_HasValue(orderAssurer.getUsedLimit()) || orderAssurer.getUsedLimit() == 0) {
+                    if (!BaseUtil.Base_HasValue((orderAssurer.getPayLockMoney())) || orderAssurer.getPayLockMoney() == 0) {
+                        orderAssurer.setCanUseLimit(orderAssurer.getTotalLimit());
+                    }
+                }
+            }
             boolean ok = orderAssurerService.updateById(orderAssurer);
             List<OrderAssurerAccount> list = orderAssurerPage.getOrderAssurerAccountList();
             if (BaseUtil.Base_HasValue(list)) {

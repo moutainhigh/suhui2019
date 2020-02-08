@@ -124,6 +124,7 @@ export const JEditableTableMixin = {
     },
     /** 确定按钮点击事件 */
     handleOk() {
+      console.log(111111111)
       /** 触发表单验证 */
       this.getAllTable().then(tables => {
         /** 一次性验证主表和所有的次表 */

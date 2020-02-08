@@ -1,6 +1,10 @@
 package org.suhui.modules.order.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import org.suhui.common.api.vo.Result;
+import org.suhui.common.util.PasswordUtil;
+import org.suhui.common.util.UUIDGenerator;
+import org.suhui.common.util.oConvertUtils;
 import org.suhui.modules.order.entity.OrderAssurer;
 import org.suhui.modules.order.entity.OrderAssurerAccount;
 import org.suhui.modules.order.entity.OrderMain;
@@ -11,6 +15,10 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.suhui.modules.suhui.suhui.entity.PayUserInfo;
+import org.suhui.modules.suhui.suhui.entity.PayUserLogin;
+import org.suhui.modules.suhui.suhui.service.IPayUserInfoService;
+import org.suhui.modules.suhui.suhui.service.IPayUserLoginService;
 import org.suhui.modules.utils.BaseUtil;
 
 import java.io.Serializable;
@@ -32,6 +40,13 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
 
     @Autowired
     OrderAssurerAccountServiceImpl orderAssurerAccountService;
+
+
+    @Autowired
+    private IPayUserLoginService iPayUserLoginService;
+
+    @Autowired
+    private IPayUserInfoService iPayUserInfoService;
 
     @Override
     @Transactional
@@ -144,6 +159,47 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         }
         updateById(data);
         return data;
+    }
+
+    /**
+     * 后台添加注册承兑商
+     */
+    @Override
+    public OrderAssurer addAssurerMain(JSONObject data) {
+        System.out.println(data);
+        String phone = data.getString("phone");
+        String pwd = data.getString("password");
+        String areacode = data.getString("areacode");
+
+        String userno = UUIDGenerator.generate();
+        // 盐值
+        String salt = oConvertUtils.randomGen(8);
+        // 密码加密
+        String passwordEncode = PasswordUtil.encrypt(phone, pwd + "", salt);
+        PayUserLogin payUserLogin = new PayUserLogin();
+        payUserLogin.setLoginName(phone);
+        payUserLogin.setPassword(passwordEncode);
+        payUserLogin.setSalt(salt);
+        // 设置有效状态  状态 0-默认 1-有效 2-无效
+        payUserLogin.setStatus(0);
+        payUserLogin.setUserNo(userno); // 通过生成的uuid
+        payUserLogin.setAreacode(areacode);
+        payUserLogin.setUserType(3);
+        iPayUserLoginService.save(payUserLogin);
+        PayUserInfo payUserInfo = new PayUserInfo();
+        payUserInfo.setUserNo(userno);
+        payUserInfo.setPhoneNo(phone);
+        payUserInfo.setUserType(3);
+        iPayUserInfoService.save(payUserInfo);
+        OrderAssurer orderAssurer = new OrderAssurer();
+        orderAssurer.setUserNo(userno);
+        orderAssurer.setAssurerName(phone);
+        orderAssurer.setAssurerPhone(phone);
+        orderAssurer.setAssurerRate(data.getDouble("assurerRate"));
+        orderAssurer.setTotalLimit(data.getDouble("totalLimit")*100);
+        orderAssurer.setCanUseLimit(data.getDouble("totalLimit")*100);
+        this.save(orderAssurer);
+        return orderAssurer;
     }
 
     /**
