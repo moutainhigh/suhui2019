@@ -55,6 +55,10 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         for (OrderAssurerAccount entity : orderAssurerAccountList) {
             //外键设置
             entity.setAssurerId(orderAssurer.getId());
+            if(entity.getAccountType().equals("alipay")){
+                entity.setPayCanUseLimit(2000000.0);
+                entity.setPayLimit(2000000.0);
+            }
             orderAssurerAccountMapper.insert(entity);
         }
     }
