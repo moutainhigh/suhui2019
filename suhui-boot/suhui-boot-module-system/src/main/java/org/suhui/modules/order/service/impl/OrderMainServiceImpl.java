@@ -442,10 +442,10 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         keyMap.put("CNY","+86");
         keyMap.put("KRW","+82");
         keyMap.put("USD","+1");
-        String collectionArea = keyMap.get(orderMain.getTargetCurrency()).toString();
-        if(!BaseUtil.Base_HasValue(collectionArea)){
+        if(!BaseUtil.Base_HasValue(keyMap.get(orderMain.getTargetCurrency()))){
             return null;
         }
+        String collectionArea = keyMap.get(orderMain.getTargetCurrency()).toString();
         List<Map> mapDb = iPayIdentityChannelAccountService.getChannelAccountInfoByUserNo(map);
         if (BaseUtil.Base_HasValue(mapDb)) {
             Map payAccountMap = new HashMap();

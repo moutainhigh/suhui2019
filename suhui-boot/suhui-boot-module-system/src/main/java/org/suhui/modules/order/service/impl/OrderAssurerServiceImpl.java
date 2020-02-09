@@ -118,7 +118,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
             if (BaseUtil.Base_HasValue(account)) {
                 if(!BaseUtil.Base_HasValue(useList)){
                     useList.add(assurer);
-                }else if(assurer.getAssurerRate() == useList.get(0).getAssurerRate()){
+                }else if(assurer.getAssurerRate().equals(useList.get(0).getAssurerRate())){
                     // 如果与第一个承兑商费率一样，则随机选择承兑商
                     useList.add(assurer);
                 }

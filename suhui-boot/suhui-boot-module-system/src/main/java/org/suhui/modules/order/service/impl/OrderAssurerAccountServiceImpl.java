@@ -76,6 +76,11 @@ public class OrderAssurerAccountServiceImpl extends ServiceImpl<OrderAssurerAcco
         if (!BaseUtil.Base_HasValue(list)) {
             return null;
         }
+        if(userPayMethod.equals("alipay")){
+            int n = BaseUtil.getRandomInt(0, list.size());
+            return list.get(n);
+        }
+        // 正序排列
         Collections.sort(list, new Comparator<OrderAssurerAccount>() {
             @Override
             public int compare(OrderAssurerAccount a, OrderAssurerAccount b) {
