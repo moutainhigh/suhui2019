@@ -82,6 +82,7 @@
             </span>
           </detail-list-item>
           <detail-list-item term="兑付账户">{{ model.assurerPayAccount }}</detail-list-item>
+          <detail-list-item term="兑付账户姓名">{{ model.assurerPayAccountUser }}</detail-list-item>
           <detail-list-item term="账户开户行" v-if="model.assurerPayMethod !=='alipay'">{{ model.assurerPayBank }}</detail-list-item>
           <detail-list-item term="账户开户网点" v-if="model.assurerPayMethod !=='alipay'">{{ model.assurerPayBankBranch }}</detail-list-item>
           <detail-list-item term="确认兑付时间">{{ model.assurerPayTime }}</detail-list-item>
@@ -101,6 +102,7 @@
             </span>
           </detail-list-item>
           <detail-list-item term="收款账户">{{ model.assurerCollectionAccount }}</detail-list-item>
+          <detail-list-item term="收款账户姓名">{{ model.assurerCollectionAccountUser }}</detail-list-item>
           <detail-list-item term="账户开户行" v-if="model.assurerCollectionMethod !=='alipay'">{{ model.assurerCollectionBank }}</detail-list-item>
           <detail-list-item term="账户开户网点" v-if="model.assurerCollectionMethod !=='alipay'">{{ model.assurerCollectionBankBranch }}</detail-list-item>
           <detail-list-item term="确认收款时间">{{ model.assurerCollectionTime }}</detail-list-item>
