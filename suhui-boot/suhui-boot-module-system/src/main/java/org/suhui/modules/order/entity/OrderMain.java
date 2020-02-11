@@ -231,6 +231,8 @@ public class OrderMain {
     private java.lang.String assurerPayBankBranch;
     private java.lang.String userPayAreaCode;
     private java.lang.String userCollectionAreaCode;
+    private java.lang.String assurerPayAccountUser;
+    private java.lang.String assurerCollectionAccountUser;
 
     public void changeMoneyToPoints() {
         if (BaseUtil.Base_HasValue(this.targetCurrencyMoney) && this.targetCurrencyMoney > 0) {
@@ -659,5 +661,21 @@ public class OrderMain {
 
     public void setUserCollectionAreaCode(String userCollectionAreaCode) {
         this.userCollectionAreaCode = userCollectionAreaCode;
+    }
+
+    public String getAssurerPayAccountUser() {
+        return assurerPayAccountUser;
+    }
+
+    public void setAssurerPayAccountUser(String assurerPayAccountUser) {
+        this.assurerPayAccountUser = assurerPayAccountUser;
+    }
+
+    public String getAssurerCollectionAccountUser() {
+        return assurerCollectionAccountUser;
+    }
+
+    public void setAssurerCollectionAccountUser(String assurerCollectionAccountUser) {
+        this.assurerCollectionAccountUser = assurerCollectionAccountUser;
     }
 }
