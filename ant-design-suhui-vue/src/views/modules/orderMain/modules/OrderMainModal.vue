@@ -46,9 +46,9 @@
           <detail-list-item term="账号户名">{{ model.userPayAccountUser }}</detail-list-item>
           <detail-list-item term="账号">{{ model.userPayAccount }}</detail-list-item>
           <detail-list-item term="金额">{{ model.sourceCurrencyMoney  }}  {{model.sourceCurrency}}</detail-list-item>
-          <detail-list-item term="账户所属区号">{{ model.userPayAreaCode }}</detail-list-item>
-          <detail-list-item term="账户开户行" v-if="model.userPayMethod !=='alipay'">{{ model.userPayBank }}</detail-list-item>
-          <detail-list-item term="账户开户网点" v-if="model.userPayMethod !=='alipay'">{{ model.userPayBankBranch }}</detail-list-item>
+          <detail-list-item term="账号所属区号">{{ model.userPayAreaCode }}</detail-list-item>
+          <detail-list-item term="账号开户行" v-if="model.userPayMethod !=='alipay'">{{ model.userPayBank }}</detail-list-item>
+          <detail-list-item term="账号开户网点" v-if="model.userPayMethod !=='alipay'">{{ model.userPayBankBranch }}</detail-list-item>
           <detail-list-item term="确认支付时间">{{ model.userPayTime }}</detail-list-item>
         </detail-list>
         <detail-list title="----------------------------用户支付凭证----------------------------" :col="col" v-if="model.userPayVoucher">
@@ -68,9 +68,9 @@
           <detail-list-item term="收款账号">{{ model.userCollectionAccount }}</detail-list-item>
           <detail-list-item term="收款户名">{{ model.userCollectionAccountUser }}</detail-list-item>
           <detail-list-item term="收款金额">{{model.targetCurrencyMoney}}  {{ model.targetCurrency }} </detail-list-item>
-          <detail-list-item term="账户所属区号">{{ model.userCollectionAreaCode }}</detail-list-item>
-          <detail-list-item term="账户开户行" v-if="model.userCollectionMethod !=='alipay'">{{ model.userCollectionBank }}</detail-list-item>
-          <detail-list-item term="账户开户网点" v-if="model.userCollectionMethod !=='alipay'">{{ model.userCollectionBankBranch }}</detail-list-item>
+          <detail-list-item term="账号所属区号">{{ model.userCollectionAreaCode }}</detail-list-item>
+          <detail-list-item term="账号开户行" v-if="model.userCollectionMethod !=='alipay'">{{ model.userCollectionBank }}</detail-list-item>
+          <detail-list-item term="账号开户网点" v-if="model.userCollectionMethod !=='alipay'">{{ model.userCollectionBankBranch }}</detail-list-item>
           <detail-list-item term="确认收款时间">{{ model.userCollectionTime }}</detail-list-item>
         </detail-list>
         <detail-list title="----------------------------承兑商信息----------------------------" :col="col" v-if="model.assurerId">
@@ -88,8 +88,8 @@
           <detail-list-item term="兑付账号">{{ model.assurerPayAccount }}</detail-list-item>
           <detail-list-item term="账号户名">{{ model.assurerPayAccountUser }}</detail-list-item>
           <detail-list-item term="金额">{{model.targetCurrencyMoney}}   {{ model.targetCurrency }}</detail-list-item>
-          <detail-list-item term="账户开户行" v-if="model.assurerPayMethod !=='alipay'">{{ model.assurerPayBank }}</detail-list-item>
-          <detail-list-item term="账户开户网点" v-if="model.assurerPayMethod !=='alipay'">{{ model.assurerPayBankBranch }}</detail-list-item>
+          <detail-list-item term="账号开户行" v-if="model.assurerPayMethod !=='alipay'">{{ model.assurerPayBank }}</detail-list-item>
+          <detail-list-item term="账号开户网点" v-if="model.assurerPayMethod !=='alipay'">{{ model.assurerPayBankBranch }}</detail-list-item>
           <detail-list-item term="确认兑付时间">{{ model.assurerPayTime }}</detail-list-item>
         </detail-list>
         <detail-list title="----------------------------承兑商兑付凭证----------------------------" :col="col" v-if="model.assurerPayVoucher">
@@ -109,8 +109,8 @@
           <detail-list-item term="收款账号">{{ model.assurerCollectionAccount }}</detail-list-item>
           <detail-list-item term="账号户名">{{ model.assurerCollectionAccountUser }}</detail-list-item>
           <detail-list-item term="金额">{{ model.sourceCurrencyMoney  }}  {{model.sourceCurrency}}</detail-list-item>
-          <detail-list-item term="账户开户行" v-if="model.assurerCollectionMethod !=='alipay'">{{ model.assurerCollectionBank }}</detail-list-item>
-          <detail-list-item term="账户开户网点" v-if="model.assurerCollectionMethod !=='alipay'">{{ model.assurerCollectionBankBranch }}</detail-list-item>
+          <detail-list-item term="账号开户行" v-if="model.assurerCollectionMethod !=='alipay'">{{ model.assurerCollectionBank }}</detail-list-item>
+          <detail-list-item term="账号开户网点" v-if="model.assurerCollectionMethod !=='alipay'">{{ model.assurerCollectionBankBranch }}</detail-list-item>
           <detail-list-item term="确认收款时间">{{ model.assurerCollectionTime }}</detail-list-item>
         </detail-list>
         <a-modal :visible="previewVisible" :footer="null" @cancel="cancelPreview">
