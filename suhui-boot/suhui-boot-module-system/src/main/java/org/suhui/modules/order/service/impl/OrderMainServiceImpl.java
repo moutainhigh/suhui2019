@@ -390,7 +390,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             lockAssurerAccountMoney(orderMain.getTargetCurrencyMoney(), pay);
         } else {
             orderMain.setOrderState("1");
-            orderMain.setAutoDispatchState(0);
+            orderMain.setAutoDispatchState(1);
             orderMain.setAutoDispatchText(resutMap.get("message").toString());
         }
         if (!BaseUtil.Base_HasValue(orderMain.getId())) {
@@ -448,6 +448,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             return null;
         }
         String collectionArea = keyMap.get(orderMain.getTargetCurrency()).toString();
+        // 查询用户支付通道
         List<Map> mapDb = iPayIdentityChannelAccountService.getChannelAccountInfoByUserNo(map);
         if (BaseUtil.Base_HasValue(mapDb)) {
             Map payAccountMap = new HashMap();
@@ -489,6 +490,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
                 orderMain.setUserCollectionMethod("alipay");
             }
             orderMain.setUserCollectionAccount(payAccountMap.get("channel_account_no").toString());
+            orderMain.setUserCollectionAccountUser(payAccountMap.get("channel_account_name").toString());
         }
         return orderMain;
     }

@@ -116,7 +116,8 @@ public class OrderMainController {
                               @RequestParam(name = "userPayAccount") String userPayAccount,
                               @RequestParam(name = "userPayBank") String userPayBank,
                               @RequestParam(name = "userPayBankBranch") String userPayBankBranch,
-                              @RequestParam(name = "userPayAreaCode") String userPayAreaCode) {
+                              @RequestParam(name = "userPayAreaCode") String userPayAreaCode,
+                              @RequestParam(name = "userPayAccountUser") String userPayAccountUser) {
         Result<Object> result = new Result<Object>();
         String accessToken = request.getHeader("X-Access-Token");
         OrderMain orderMain = new OrderMain();
@@ -132,6 +133,7 @@ public class OrderMainController {
         orderMain.setUserPayBank(userPayBank);
         orderMain.setUserPayBankBranch(userPayBankBranch);
         orderMain.setUserPayAreaCode(userPayAreaCode);
+        orderMain.setUserPayAccountUser(userPayAccountUser);
         try {
             result = orderMainService.manageOrderByAuto(orderMain,accessToken);
             return result;
