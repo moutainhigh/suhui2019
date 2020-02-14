@@ -59,7 +59,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         // 判断必填项是否有值
         String checkValue = orderMain.checkCreateRequireValue();
         if (BaseUtil.Base_HasValue(checkValue)) {
-            return Result.error(521, checkValue);
+            return Result.error(531, checkValue);
         }
         // 转换金额为最小单位
         orderMain.changeMoneyToPoints();
@@ -72,7 +72,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         // 查询用户收款账号
         orderMain = this.getUserCollectionAccount(orderMain, token);
         if(!BaseUtil.Base_HasValue(orderMain)){
-            return Result.error(522, "获取用户收款账户失败");
+            return Result.error(532, "获取用户收款账户失败");
         }
         // 为订单选择最优承兑商
         Map resutMap = orderAssurerService.getAssurerByOrder(orderMain);
