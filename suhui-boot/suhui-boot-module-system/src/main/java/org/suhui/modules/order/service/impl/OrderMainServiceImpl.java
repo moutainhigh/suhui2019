@@ -59,7 +59,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         // 判断必填项是否有值
         String checkValue = orderMain.checkCreateRequireValue();
         if (BaseUtil.Base_HasValue(checkValue)) {
-            return Result.error(511, checkValue);
+            return Result.error(521, checkValue);
         }
         // 转换金额为最小单位
         orderMain.changeMoneyToPoints();
@@ -72,7 +72,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         // 查询用户收款账号
         orderMain = this.getUserCollectionAccount(orderMain, token);
         if(!BaseUtil.Base_HasValue(orderMain)){
-            return Result.error(517, "获取用户收款账户失败");
+            return Result.error(522, "获取用户收款账户失败");
         }
         // 为订单选择最优承兑商
         Map resutMap = orderAssurerService.getAssurerByOrder(orderMain);
@@ -135,10 +135,10 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
     public Result<Object> revokeOrderAdmin(String orderId) {
         OrderMain orderMain = getById(orderId);
         if (!BaseUtil.Base_HasValue(orderMain)) {
-            return Result.error(513, "订单不存在");
+            return Result.error(523, "订单不存在");
         }
         if (!orderMain.getOrderState().equals("1") && !orderMain.getOrderState().equals("2")) {
-            return Result.error(514, "订单状态异常");
+            return Result.error(524, "订单状态异常");
         }
         orderMain.setOrderState("0");
         orderMain.setUserCollectionTime(new Date());
@@ -147,13 +147,13 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         OrderAssurerAccount oaac = orderAssurerAccountService.getById(orderMain.getAssurerCollectionAccountId());
         OrderAssurerAccount oaap = orderAssurerAccountService.getById(orderMain.getAssurerPayAccountId());
         if (!BaseUtil.Base_HasValue(orderAssurer)) {
-            return Result.error(515, "承兑商不存在");
+            return Result.error(525, "承兑商不存在");
         }
         if (!BaseUtil.Base_HasValue(oaac)) {
-            return Result.error(516, "承兑商收款账户不存在");
+            return Result.error(526, "承兑商收款账户不存在");
         }
         if (!BaseUtil.Base_HasValue(oaap)) {
-            return Result.error(517, "承兑商支付账户不存在");
+            return Result.error(527, "承兑商支付账户不存在");
         }
         Double orderMoney = orderMain.getTargetCurrencyMoney();
 
@@ -163,7 +163,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         // 更新锁定金额
         Double payLockMoney = orderAssurer.getPayLockMoney() - orderMoney;
         if (canUseLimit + orderAssurer.getUsedLimit() + payLockMoney != orderAssurer.getTotalLimit()) {
-            return Result.error(520, "承兑商金额异常(已用金额+可用金额+锁定金额不等于总金额)");
+            return Result.error(528, "承兑商金额异常(已用金额+可用金额+锁定金额不等于总金额)");
         }
         orderAssurer.setCanUseLimit(canUseLimit);
         orderAssurer.setPayLockMoney(payLockMoney);
@@ -175,7 +175,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             // 更新账户锁定金额
             Double payLockMoneyAccount = oaap.getPayLockMoney() - orderMoney;
             if (canUseLimitAccount + oaap.getPayUsedLimit() + oaap.getPayLockMoney() != oaap.getPayLimit()) {
-                return Result.error(520, "承兑商账户金额异常(已用金额+可用金额+锁定金额不等于总金额)");
+                return Result.error(529, "承兑商账户金额异常(已用金额+可用金额+锁定金额不等于总金额)");
             }
             oaap.setPayCanUseLimit(canUseLimitAccount);
             oaap.setPayLockMoney(payLockMoneyAccount);
@@ -195,10 +195,10 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
     public Result<Object> userPayConfirm(String orderId, String voucher) {
         OrderMain orderMain = getById(orderId);
         if (!BaseUtil.Base_HasValue(orderMain)) {
-            return Result.error(513, "订单不存在");
+            return Result.error(523, "订单不存在");
         }
         if (!orderMain.getOrderState().equals("2")) {
-            return Result.error(514, "订单状态异常");
+            return Result.error(524, "订单状态异常");
         }
         orderMain.setOrderState("3");
         orderMain.setUserPayTime(new Date());
@@ -265,10 +265,10 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
     public Result<Object> userCollectionConfirm(String orderId) {
         OrderMain orderMain = getById(orderId);
         if (!BaseUtil.Base_HasValue(orderMain)) {
-            return Result.error(513, "订单不存在");
+            return Result.error(523, "订单不存在");
         }
         if (!orderMain.getOrderState().equals("5")) {
-            return Result.error(514, "订单状态异常");
+            return Result.error(524, "订单状态异常");
         }
         orderMain.setOrderState("6");
         orderMain.setUserCollectionTime(new Date());
@@ -285,13 +285,13 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         OrderAssurerAccount oaac = orderAssurerAccountService.getById(orderMain.getAssurerCollectionAccountId());
         OrderAssurerAccount oaap = orderAssurerAccountService.getById(orderMain.getAssurerPayAccountId());
         if (!BaseUtil.Base_HasValue(orderAssurer)) {
-            return Result.error(515, "承兑商不存在");
+            return Result.error(525, "承兑商不存在");
         }
         if (!BaseUtil.Base_HasValue(oaac)) {
-            return Result.error(516, "承兑商收款账户不存在");
+            return Result.error(526, "承兑商收款账户不存在");
         }
         if (!BaseUtil.Base_HasValue(oaap)) {
-            return Result.error(517, "承兑商支付账户不存在");
+            return Result.error(527, "承兑商支付账户不存在");
         }
         Double orderMoney = orderMain.getTargetCurrencyMoney();
         // 更新已使用金额 = 已用金额+该订单金额
@@ -299,7 +299,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         // 更新锁定金额
         Double payLockMoney = orderAssurer.getPayLockMoney() - orderMoney;
         if (userdLimit + orderAssurer.getCanUseLimit() + payLockMoney != orderAssurer.getTotalLimit()) {
-            return Result.error(520, "承兑商金额异常(已用金额+可用金额+锁定金额不等于总金额)");
+            return Result.error(528, "承兑商金额异常(已用金额+可用金额+锁定金额不等于总金额)");
         }
         orderAssurer.setUsedLimit(userdLimit);
         orderAssurer.setPayLockMoney(payLockMoney);
@@ -311,7 +311,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             // 更新账户锁定金额
             Double payLockMoneyAccount = oaap.getPayLockMoney() - orderMoney;
             if (usedLimitAccount + oaap.getPayCanUseLimit() + oaap.getPayLockMoney() != oaap.getPayLimit()) {
-                return Result.error(520, "承兑商账户金额异常(已用金额+可用金额+锁定金额不等于总金额)");
+                return Result.error(529, "承兑商账户金额异常(已用金额+可用金额+锁定金额不等于总金额)");
             }
             oaap.setPayLockMoney(payLockMoneyAccount);
             oaap.setPayUsedLimit(usedLimitAccount);
