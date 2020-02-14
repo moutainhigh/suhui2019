@@ -89,6 +89,22 @@ public class ApiChannelTypeCodeController {
         channel.put("channelName", "中国银行");
         channel.put("channelNameLong", "中国银行(中国)+86");
         channelList.add(channel.toString());
+        channel.put("channelType", "103");
+        channel.put("channelName", "农业银行");
+        channel.put("channelNameLong", "农业银行(中国)+86");
+        channelList.add(channel.toString());
+        channel.put("channelType", "104");
+        channel.put("channelName", "建设银行");
+        channel.put("channelNameLong", "建设银行(中国)+86");
+        channelList.add(channel.toString());
+        channel.put("channelType", "105");
+        channel.put("channelName", "招商银行");
+        channel.put("channelNameLong", "招商银行(中国)+86");
+        channelList.add(channel.toString());
+        channel.put("channelType", "106");
+        channel.put("channelName", "民生银行");
+        channel.put("channelNameLong", "民生银行(中国)+86");
+        channelList.add(channel.toString());
 
         // 韩国的银行
         channel.put("channelAreacode", "+82");   

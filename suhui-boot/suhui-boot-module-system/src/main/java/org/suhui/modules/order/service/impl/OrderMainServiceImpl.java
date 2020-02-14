@@ -435,7 +435,9 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         }
     }
 
-
+    /**
+     * 获取用户收款账号
+     */
     OrderMain getUserCollectionAccount(OrderMain orderMain, String token) {
         Map map = new HashMap();
         map.put("userno", orderMain.getUserNo());
@@ -465,6 +467,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             orderMain.setUserCollectionAreaCode(payAccountMap.get("areacode").toString());
             if (type > 100) {
                 orderMain.setUserCollectionMethod("bank_card");
+                // 获取账号开户行
                 RestTemplate restTemplate = new RestTemplate();
                 String url = "http://localhost:3333/api/login/ChannelTypeCode/getList";
                 HttpHeaders headers = new HttpHeaders();
@@ -480,7 +483,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
                         for (int i = 0; i < dataArr.size(); i++) {
                             JSONObject jsonObject =JSONObject.parseObject(dataArr.get(i).toString());
                             if (jsonObject.getInteger("channelType") == type) {
-                                orderMain.setUserCollectionBank(jsonObject.getString("channelName"));
+                                orderMain.setUserCollectionBank(jsonObject.getString("channelNameLong"));
                                 orderMain.setUserCollectionBankBranch("");
                             }
                         }
