@@ -482,7 +482,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
                     if (BaseUtil.Base_HasValue(dataArr)) {
                         for (int i = 0; i < dataArr.size(); i++) {
                             JSONObject jsonObject =JSONObject.parseObject(dataArr.get(i).toString());
-                            if (jsonObject.getInteger("channelType") == type) {
+                            if (jsonObject.getInteger("channelType").equals(type)) {
                                 orderMain.setUserCollectionBank(jsonObject.getString("channelNameLong"));
                                 orderMain.setUserCollectionBankBranch("");
                             }
