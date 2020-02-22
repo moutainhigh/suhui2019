@@ -52,9 +52,7 @@
     created() {
       console.log(this);
       this.headers = {
-        // 'X-Access-Token': this.$ls.get(ACCESS_TOKEN)
-        'X-Access-Token':'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODM0Njc3OTYsInVzZXJuYW1lIjoiMTM2MDAwNzgwMDYifQ.KdSfrlrkzTEj8G2Ac5Y5JNfL_NVqXn_9ugzzE_t8HH4'
-
+        'X-Access-Token': this.$ls.get(ACCESS_TOKEN)
       }
     },
     methods: {
