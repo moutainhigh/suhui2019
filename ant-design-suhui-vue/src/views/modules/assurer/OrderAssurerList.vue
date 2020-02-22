@@ -100,7 +100,7 @@
         <a-row :gutter="24">
           <a-col :span="24">
             <a-form-item label="说明">
-              <a-textarea placeholder="请输入说明" v-decorator="[ 'changeTtext', validatorRules.changeTtext ]"></a-textarea>
+              <a-textarea placeholder="请输入说明" v-decorator="[ 'changeText', validatorRules.changeText ]"></a-textarea>
             </a-form-item>
           </a-col>
         </a-row>
@@ -135,7 +135,7 @@
         typeChange:'',
         validatorRules: {
           changeMoney: { rules: [{ required: true, message: '请输入金额!' }] },
-          changeTtext: { rules: [{ required: true, message: '请输入说明!' }] }
+          changeText: { rules: [{ required: true, message: '请输入说明!' }] }
         },
         // 表头
         columns: [
