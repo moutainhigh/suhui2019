@@ -88,6 +88,8 @@ public class OrderAssurerPaySingle {
 	private java.lang.String openBankBranch;
 	private java.lang.String realName;
 	private java.lang.String swiftCode;
+	private java.lang.String paySingleState;
+	private java.lang.String moneyType;
 
 	public String getId() {
 		return id;
@@ -239,5 +241,21 @@ public class OrderAssurerPaySingle {
 
 	public void setSwiftCode(String swiftCode) {
 		this.swiftCode = swiftCode;
+	}
+
+    public String getPaySingleState() {
+        return paySingleState;
+    }
+
+    public void setPaySingleState(String paySingleState) {
+        this.paySingleState = paySingleState;
+    }
+
+	public String getMoneyType() {
+		return moneyType;
+	}
+
+	public void setMoneyType(String moneyType) {
+		this.moneyType = moneyType;
 	}
 }

@@ -58,6 +58,15 @@ public class OrderAssurerController {
 
 
     /**
+     * 更改承兑商金额
+     */
+    @PostMapping(value = "/changeAssurerMoney")
+    public Result<Object> changeAssurerMoney(@RequestBody JSONObject data) {
+        Result<Object> result = new Result<Object>();
+        result = orderAssurerService.changeAssurerMoneyMain(data);
+        return result;
+    }
+    /**
      * 通过userNo查询承兑商数据
      */
     @PostMapping(value = "/queryAssurerByUserNo")

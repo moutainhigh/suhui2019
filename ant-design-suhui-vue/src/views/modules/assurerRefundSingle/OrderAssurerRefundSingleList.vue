@@ -7,17 +7,15 @@
         <a-row :gutter="24">
           <a-col :md="6" :sm="8">
             <a-form-item label="账户类型">
-              <j-dict-select-tag v-model="queryParam.platformAccountType" placeholder="请选择账户类型" dictCode="channel_type"/>
+              <j-dict-select-tag v-model="queryParam.accountType" placeholder="请选择账户类型" dictCode="accountType"/>
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="8">
             <a-form-item label="状态">
-              <j-dict-select-tag v-model="queryParam.paySingleState" placeholder="请选择状态" dictCode="paySingleState"/>
-
+              <j-dict-select-tag v-model="queryParam.refundSingleState" placeholder="请选择状态" dictCode="paySingleState"/>
             </a-form-item>
           </a-col>
           <template v-if="toggleSearchStatus">
-
 
           </template>
           <a-col :md="6" :sm="8">
@@ -39,15 +37,8 @@
     <div class="table-operator">
       <a-button type="primary" @click="passState()">审核通过</a-button>
       <a-button type="primary" @click="rejectState()">审核拒绝</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('缴费单')">导出</a-button>
-      <!--<a-dropdown v-if="selectedRowKeys.length > 0">-->
-        <!--<a-menu slot="overlay">-->
-          <!--<a-menu-item key="1" @click="batchDel"><a-icon type="delete" />删除</a-menu-item>-->
-        <!--</a-menu>-->
-        <!--<a-button style="margin-left: 8px">-->
-          <!--批量操作 <a-icon type="down" />-->
-        <!--</a-button>-->
-      <!--</a-dropdown>-->
+      <a-button type="primary" @click="uploadVouch()">上传付款凭证</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('退款单')">导出</a-button>
     </div>
 
     <!-- table区域-begin -->
@@ -71,33 +62,40 @@
         @change="handleTableChange">
 
         <span slot="action" slot-scope="text, record">
-          <a @click="showDetail(record)">查看</a>
+          <!--<a @click="handleEdit(record)">编辑</a>-->
+          <!--<a-divider type="vertical"/>-->
+         <a @click="showDetail(record)">查看</a>
         </span>
 
       </a-table>
     </div>
     <!-- table区域-end -->
 
-    <OrderAssurerPaySingleDetail ref="detailForm"></OrderAssurerPaySingleDetail>
+    <!-- 表单区域 -->
+    <OrderAssurerRefundSingleDetail ref="detailRefundSingleForm" @ok="modalFormOk"></OrderAssurerRefundSingleDetail>
+    <UploadFileModal ref="uploadModal" :visible="uploadVisible" @ok="uploadFileBack" @close="uploadCancelBack"></UploadFileModal>
+
   </a-card>
 </template>
 
 <script>
-  import {JeecgListMixin} from '@/mixins/JeecgListMixin'
-  import { initDictOptions, filterDictText } from '@/components/dict/JDictSelectUtil'
-  import OrderAssurerPaySingleDetail from "./modules/OrderAssurerPaySingleDetail";
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import { postAction } from '@/api/manage'
+  import { initDictOptions, filterDictText } from '@/components/dict/JDictSelectUtil'
+  import OrderAssurerRefundSingleDetail from './modules/OrderAssurerRefundSingleDetail'
+  import UploadFileModal from './modules/UploadFileModal'
+
   export default {
-    name: "OrderAssurerPaySingleList",
+    name: 'OrderAssurerRefundSingleList',
     mixins: [JeecgListMixin],
     components: {
-      OrderAssurerPaySingleDetail,
+      OrderAssurerRefundSingleDetail,
+      UploadFileModal
     },
     data() {
       return {
-        description: '缴费单管理页面',
-        accountTypeDictOptions:[],
-        paySingleStateDictOptions:[],
+        description: '退款单管理页面',
+        uploadVisible: false,
         // 表头
         columns: [
           {
@@ -105,15 +103,15 @@
             dataIndex: '',
             key: 'rowIndex',
             width: 60,
-            align: "center",
-            customRender: function (t, r, index) {
-              return parseInt(index) + 1;
+            align: 'center',
+            customRender: function(t, r, index) {
+              return parseInt(index) + 1
             }
           },
           {
             title: '状态',
-            align: "center",
-            dataIndex: 'paySingleState',
+            align: 'center',
+            dataIndex: 'refundSingleState',
             customRender: (text) => {
               //字典值替换通用方法
               return filterDictText(this.paySingleStateDictOptions, text + '')
@@ -121,59 +119,99 @@
           },
           {
             title: '账户类型',
-            align: "center",
-            dataIndex: 'platformAccountType',
+            align: 'center',
+            dataIndex: 'accountType',
             customRender: (text) => {
               //字典值替换通用方法
               return filterDictText(this.accountTypeDictOptions, text + '')
             }
           },
           {
-            title: '账户',
-            align: "center",
-            dataIndex: 'platformAccountNo'
+            title: '账号',
+            align: 'center',
+            dataIndex: 'accountNo'
           },
           {
-            title: '缴费金额',
-            align: "center",
-            dataIndex: 'payMoney'
-          },{
-            title: '缴费金额类型',
-            align: "center",
+            title: '承兑商名称',
+            align: 'center',
+            dataIndex: 'assurerName'
+          },
+          {
+            title: '退款金额',
+            align: 'center',
+            dataIndex: 'refundMoney'
+          }, {
+            title: '退款金额类型',
+            align: 'center',
             dataIndex: 'moneyType'
-          },
-          {
-            title: '款项说明',
-            align: "center",
-            dataIndex: 'payText'
           },
           {
             title: '操作',
             dataIndex: 'action',
-            align: "center",
-            scopedSlots: {customRender: 'action'},
+            align: 'center',
+            scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/order/PaySingle/list",
-          delete: "/order/PaySingle/delete",
-          deleteBatch: "/order/PaySingle/deleteBatch",
-          exportXlsUrl: "order/PaySingle/exportXls",
-          importExcelUrl: "order/PaySingle/importExcel",
-          changeState: "order/PaySingle/changeState",
-        },
+          list: '/order/orderAssurerRefundSingle/list',
+          delete: '/order/orderAssurerRefundSingle/delete',
+          deleteBatch: '/order/orderAssurerRefundSingle/deleteBatch',
+          exportXlsUrl: 'order/orderAssurerRefundSingle/exportXls',
+          importExcelUrl: 'order/orderAssurerRefundSingle/importExcel',
+          changeState: 'order/orderAssurerRefundSingle/changeState',
+          uploadRefundVoucher: 'order/orderAssurerRefundSingle/uploadRefundVoucher'
+        }
       }
     },
     computed: {
-      importExcelUrl: function () {
-        return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
+      importExcelUrl: function() {
+        return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`
       }
     },
     created() {
       this.initDictConfig()
     },
     methods: {
-      passState(){
+      uploadVouch() {
+        if (!this.selectedRowKeys || this.selectedRowKeys.length === 0) {
+          return this.$warning({
+            title: '请至少选择一条数据'
+          })
+        }
+        this.uploadVisible = true
+      },
+      uploadCancelBack() {
+        this.uploadVisible = false
+      },
+      uploadFileBack(fileList) {
+        this.uploadVisible = false
+        this.loading = true
+        let params = {
+          id: this.selectedRowKeys[0],
+          fileList: fileList.join(',')
+        }
+        postAction(this.url.uploadRefundVoucher, params).then(res => {
+          if (res.code !== 200) {
+            this.loading = false
+            this.$warning({
+              title: res.message
+            })
+          } else {
+            this.$success({
+              title: res.message
+            })
+            this.searchQuery()
+            this.onClearSelected()
+          }
+        })
+      },
+      // openDispatch(record) {
+      //   this.$refs.choiceAssurerForm.dispatchList(record);
+      // },
+      // openAdd(record) {
+      //   this.handleAddRefundSingle(record);
+      // },
+      passState() {
         if (!this.selectedRowKeys || this.selectedRowKeys.length === 0) {
           return this.$warning({
             title: '请至少选择一条数据'
@@ -181,7 +219,7 @@
         }
         let params = {
           ids: this.selectedRowKeys.join(','),
-          state:'pass'
+          state: 'pass'
         }
         this.$confirm({
           title: '审核通过',
@@ -205,7 +243,7 @@
           }
         })
       },
-      rejectState(){
+      rejectState() {
         if (!this.selectedRowKeys || this.selectedRowKeys.length === 0) {
           return this.$warning({
             title: '请至少选择一条数据'
@@ -213,7 +251,7 @@
         }
         let params = {
           ids: this.selectedRowKeys.join(','),
-          state:'reject'
+          state: 'reject'
         }
         this.$confirm({
           title: '审核拒绝',
@@ -237,11 +275,11 @@
           }
         })
       },
-      showDetail(record){
-        this.$refs.detailForm.edit(record)
+      showDetail(record) {
+        this.$refs.detailRefundSingleForm.detailShow(record)
       },
       initDictConfig() {
-        initDictOptions('channel_type').then((res) => {
+        initDictOptions('accountType').then((res) => {
           if (res.success) {
             this.accountTypeDictOptions = res.result
           }

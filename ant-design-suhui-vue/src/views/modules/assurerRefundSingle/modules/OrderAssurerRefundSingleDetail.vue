@@ -11,23 +11,23 @@
     <a-spin :spinning="confirmLoading">
       <a-card :bordered="false">
         <detail-list title="----------------------------账户信息----------------------------" :col="col">
-          <detail-list-item term="账号">{{ model.platformAccountNo }}</detail-list-item>
+          <detail-list-item term="账号">{{ model.accountNo }}</detail-list-item>
           <detail-list-item term="真实姓名">{{ model.realName }}</detail-list-item>
           <detail-list-item term="开户行">{{ model.openBank }}</detail-list-item>
           <detail-list-item term="开户网点">{{ model.openBankBranch }}</detail-list-item>
           <detail-list-item term="国际电汇代码">{{ model.swiftCode }}</detail-list-item>
           <detail-list-item term="创建时间">{{ model.createTime }}</detail-list-item>
         </detail-list>
-        <detail-list title="----------------------------缴费信息----------------------------" :col="col"
-                     v-if="model.payVoucher">
-          <detail-list-item term="缴费金额类型">{{ model.moneyType }}</detail-list-item>
-          <detail-list-item term="缴费金额">{{ model.payMoney }}</detail-list-item>
-          <detail-list-item term="缴费说明">{{ model.payText }}</detail-list-item>
+        <detail-list title="----------------------------退款信息----------------------------" :col="col"
+                    >
+          <detail-list-item term="退款金额类型">{{ model.moneyType }}</detail-list-item>
+          <detail-list-item term="退款金额">{{ model.refundMoney }}</detail-list-item>
+          <detail-list-item term="退款说明">{{ model.refundText }}</detail-list-item>
         </detail-list>
-        <detail-list title="----------------------------付款凭证----------------------------" :col="col"
-                     v-if="model.payVoucher">
+        <detail-list title="----------------------------平台付款凭证----------------------------" :col="col"
+                     v-if="model.refundVoucher">
           <div class="img-model">
-            <img v-for="(item,i) in model.payVoucher.split(',')" @click="handlePreview(item)" :src="item"/>
+            <img v-for="(item,i) in model.refundVoucher.split(',')" @click="handlePreview(item)" :src="item"/>
           </div>
         </detail-list>
         <a-modal :visible="previewVisible" :footer="null" @cancel="cancelPreview">
@@ -78,6 +78,11 @@
         this.close()
       },
       edit(record) {
+        this.resetScreenSize()
+        this.model = Object.assign({}, record)
+        this.visible = true
+      },
+      detailShow(record) {
         this.resetScreenSize()
         this.model = Object.assign({}, record)
         this.visible = true

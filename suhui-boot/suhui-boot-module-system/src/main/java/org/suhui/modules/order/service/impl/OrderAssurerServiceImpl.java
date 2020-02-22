@@ -7,9 +7,11 @@ import org.suhui.common.util.UUIDGenerator;
 import org.suhui.common.util.oConvertUtils;
 import org.suhui.modules.order.entity.OrderAssurer;
 import org.suhui.modules.order.entity.OrderAssurerAccount;
+import org.suhui.modules.order.entity.OrderAssurerMoneyChange;
 import org.suhui.modules.order.entity.OrderMain;
 import org.suhui.modules.order.mapper.OrderAssurerAccountMapper;
 import org.suhui.modules.order.mapper.OrderAssurerMapper;
+import org.suhui.modules.order.service.IOrderAssurerMoneyChangeService;
 import org.suhui.modules.order.service.IOrderAssurerService;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -48,6 +50,9 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
     @Autowired
     private IPayUserInfoService iPayUserInfoService;
 
+    @Autowired
+    private IOrderAssurerMoneyChangeService iOrderAssurerMoneyChangeService;
+
     @Override
     @Transactional
     public void saveMain(OrderAssurer orderAssurer, List<OrderAssurerAccount> orderAssurerAccountList) {
@@ -55,7 +60,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         for (OrderAssurerAccount entity : orderAssurerAccountList) {
             //外键设置
             entity.setAssurerId(orderAssurer.getId());
-            if(entity.getAccountType().equals("alipay")){
+            if (entity.getAccountType().equals("alipay")) {
                 entity.setPayCanUseLimit(2000000.0);
                 entity.setPayLimit(2000000.0);
             }
@@ -120,16 +125,16 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
             // 为承兑商选择一个支付账号,同时排除掉没有账号得承兑商和账号支付宝金额不足的承兑商
             OrderAssurerAccount account = orderAssurerAccountService.getAssurerAccountByOrderPay(assurer.getId(), orderMain.getTargetCurrencyMoney(), orderMain.getUserCollectionMethod(), orderMain.getUserCollectionAreaCode());
             if (BaseUtil.Base_HasValue(account)) {
-                if(!BaseUtil.Base_HasValue(useList)){
+                if (!BaseUtil.Base_HasValue(useList)) {
                     useList.add(assurer);
-                }else if(assurer.getAssurerRate().equals(useList.get(0).getAssurerRate())){
+                } else if (assurer.getAssurerRate().equals(useList.get(0).getAssurerRate())) {
                     // 如果与第一个承兑商费率一样，则随机选择承兑商
                     useList.add(assurer);
                 }
             }
         }
-        if(BaseUtil.Base_HasValue(useList)){
-            orderAssurer = useList.get(BaseUtil.getRandomInt(0,useList.size()));
+        if (BaseUtil.Base_HasValue(useList)) {
+            orderAssurer = useList.get(BaseUtil.getRandomInt(0, useList.size()));
             orderAssurerAccount = orderAssurerAccountService.getAssurerAccountByOrderPay(orderAssurer.getId(), orderMain.getTargetCurrencyMoney(), orderMain.getUserCollectionMethod(), orderMain.getUserCollectionAreaCode());
         }
         // 如果没找到账号,说明没有承兑商合适
@@ -200,8 +205,8 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         orderAssurer.setAssurerName(phone);
         orderAssurer.setAssurerPhone(phone);
         orderAssurer.setAssurerRate(data.getDouble("assurerRate"));
-        orderAssurer.setTotalLimit(data.getDouble("totalLimit")*100);
-        orderAssurer.setCanUseLimit(data.getDouble("totalLimit")*100);
+        orderAssurer.setTotalLimit(data.getDouble("totalLimit") * 100);
+        orderAssurer.setCanUseLimit(data.getDouble("totalLimit") * 100);
         this.save(orderAssurer);
         return orderAssurer;
     }
@@ -238,6 +243,32 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
             return result;
         }
         return Result.ok("操作成功");
+    }
+
+    /**
+     * 更改承兑商金额
+     */
+    @Override
+    public Result<Object> changeAssurerMoneyMain(JSONObject jsonObject) {
+        String assurerId = jsonObject.getString("assurerId");
+        String classChange = jsonObject.getString("classChange");
+        String typeChange = jsonObject.getString("typeChange");
+        Double changeMoney = jsonObject.getDouble("changeMoney");
+        String changeText = jsonObject.getString("changeText");
+        OrderAssurer orderAssurer = getById(assurerId);
+        if (!BaseUtil.Base_HasValue(orderAssurer)) {
+            return Result.error("该承兑商不存在");
+        }
+        OrderAssurerMoneyChange orderAssurerMoneyChange = new OrderAssurerMoneyChange();
+        orderAssurerMoneyChange.setAssurerId(assurerId);
+        orderAssurerMoneyChange.setAssurerName(orderAssurer.getAssurerName());
+        orderAssurerMoneyChange.setAssurerPhone(orderAssurer.getAssurerPhone());
+        orderAssurerMoneyChange.setChangeClass(classChange);
+        orderAssurerMoneyChange.setChangeType(typeChange);
+        orderAssurerMoneyChange.setChangeMoney(changeMoney);
+        orderAssurerMoneyChange.setChangeText(changeText);
+        iOrderAssurerMoneyChangeService.save(orderAssurerMoneyChange);
+        return Result.ok("执行成功");
     }
 
 

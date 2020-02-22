@@ -60,4 +60,6 @@ public interface IOrderAssurerService extends IService<OrderAssurer> {
 	OrderAssurer addAssurerMain(JSONObject data);
 
 	Result<Object> auditPassAssurer(String ids);
+
+	Result<Object> changeAssurerMoneyMain(JSONObject jsonObject);
 }

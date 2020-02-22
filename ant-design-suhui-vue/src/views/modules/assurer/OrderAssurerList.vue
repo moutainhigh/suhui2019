@@ -22,7 +22,7 @@
               </a-form-item>
             </a-col>
           </template>
-          <a-col :span="8" >
+          <a-col :span="8">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
@@ -41,12 +41,16 @@
     <div class="table-operator">
       <a-button @click="handleAdd()" type="primary" icon="plus">添加</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('承兑商管理')">导出</a-button>
-      <a-button type="primary"  v-has="'audit:pass'" @click="auditPass()">审核通过</a-button>
+      <a-button type="primary" v-has="'audit:pass'" @click="auditPass()">审核通过</a-button>
+      <a-button type="primary" @click="changeAssurerMoney('add','ensure')">增加保证金</a-button>
+      <a-button type="primary" @click="changeAssurerMoney('sub','ensure')">减少保证金</a-button>
+      <a-button type="primary" @click="changeAssurerMoney('add','lease')">增加租赁金</a-button>
+      <a-button type="primary" @click="changeAssurerMoney('sub','lease')">减少租赁金</a-button>
       <!--<a-dropdown v-if="selectedRowKeys.length > 0">-->
-        <!--<a-menu slot="overlay">-->
-          <!--<a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>-->
-        <!--</a-menu>-->
-        <!--<a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>-->
+      <!--<a-menu slot="overlay">-->
+      <!--<a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>-->
+      <!--</a-menu>-->
+      <!--<a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>-->
       <!--</a-dropdown>-->
     </div>
 
@@ -84,28 +88,55 @@
 
     <!-- 表单区域 -->
     <orderAssurer-modal ref="modalForm" @ok="modalFormOk"/>
-
+    <a-modal :visible="modalVisable" @cancel="cancelModal" @ok="handelOkModal">
+      <a-form :form="form">
+        <a-row :gutter="24">
+          <a-col :span="24">
+            <a-form-item label="金额">
+              <a-input-number placeholder="请输入金额" style="width: 100%" v-decorator="[ 'changeMoney', validatorRules.changeMoney ]"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row :gutter="24">
+          <a-col :span="24">
+            <a-form-item label="说明">
+              <a-textarea placeholder="请输入说明" v-decorator="[ 'changeTtext', validatorRules.changeTtext ]"></a-textarea>
+            </a-form-item>
+          </a-col>
+        </a-row>
+      </a-form>
+    </a-modal>
   </a-card>
 </template>
 
 <script>
-
+  const VALIDATE_NO_PASSED = Symbol()
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import OrderAssurerModal from './modules/OrderAssurerModal'
-  import {initDictOptions, filterDictText} from '@/components/dict/JDictSelectUtil'
+  import { initDictOptions, filterDictText } from '@/components/dict/JDictSelectUtil'
   import { postAction } from '@/api/manage'
+  import ATextarea from 'ant-design-vue/es/input/TextArea'
 
   export default {
-    name: "OrderAssurerList",
+    name: 'OrderAssurerList',
     mixins: [JeecgListMixin],
     components: {
+      ATextarea,
       OrderAssurerModal
     },
-    data () {
+    data() {
       return {
         description: '',
+        form: this.$form.createForm(this),
         onlineStateDictOptions: [],
         assurerStateDictOptions: [],
+        modalVisable: false,
+        classChange:'',
+        typeChange:'',
+        validatorRules: {
+          changeMoney: { rules: [{ required: true, message: '请输入金额!' }] },
+          changeTtext: { rules: [{ required: true, message: '请输入说明!' }] }
+        },
         // 表头
         columns: [
           {
@@ -113,98 +144,99 @@
             dataIndex: '',
             key: 'rowIndex',
             width: 60,
-            align: "center",
-            customRender:function (t, r, index) {
-              return parseInt(index)+1;
+            align: 'center',
+            customRender: function(t, r, index) {
+              return parseInt(index) + 1
             }
           },
           {
             title: '在线状态',
-            align:"center",
+            align: 'center',
             dataIndex: 'onlineState',
             customRender: (text) => {
               //字典值替换通用方法
-              return filterDictText(this.onlineStateDictOptions, text+"");
+              return filterDictText(this.onlineStateDictOptions, text + '')
             }
           },
           {
             title: '承兑商状态',
-            align:"center",
+            align: 'center',
             dataIndex: 'assurerState',
             customRender: (text) => {
               //字典值替换通用方法
-              return filterDictText(this.assurerStateDictOptions, text);
+              return filterDictText(this.assurerStateDictOptions, text)
             }
           },
           {
             title: '承兑商名称',
-            align:"center",
+            align: 'center',
             dataIndex: 'assurerName'
           },
           {
             title: '国家码',
-            align:"center",
+            align: 'center',
             dataIndex: 'countryCode'
           },
           {
             title: '策略',
-            align:"center",
+            align: 'center',
             dataIndex: 'assurerStrategy'
           },
           {
             title: '费率',
-            align:"center",
+            align: 'center',
             dataIndex: 'assurerRate'
           },
           {
             title: '可用额度',
-            align:"center",
+            align: 'center',
             dataIndex: 'canUseLimit'
           },
           {
             title: '已用额度',
-            align:"center",
+            align: 'center',
             dataIndex: 'usedLimit'
           },
           {
             title: '总额度',
-            align:"center",
+            align: 'center',
             dataIndex: 'totalLimit'
           },
           {
             title: '支付锁定金额',
-            align:"center",
+            align: 'center',
             dataIndex: 'payLockMoney'
           },
           {
             title: '操作',
             dataIndex: 'action',
-            align:"center",
-            scopedSlots: { customRender: 'action' },
+            align: 'center',
+            scopedSlots: { customRender: 'action' }
           }
         ],
         // 请求参数
-    	url: {
-              list: "/order/orderAssurer/list",
-              delete: "/order/orderAssurer/delete",
-              deleteBatch: "/order/orderAssurer/deleteBatch",
-              exportXlsUrl: "order/orderAssurer/exportXls",
-              importExcelUrl: "order/orderAssurer/importExcel",
-              auditPass: "order/orderAssurer/auditPass",
-           },
+        url: {
+          list: '/order/orderAssurer/list',
+          delete: '/order/orderAssurer/delete',
+          deleteBatch: '/order/orderAssurer/deleteBatch',
+          exportXlsUrl: 'order/orderAssurer/exportXls',
+          importExcelUrl: 'order/orderAssurer/importExcel',
+          auditPass: 'order/orderAssurer/auditPass',
+          changeAssurerMoney: 'order/orderAssurer/changeAssurerMoney'
         }
-      },
-      computed: {
-        importExcelUrl: function(){
-          return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-        }
-      },
+      }
+    },
+    computed: {
+      importExcelUrl: function() {
+        return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`
+      }
+    },
 
     created() {
-      this.initDictConfig();
+      this.initDictConfig()
     },
     methods: {
-      auditPass(){
+      auditPass() {
         if (!this.selectedRowKeys || this.selectedRowKeys.length === 0) {
           return this.$warning({
             title: '请选择一条数据'
@@ -235,17 +267,68 @@
           }
         })
       },
+      changeAssurerMoney(pType, pClass) {
+        if (!this.selectedRowKeys || this.selectedRowKeys.length === 0) {
+          return this.$warning({
+            title: '请选择一条数据'
+          })
+        }
+        this.classChange = pClass;
+        this.typeChange = pType;
+        this.modalVisable = true
+      },
+      cancelModal() {
+        this.classChange = '';
+        this.typeChange = '';
+        this.form.resetFields()
+        this.modalVisable = false
+      },
+      handelOkModal() {
+        this.form.validateFields((err, values) => {
+          if(!err){
+            let params = {
+              assurerId: this.selectedRowKeys[0],
+              classChange:this.classChange,
+              typeChange:this.typeChange,
+              changeMoney:values.changeMoney,
+              changeText:values.changeText,
+            }
+            this.$confirm({
+              title: '提示',
+              content: '确定要执行该操作吗?',
+              onOk: () => {
+                this.loading = true
+                this.cancelModal();
+                postAction(this.url.changeAssurerMoney, params).then(res => {
+                  if (res.code !== 200) {
+                    this.loading = false
+                    this.$warning({
+                      title: res.message
+                    })
+                  } else {
+                    this.$success({
+                      title: res.message
+                    })
+                    this.searchQuery()
+                    this.onClearSelected()
+                  }
+                })
+              }
+            })
+          }
+        })
+      },
       initDictConfig() {
         initDictOptions('online_state').then((res) => {
           if (res.success) {
-            this.onlineStateDictOptions = res.result;
+            this.onlineStateDictOptions = res.result
           }
-        });
+        })
         initDictOptions('assurer_state').then((res) => {
           if (res.success) {
-            this.assurerStateDictOptions = res.result;
+            this.assurerStateDictOptions = res.result
           }
-        });
+        })
       }
     }
   }
