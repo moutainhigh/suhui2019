@@ -14,8 +14,10 @@ import org.springframework.web.client.RestTemplate;
 import org.suhui.common.api.vo.Result;
 import org.suhui.modules.order.entity.OrderAssurer;
 import org.suhui.modules.order.entity.OrderAssurerAccount;
+import org.suhui.modules.order.entity.OrderAssurerMoneyChange;
 import org.suhui.modules.order.entity.OrderMain;
 import org.suhui.modules.order.mapper.OrderMainMapper;
+import org.suhui.modules.order.service.IOrderAssurerMoneyChangeService;
 import org.suhui.modules.order.service.IOrderMainService;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -45,6 +47,9 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
 
     @Autowired
     private IPayIdentityChannelAccountService iPayIdentityChannelAccountService;
+
+    @Autowired
+    private IOrderAssurerMoneyChangeService iOrderAssurerMoneyChangeService;
 
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
     private static final AtomicInteger atomicInteger = new AtomicInteger(1000000);
@@ -103,6 +108,9 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         }
         if (!orderMain.getOrderState().equals("1")) {
             return Result.error(512, "已分配状态的订单才可进行该操作");
+        }
+        if(!orderAssurerService.checkAssurerLeaseEnsure(orderMain,orderAssurer)){
+            return Result.error(539, "承兑商保证金/租赁金不足");
         }
         // 查询用户收款账号
         orderMain = this.getUserCollectionAccount(orderMain, token);
@@ -388,6 +396,8 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             lockAssurerMoney(orderMain.getTargetCurrencyMoney(), orderAssurer);
             // 锁定承兑账户金额
             lockAssurerAccountMoney(orderMain.getTargetCurrencyMoney(), pay);
+            // 减少承兑商租赁金
+            subAssurerLeaseMoney(orderMain.getTargetCurrencyMoney(),orderAssurer,orderMain);
         } else {
             orderMain.setOrderState("1");
             orderMain.setAutoDispatchState(1);
@@ -401,6 +411,23 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         }
     }
 
+    /**
+     * 减少承兑商租赁金
+     */
+    public void subAssurerLeaseMoney(Double money,OrderAssurer orderAssurer,OrderMain orderMain){
+        Double leaseMoney = BaseUtil.mul(money,orderAssurer.getAssurerRate(),0);
+        OrderAssurerMoneyChange orderAssurerMoneyChange = new OrderAssurerMoneyChange();
+        orderAssurerMoneyChange.setAssurerId(orderAssurer.getId());
+        orderAssurerMoneyChange.setAssurerName(orderAssurer.getAssurerName());
+        orderAssurerMoneyChange.setAssurerPhone(orderAssurer.getAssurerPhone());
+        orderAssurerMoneyChange.setChangeClass("lease");
+        orderAssurerMoneyChange.setChangeType("sub");
+        orderAssurerMoneyChange.setChangeMoney(leaseMoney);
+        orderAssurerMoneyChange.setChangeText("订单扣减");
+        orderAssurerMoneyChange.setOrderId(orderMain.getId());
+        orderAssurerMoneyChange.setOrderNo(orderMain.getOrderCode());
+        iOrderAssurerMoneyChangeService.save(orderAssurerMoneyChange);
+    }
 
     public static synchronized String getOrderNoByUUID() {
         Integer uuidHashCode = UUID.randomUUID().toString().hashCode();

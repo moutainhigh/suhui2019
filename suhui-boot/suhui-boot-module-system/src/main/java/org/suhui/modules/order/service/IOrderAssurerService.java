@@ -62,4 +62,6 @@ public interface IOrderAssurerService extends IService<OrderAssurer> {
 	Result<Object> auditPassAssurer(String ids);
 
 	Result<Object> changeAssurerMoneyMain(JSONObject jsonObject);
+
+	Boolean checkAssurerLeaseEnsure(OrderMain orderMain, OrderAssurer assurer);
 }

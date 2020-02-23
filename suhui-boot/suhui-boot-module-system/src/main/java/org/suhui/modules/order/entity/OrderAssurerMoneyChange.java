@@ -85,6 +85,9 @@ public class OrderAssurerMoneyChange {
     @ApiModelProperty(value = "删除状态（0，正常，1已删除）")
 	private java.lang.String delFlag;
 	private java.lang.String changeText;
+	private java.lang.String orderId;
+	private java.lang.String orderNo;
+	private java.lang.String errorText;
 
 	public String getId() {
 		return id;
@@ -196,5 +199,29 @@ public class OrderAssurerMoneyChange {
 
 	public void setChangeText(String changeText) {
 		this.changeText = changeText;
+	}
+
+	public String getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+
+	public String getErrorText() {
+		return errorText;
+	}
+
+	public void setErrorText(String errorText) {
+		this.errorText = errorText;
 	}
 }

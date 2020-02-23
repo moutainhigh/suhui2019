@@ -3,6 +3,8 @@ package org.suhui.modules.order.service;
 import org.suhui.modules.order.entity.OrderAssurerMoneyChange;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * @Description: 承兑商金额变动
  * @Author: jeecg-boot
@@ -11,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IOrderAssurerMoneyChangeService extends IService<OrderAssurerMoneyChange> {
 
+    List<OrderAssurerMoneyChange> getInitData();
 }
