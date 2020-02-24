@@ -58,6 +58,15 @@ public class OrderAssurerController {
 
 
     /**
+     * 更改承兑商金额
+     */
+    @PostMapping(value = "/changeAssurerMoney")
+    public Result<Object> changeAssurerMoney(@RequestBody JSONObject data) {
+        Result<Object> result = new Result<Object>();
+        result = orderAssurerService.changeAssurerMoneyMain(data);
+        return result;
+    }
+    /**
      * 通过userNo查询承兑商数据
      */
     @PostMapping(value = "/queryAssurerByUserNo")
@@ -67,6 +76,7 @@ public class OrderAssurerController {
         if (orderAssurer == null) {
             result.error500("该承兑商不存在");
         } else {
+            orderAssurer.changeMoneyToBig();
             result.setResult(orderAssurer);
             result.setSuccess(true);
             result.setCode(200);
@@ -80,10 +90,12 @@ public class OrderAssurerController {
     @PostMapping(value = "/updateAssurer")
     public Result<OrderAssurer> updateAssurer(@RequestBody OrderAssurer data) {
         Result<OrderAssurer> result = new Result<OrderAssurer>();
+        data.changeMoneyToPoints();
         OrderAssurer orderAssurer = orderAssurerService.updateAssurer(data);
         if (orderAssurer == null) {
             result.error500("该承兑商不存在");
         } else {
+            orderAssurer.changeMoneyToBig();
             result.setResult(orderAssurer);
             result.setSuccess(true);
             result.setCode(200);

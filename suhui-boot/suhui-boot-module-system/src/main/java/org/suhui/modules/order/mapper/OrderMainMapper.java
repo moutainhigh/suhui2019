@@ -16,4 +16,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface OrderMainMapper extends BaseMapper<OrderMain> {
 
     List<OrderMain> findByUserId(Map map);
+
+    // 获取承兑商未完成订单总金额
+    Double sumAssurerNotFinishMoney(@Param("assurerId") String assurerId);
 }

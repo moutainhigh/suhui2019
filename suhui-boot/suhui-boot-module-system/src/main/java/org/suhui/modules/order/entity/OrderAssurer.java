@@ -90,6 +90,10 @@ public class OrderAssurer implements Serializable {
     private java.lang.String assurerPhone;
     private java.lang.Integer onlineState;
     private java.lang.Double payLockMoney;
+    private java.lang.Double ensureMoney;
+    private java.lang.Double leaseMoney;
+    private java.lang.Double ensureProportion;
+    private java.lang.String assurerPicture;
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -109,6 +113,12 @@ public class OrderAssurer implements Serializable {
         if (BaseUtil.Base_HasValue(this.payLockMoney)) {
             this.payLockMoney = this.payLockMoney * 100;
         }
+        if (BaseUtil.Base_HasValue(this.ensureMoney)) {
+            this.ensureMoney = this.ensureMoney * 100;
+        }
+        if (BaseUtil.Base_HasValue(this.leaseMoney)) {
+            this.leaseMoney = this.leaseMoney * 100;
+        }
     }
 
     public void changeMoneyToBig() {
@@ -123,6 +133,12 @@ public class OrderAssurer implements Serializable {
         }
         if (BaseUtil.Base_HasValue(this.payLockMoney) && this.payLockMoney > 0) {
             this.payLockMoney = this.payLockMoney / 100;
+        }
+        if (BaseUtil.Base_HasValue(this.ensureMoney)) {
+            this.ensureMoney = this.ensureMoney / 100;
+        }
+        if (BaseUtil.Base_HasValue(this.leaseMoney)) {
+            this.leaseMoney = this.leaseMoney / 100;
         }
     }
 
@@ -269,5 +285,37 @@ public class OrderAssurer implements Serializable {
 
     public void setAssurerPhone(String assurerPhone) {
         this.assurerPhone = assurerPhone;
+    }
+
+    public Double getEnsureMoney() {
+        return ensureMoney;
+    }
+
+    public void setEnsureMoney(Double ensureMoney) {
+        this.ensureMoney = ensureMoney;
+    }
+
+    public Double getLeaseMoney() {
+        return leaseMoney;
+    }
+
+    public void setLeaseMoney(Double leaseMoney) {
+        this.leaseMoney = leaseMoney;
+    }
+
+    public Double getEnsureProportion() {
+        return ensureProportion;
+    }
+
+    public void setEnsureProportion(Double ensureProportion) {
+        this.ensureProportion = ensureProportion;
+    }
+
+    public String getAssurerPicture() {
+        return assurerPicture;
+    }
+
+    public void setAssurerPicture(String assurerPicture) {
+        this.assurerPicture = assurerPicture;
     }
 }

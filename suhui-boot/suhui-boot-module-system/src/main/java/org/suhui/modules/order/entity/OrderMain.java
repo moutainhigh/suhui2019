@@ -235,6 +235,7 @@ public class OrderMain {
     private java.lang.String assurerCollectionAccountUser;
     private java.lang.String userPayAccountUser;
     private java.lang.String userCollectionAccountUser;
+    private java.lang.Double assurerCnyMoney;
 
     public void changeMoneyToPoints() {
         if (BaseUtil.Base_HasValue(this.targetCurrencyMoney) && this.targetCurrencyMoney > 0) {
@@ -695,5 +696,13 @@ public class OrderMain {
 
     public void setUserCollectionAccountUser(String userCollectionAccountUser) {
         this.userCollectionAccountUser = userCollectionAccountUser;
+    }
+
+    public Double getAssurerCnyMoney() {
+        return assurerCnyMoney;
+    }
+
+    public void setAssurerCnyMoney(Double assurerCnyMoney) {
+        this.assurerCnyMoney = assurerCnyMoney;
     }
 }
