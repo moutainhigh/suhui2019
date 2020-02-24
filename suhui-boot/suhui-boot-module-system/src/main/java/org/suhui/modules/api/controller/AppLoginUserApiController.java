@@ -529,6 +529,58 @@ public class AppLoginUserApiController {
     /**
      * 通过电话 区域代码 查询用户详细信息
      * @param params
+     * @return
+     */
+    @RequestMapping(value = "/setUserInfoByPhone", method = RequestMethod.POST)
+    public Result<JSONObject> setUserInfoByPhone(HttpServletRequest request, HttpServletResponse response,@RequestParam Map<String, Object> params ) {
+
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+        String phone = params.get("phone")+"" ;
+        String areacode = params.get("areacode")+"" ;
+
+        PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(phone , areacode) ;
+        if(payUserLogin == null){
+            result.setResult(obj);
+            result.success("cannot find this user");
+            result.setCode(517);
+            return result ;
+        }
+        String userno = payUserLogin.getUserNo() ;
+        Integer usertype = payUserLogin.getUserType() ;
+
+        PayUserInfo payUserInfo = new PayUserInfo() ;
+        payUserInfo.setUserNo(userno);
+        payUserInfo.setUserType(usertype);
+        PayUserInfo payUserInfoDb = iPayUserInfoService.getUserByObj(payUserInfo) ;
+
+        if(payUserInfoDb==null) {
+            result.setResult(obj);
+            result.success("has no user");
+            result.setCode(517);
+        }else{
+            Map map = new HashMap() ;
+            map.put("userName" ,payUserInfoDb.getUserName()) ;
+            map.put("cardType" ,payUserInfoDb.getCardType()) ;
+            map.put("cardNo" ,payUserInfoDb.getCardNo()) ;
+            map.put("phoneNo" ,payUserInfoDb.getPhoneNo()) ;
+            map.put("email" ,payUserInfoDb.getEmail()) ;
+            map.put("sex" ,payUserInfoDb.getSex()) ;
+            map.put("birthday" ,payUserInfoDb.getBirthday()) ;
+
+            obj.put("userinfo" , map) ;
+            result.setResult(obj);
+            result.success("set userinfo success");
+            result.setCode(CommonConstant.SC_OK_200);
+        }
+
+        return result ;
+    }
+
+
+    /**
+     * 通过电话 区域代码 查询用户详细信息
+     * @param params
      *  areaCode
         phoneNumber
         startDate
