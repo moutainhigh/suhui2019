@@ -92,6 +92,8 @@ public class OrderAssurer implements Serializable {
     private java.lang.Double payLockMoney;
     private java.lang.Double ensureMoney;
     private java.lang.Double leaseMoney;
+    private java.lang.Double ensureProportion;
+    private java.lang.String assurerPicture;
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -299,5 +301,21 @@ public class OrderAssurer implements Serializable {
 
     public void setLeaseMoney(Double leaseMoney) {
         this.leaseMoney = leaseMoney;
+    }
+
+    public Double getEnsureProportion() {
+        return ensureProportion;
+    }
+
+    public void setEnsureProportion(Double ensureProportion) {
+        this.ensureProportion = ensureProportion;
+    }
+
+    public String getAssurerPicture() {
+        return assurerPicture;
+    }
+
+    public void setAssurerPicture(String assurerPicture) {
+        this.assurerPicture = assurerPicture;
     }
 }

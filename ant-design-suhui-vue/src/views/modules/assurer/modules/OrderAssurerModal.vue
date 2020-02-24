@@ -33,16 +33,16 @@
             <a-form-item
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
-              label="承兑商国家码">
-              <a-input placeholder="请输入承兑商国家码" v-decorator="['countryCode', {}]"/>
+              label="费率">
+              <a-input-number placeholder="请输入费率" style="width:100%" v-decorator="[ 'assurerRate', {}]"/>
             </a-form-item>
           </a-col>
           <a-col :span="12" :gutter="8">
             <a-form-item
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
-              label="费率">
-              <a-input-number placeholder="请输入费率" style="width:100%" v-decorator="[ 'assurerRate', {}]"/>
+              label="保证金比例">
+              <a-input-number  placeholder="请输入保证金比例" style="width:100%" v-decorator="['ensureProportion',  validatorRules.ensureProportion ]"/>
             </a-form-item>
           </a-col>
           <!--<a-col :span="12" :gutter="8">-->
@@ -98,9 +98,8 @@
             <a-form-item
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
-              label="支付锁定金额">
-              <a-input placeholder="请输入支付锁定金额" disabled style="width:100%"
-                       v-decorator="[ 'payLockMoney', {}]"/>
+              label="承兑商国家码">
+              <a-input placeholder="请输入承兑商国家码" v-decorator="['countryCode', {}]"/>
             </a-form-item>
           </a-col>
         </a-row>
@@ -167,8 +166,8 @@
             <a-form-item
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
-              label="承兑商国家码">
-              <a-input placeholder="请输入承兑商国家码" v-decorator="['countryCode', {}]"/>
+              label="保证金比例">
+              <a-input-number  placeholder="请输入保证金比例" style="width:100%" v-decorator="['ensureProportion', validatorRules.ensureProportion]"/>
             </a-form-item>
           </a-col>
           <a-col :span="12" :gutter="8">
@@ -188,6 +187,14 @@
               label="总限额">
               <a-input placeholder="请输入总限额" style="width:100%"
                        v-decorator="[ 'totalLimit', validatorRules.totalLimit ]"/>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12" :gutter="8">
+            <a-form-item
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              label="承兑商国家码">
+              <a-input placeholder="请输入承兑商国家码" v-decorator="['countryCode', {}]"/>
             </a-form-item>
           </a-col>
           <!--<a-col :span="12" :gutter="8">-->
@@ -243,7 +250,8 @@
           areacode: { rules: [{ required: true, message: '请输入区号!' }] },
           phone: { rules: [{ required: true, message: '请输入手机号!' }] },
           password: { rules: [{ required: true, message: '请输入登录密码!' }] },
-          totalLimit: { rules: [{ required: true, message: '请输入总额度!' }] }
+          totalLimit: { rules: [{ required: true, message: '请输入总额度!' }] },
+          ensureProportion: { rules: [{ required: true, message: '请输入保证金比例!' }] }
         },
         refKeys: ['orderAssurerAccount'],
         activeKey: 'orderAssurerAccount',

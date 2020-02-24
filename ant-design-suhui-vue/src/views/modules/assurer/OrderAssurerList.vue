@@ -178,11 +178,6 @@
             dataIndex: 'countryCode'
           },
           {
-            title: '策略',
-            align: 'center',
-            dataIndex: 'assurerStrategy'
-          },
-          {
             title: '费率',
             align: 'center',
             dataIndex: 'assurerRate'
@@ -206,6 +201,18 @@
             title: '支付锁定金额',
             align: 'center',
             dataIndex: 'payLockMoney'
+          },{
+            title: '保证金比例',
+            align: 'center',
+            dataIndex: 'ensureProportion'
+          },{
+            title: '保证金',
+            align: 'center',
+            dataIndex: 'ensureMoney'
+          },{
+            title: '租赁金',
+            align: 'center',
+            dataIndex: 'leaseMoney'
           },
           {
             title: '操作',

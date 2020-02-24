@@ -76,6 +76,7 @@ public class OrderAssurerController {
         if (orderAssurer == null) {
             result.error500("该承兑商不存在");
         } else {
+            orderAssurer.changeMoneyToBig();
             result.setResult(orderAssurer);
             result.setSuccess(true);
             result.setCode(200);
@@ -89,10 +90,12 @@ public class OrderAssurerController {
     @PostMapping(value = "/updateAssurer")
     public Result<OrderAssurer> updateAssurer(@RequestBody OrderAssurer data) {
         Result<OrderAssurer> result = new Result<OrderAssurer>();
+        data.changeMoneyToPoints();
         OrderAssurer orderAssurer = orderAssurerService.updateAssurer(data);
         if (orderAssurer == null) {
             result.error500("该承兑商不存在");
         } else {
+            orderAssurer.changeMoneyToBig();
             result.setResult(orderAssurer);
             result.setSuccess(true);
             result.setCode(200);

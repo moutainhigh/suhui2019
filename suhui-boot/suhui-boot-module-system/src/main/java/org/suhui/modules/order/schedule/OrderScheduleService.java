@@ -45,7 +45,8 @@ public class OrderScheduleService {
                                 orderAssurerMoneyChange.setErrorText("保证金小于扣减金额");
                             }
                         } else {
-                            orderAssurer.setEnsureMoney(BaseUtil.add(orderAssurer.getEnsureMoney(),changeMoney,0));
+                            double ensureChangeMoney = BaseUtil.div(changeMoney,orderAssurer.getEnsureProportion(),0);
+                            orderAssurer.setEnsureMoney(BaseUtil.add(orderAssurer.getEnsureMoney(),ensureChangeMoney,0));
                         }
                     } else if ("lease".equals(classChange)) { // 租赁金
                         if ("sub".equals(typeChange)) {
