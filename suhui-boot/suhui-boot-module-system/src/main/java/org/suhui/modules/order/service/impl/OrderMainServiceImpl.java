@@ -74,6 +74,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             orderMain.setSourceCurrencyMoney(rateObj.getDouble("money"));
             orderMain.setExchangeRate(rateObj.getDouble("rate"));
         }
+        setAssurerCnyMoney(orderMain,token);
         // 查询用户收款账号
         orderMain = this.getUserCollectionAccount(orderMain, token);
         if(!BaseUtil.Base_HasValue(orderMain)){
@@ -92,6 +93,19 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         return result;
     }
 
+    /**
+     * 计算承兑商需支付的人民币金额,扣减承兑商额度需要
+     */
+    public void setAssurerCnyMoney(OrderMain orderMain, String token){
+        if(!orderMain.getTargetCurrency().equals("CNY")){
+            JSONObject rateObj = this.getUserPayMoney(orderMain.getTargetCurrency(), "CNY", orderMain.getTargetCurrencyMoney().toString(), token);
+            if (BaseUtil.Base_HasValue(rateObj)) {
+                orderMain.setAssurerCnyMoney(rateObj.getDouble("money"));
+            }
+        }else{
+            orderMain.setAssurerCnyMoney(orderMain.getTargetCurrencyMoney());
+        }
+    }
 
     /**
      * 订单分配承兑商-后台
@@ -118,7 +132,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             return Result.error(517, "获取用户收款账户失败");
         }
         // 为承兑商选择一个支付账号
-        OrderAssurerAccount accountPay = orderAssurerAccountService.getAssurerAccountByOrderPay(assurerId, orderMain.getTargetCurrencyMoney(), orderMain.getUserCollectionMethod(),orderMain.getUserCollectionAreaCode());
+        OrderAssurerAccount accountPay = orderAssurerAccountService.getAssurerAccountByOrderPay(assurerId, orderMain.getAssurerCnyMoney(), orderMain.getUserCollectionMethod(),orderMain.getUserCollectionAreaCode());
         if (!BaseUtil.Base_HasValue(accountPay)) {
             return Result.error(518, "承兑商找不到合适的支付账号");
         }
@@ -163,7 +177,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         if (!BaseUtil.Base_HasValue(oaap)) {
             return Result.error(527, "承兑商支付账户不存在");
         }
-        Double orderMoney = orderMain.getTargetCurrencyMoney();
+        Double orderMoney = orderMain.getAssurerCnyMoney();
 
         // 更新可用金额
         Double canUseLimit = orderAssurer.getCanUseLimit() + orderMoney;
@@ -301,7 +315,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         if (!BaseUtil.Base_HasValue(oaap)) {
             return Result.error(527, "承兑商支付账户不存在");
         }
-        Double orderMoney = orderMain.getTargetCurrencyMoney();
+        Double orderMoney = orderMain.getAssurerCnyMoney();
         // 更新已使用金额 = 已用金额+该订单金额
         Double userdLimit = orderAssurer.getUsedLimit() + orderMoney;
         // 更新锁定金额
@@ -393,11 +407,11 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             orderMain.setAssurerCollectionAccountUser(collection.getRealName());
             orderMain.setAssurerPayAccountUser(pay.getRealName());
             // 锁定承兑商金额
-            lockAssurerMoney(orderMain.getTargetCurrencyMoney(), orderAssurer);
+            lockAssurerMoney(orderMain.getAssurerCnyMoney(), orderAssurer);
             // 锁定承兑账户金额
-            lockAssurerAccountMoney(orderMain.getTargetCurrencyMoney(), pay);
+            lockAssurerAccountMoney(orderMain.getAssurerCnyMoney(), pay);
             // 减少承兑商租赁金
-            subAssurerLeaseMoney(orderMain.getTargetCurrencyMoney(),orderAssurer,orderMain);
+            subAssurerLeaseMoney(orderMain.getAssurerCnyMoney(),orderAssurer,orderMain);
         } else {
             orderMain.setOrderState("1");
             orderMain.setAutoDispatchState(1);
