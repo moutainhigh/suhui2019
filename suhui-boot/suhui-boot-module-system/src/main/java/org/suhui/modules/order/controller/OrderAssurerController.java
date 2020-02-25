@@ -19,6 +19,7 @@ import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.suhui.common.api.vo.Result;
 import org.suhui.common.system.query.QueryGenerator;
 import org.suhui.common.util.oConvertUtils;
@@ -61,6 +62,7 @@ public class OrderAssurerController {
      * 更改承兑商金额
      */
     @PostMapping(value = "/changeAssurerMoney")
+    @Transactional
     public Result<Object> changeAssurerMoney(@RequestBody JSONObject data) {
         Result<Object> result = new Result<Object>();
         result = orderAssurerService.changeAssurerMoneyMain(data);

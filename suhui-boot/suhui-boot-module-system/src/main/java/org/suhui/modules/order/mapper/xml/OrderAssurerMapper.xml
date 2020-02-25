@@ -10,7 +10,7 @@
         <if test="order_money!=null and order_money!=''">
             AND a.can_use_limit >= #{order_money}
         </if>
-
+         for update
     </select>
 
     <select id="getAssurerByUserNo" resultType="org.suhui.modules.order.entity.OrderAssurer">
