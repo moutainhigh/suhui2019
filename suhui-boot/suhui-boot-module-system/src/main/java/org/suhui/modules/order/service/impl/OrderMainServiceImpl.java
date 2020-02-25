@@ -74,10 +74,10 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             orderMain.setSourceCurrencyMoney(rateObj.getDouble("money"));
             orderMain.setExchangeRate(rateObj.getDouble("rate"));
         }
-        setAssurerCnyMoney(orderMain,token);
+        setAssurerCnyMoney(orderMain, token);
         // 查询用户收款账号
         orderMain = this.getUserCollectionAccount(orderMain, token);
-        if(!BaseUtil.Base_HasValue(orderMain)){
+        if (!BaseUtil.Base_HasValue(orderMain)) {
             return Result.error(532, "获取用户收款账户失败");
         }
         // 为订单选择最优承兑商
@@ -96,13 +96,17 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
     /**
      * 计算承兑商需支付的人民币金额,扣减承兑商额度需要
      */
-    public void setAssurerCnyMoney(OrderMain orderMain, String token){
-        if(!orderMain.getTargetCurrency().equals("CNY")){
-            JSONObject rateObj = this.getUserPayMoney(orderMain.getTargetCurrency(), "CNY", orderMain.getTargetCurrencyMoney().toString(), token);
-            if (BaseUtil.Base_HasValue(rateObj)) {
-                orderMain.setAssurerCnyMoney(rateObj.getDouble("money"));
+    public void setAssurerCnyMoney(OrderMain orderMain, String token) {
+        if (!orderMain.getTargetCurrency().equals("CNY")) {
+            if (!orderMain.getSourceCurrency().equals("CNY")) {
+                JSONObject rateObj = this.getUserPayMoney("CNY", orderMain.getTargetCurrency(), orderMain.getTargetCurrencyMoney().toString(), token);
+                if (BaseUtil.Base_HasValue(rateObj)) {
+                    orderMain.setAssurerCnyMoney(rateObj.getDouble("money"));
+                }
+            } else {
+                orderMain.setAssurerCnyMoney(orderMain.getSourceCurrencyMoney());
             }
-        }else{
+        } else {
             orderMain.setAssurerCnyMoney(orderMain.getTargetCurrencyMoney());
         }
     }
@@ -123,21 +127,21 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         if (!orderMain.getOrderState().equals("1")) {
             return Result.error(512, "已分配状态的订单才可进行该操作");
         }
-        if(!orderAssurerService.checkAssurerLeaseEnsure(orderMain,orderAssurer)){
+        if (!orderAssurerService.checkAssurerLeaseEnsure(orderMain, orderAssurer)) {
             return Result.error(539, "承兑商保证金/租赁金不足");
         }
         // 查询用户收款账号
         orderMain = this.getUserCollectionAccount(orderMain, token);
-        if(!BaseUtil.Base_HasValue(orderMain)){
+        if (!BaseUtil.Base_HasValue(orderMain)) {
             return Result.error(517, "获取用户收款账户失败");
         }
         // 为承兑商选择一个支付账号
-        OrderAssurerAccount accountPay = orderAssurerAccountService.getAssurerAccountByOrderPay(assurerId, orderMain.getAssurerCnyMoney(), orderMain.getUserCollectionMethod(),orderMain.getUserCollectionAreaCode());
+        OrderAssurerAccount accountPay = orderAssurerAccountService.getAssurerAccountByOrderPay(assurerId, orderMain.getAssurerCnyMoney(), orderMain.getUserCollectionMethod(), orderMain.getUserCollectionAreaCode());
         if (!BaseUtil.Base_HasValue(accountPay)) {
             return Result.error(518, "承兑商找不到合适的支付账号");
         }
         // 为承兑商选择一个收款账号
-        OrderAssurerAccount accountCollection = orderAssurerAccountService.getAssurerAccountByOrderCollection(assurerId, orderMain.getUserPayMethod(),orderMain.getUserPayAreaCode());
+        OrderAssurerAccount accountCollection = orderAssurerAccountService.getAssurerAccountByOrderCollection(assurerId, orderMain.getUserPayMethod(), orderMain.getUserPayAreaCode());
         if (!BaseUtil.Base_HasValue(accountCollection)) {
             return Result.error(519, "承兑商找不到合适的收款账号");
         }
@@ -411,7 +415,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             // 锁定承兑账户金额
             lockAssurerAccountMoney(orderMain.getAssurerCnyMoney(), pay);
             // 减少承兑商租赁金
-            subAssurerLeaseMoney(orderMain.getAssurerCnyMoney(),orderAssurer,orderMain);
+            subAssurerLeaseMoney(orderMain.getAssurerCnyMoney(), orderAssurer, orderMain);
         } else {
             orderMain.setOrderState("1");
             orderMain.setAutoDispatchState(1);
@@ -428,8 +432,8 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
     /**
      * 减少承兑商租赁金
      */
-    public void subAssurerLeaseMoney(Double money,OrderAssurer orderAssurer,OrderMain orderMain){
-        Double leaseMoney = BaseUtil.mul(money,orderAssurer.getAssurerRate(),0);
+    public void subAssurerLeaseMoney(Double money, OrderAssurer orderAssurer, OrderMain orderMain) {
+        Double leaseMoney = BaseUtil.mul(money, orderAssurer.getAssurerRate(), 0);
         OrderAssurerMoneyChange orderAssurerMoneyChange = new OrderAssurerMoneyChange();
         orderAssurerMoneyChange.setAssurerId(orderAssurer.getId());
         orderAssurerMoneyChange.setAssurerName(orderAssurer.getAssurerName());
@@ -484,10 +488,10 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         map.put("userno", orderMain.getUserNo());
         map.put("usertype", 0);
         Map keyMap = new HashMap();
-        keyMap.put("CNY","+86");
-        keyMap.put("KRW","+82");
-        keyMap.put("USD","+1");
-        if(!BaseUtil.Base_HasValue(keyMap.get(orderMain.getTargetCurrency()))){
+        keyMap.put("CNY", "+86");
+        keyMap.put("KRW", "+82");
+        keyMap.put("USD", "+1");
+        if (!BaseUtil.Base_HasValue(keyMap.get(orderMain.getTargetCurrency()))) {
             return null;
         }
         String collectionArea = keyMap.get(orderMain.getTargetCurrency()).toString();
@@ -495,13 +499,13 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         List<Map> mapDb = iPayIdentityChannelAccountService.getChannelAccountInfoByUserNo(map);
         if (BaseUtil.Base_HasValue(mapDb)) {
             Map payAccountMap = new HashMap();
-            for(int i=0;i<mapDb.size();i++){
+            for (int i = 0; i < mapDb.size(); i++) {
                 Map map1 = mapDb.get(i);
-                if(map1.get("areacode").toString().equals(collectionArea)){
+                if (map1.get("areacode").toString().equals(collectionArea)) {
                     payAccountMap = map1;
                 }
             }
-            if(!BaseUtil.Base_HasValue(payAccountMap)){
+            if (!BaseUtil.Base_HasValue(payAccountMap)) {
                 return null;
             }
             Integer type = Integer.parseInt(payAccountMap.get("channel_type").toString());
@@ -522,7 +526,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
                     JSONArray dataArr = result.getJSONArray("channelList");
                     if (BaseUtil.Base_HasValue(dataArr)) {
                         for (int i = 0; i < dataArr.size(); i++) {
-                            JSONObject jsonObject =JSONObject.parseObject(dataArr.get(i).toString());
+                            JSONObject jsonObject = JSONObject.parseObject(dataArr.get(i).toString());
                             if (jsonObject.getInteger("channelType").equals(type)) {
                                 orderMain.setUserCollectionBank(jsonObject.getString("channelNameLong"));
                                 orderMain.setUserCollectionBankBranch("");
