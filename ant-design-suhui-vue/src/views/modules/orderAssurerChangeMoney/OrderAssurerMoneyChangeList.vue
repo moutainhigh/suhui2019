@@ -26,8 +26,9 @@
           <template v-if="toggleSearchStatus">
 
             <a-col :md="6" :sm="8">
-              <a-form-item label="增加、减少">
-                <a-input placeholder="请输入增加、减少" v-model="queryParam.changeType"></a-input>
+              <a-form-item label="类型">
+                <j-dict-select-tag  v-model="queryParam.changeType" placeholder="请选择类型"
+                                    dictCode="changeType"/>
               </a-form-item>
             </a-col>
           </template>

@@ -78,6 +78,7 @@ public class OrderScheduleService {
                             Double totalMoney = BaseUtil.add(orderAssurer.getTotalLimit(),addMoney,0);
                             orderAssurer.setTotalLimit(totalMoney);
                             orderAssurer.setCanUseLimit(totalMoney - orderAssurer.getUsedLimit()-orderAssurer.getPayLockMoney());
+                            orderAssurer.setLeaseMoney(BaseUtil.add(orderAssurer.getLeaseMoney(),changeMoney,0));
                         }
                     }
                 }else{

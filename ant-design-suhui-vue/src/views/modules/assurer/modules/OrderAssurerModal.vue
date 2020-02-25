@@ -371,7 +371,7 @@
       /** 调用完edit()方法之后会自动调用此方法 */
       editAfter() {
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model, 'userNo', 'assurerName', 'openBank', 'openBankBranch', 'countryCode', 'onlineState', 'assurerState', 'assurerRate', 'canUseLimit', 'usedLimit', 'totalLimit', 'assurerStrategy', 'payLockMoney', 'delFlag'))
+          this.form.setFieldsValue(pick(this.model, 'userNo', 'assurerName','ensureProportion' ,'openBank', 'openBankBranch', 'countryCode', 'onlineState', 'assurerState', 'assurerRate', 'canUseLimit', 'usedLimit', 'totalLimit', 'assurerStrategy', 'payLockMoney', 'delFlag'))
           // 时间格式化
         })
         // 加载子表数据
