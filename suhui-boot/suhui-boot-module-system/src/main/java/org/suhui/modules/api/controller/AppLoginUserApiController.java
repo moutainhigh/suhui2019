@@ -539,6 +539,12 @@ public class AppLoginUserApiController {
         String phone = params.get("phone") + "" ;
         String areacode = params.get("areacode") + "" ;
 
+        //--  
+        final String userName = params.get("userName") +  ""; //用户真实姓名
+        final String birthday = params.get("birthday") + "";
+        final String sex = params.get("sex") + "";
+        final String email = params.get("email") + "";
+
         PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(phone , areacode) ;
         if(payUserLogin == null) {
             result.setResult(obj);
@@ -559,20 +565,22 @@ public class AppLoginUserApiController {
             result.success("cannot find this user");
             result.setCode(517);
         } else {
-            Map map = new HashMap() ;
-            map.put("userName" ,payUserInfoDb.getUserName()) ;
-            map.put("cardType" ,payUserInfoDb.getCardType()) ;
-            map.put("cardNo" ,payUserInfoDb.getCardNo()) ;
-            map.put("phoneNo" ,payUserInfoDb.getPhoneNo()) ;
-            map.put("email" ,payUserInfoDb.getEmail()) ;
-            map.put("sex" ,payUserInfoDb.getSex()) ;
-            map.put("birthday" ,payUserInfoDb.getBirthday()) ;
 
-            // save the info into DB
+            payUserInfoDb.setUserName(userName); ; //real name
+            payUserInfoDb.setBirthday(birthday);
+            payUserInfoDb.setSex(Integer.parseInt(sex));
+            payUserInfoDb.setEmail(email);
+            iPayUserInfoService.updateById(payUserInfoDb) ;
+
+            Map map = new HashMap();
+            map.put("userName" ,payUserInfoDb.getUserName()) ;
+            map.put("birthday" ,payUserInfoDb.getBirthday()) ;
+            map.put("sex" ,payUserInfoDb.getSex()) ;
+            map.put("email" ,payUserInfoDb.getEmail()) ;
 
             obj.put("userinfo" , map) ;
             result.setResult(obj);
-            result.success("set userinfo success");
+            result.success("update userinfo success!");
             result.setCode(CommonConstant.SC_OK_200);
         }
 
