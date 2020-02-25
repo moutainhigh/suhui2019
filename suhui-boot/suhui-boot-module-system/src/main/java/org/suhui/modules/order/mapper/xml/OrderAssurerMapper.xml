@@ -10,13 +10,18 @@
         <if test="order_money!=null and order_money!=''">
             AND a.can_use_limit >= #{order_money}
         </if>
-
+        for update
     </select>
 
     <select id="getAssurerByUserNo" resultType="org.suhui.modules.order.entity.OrderAssurer">
-        select * from  order_assurer  where  1=1
+        select * from order_assurer where 1=1
         <if test="userNo!=null and userNo != '' ">
             and user_no = #{userNo}
         </if>
+    </select>
+    <select id="getByIdForUpdate" resultType="org.suhui.modules.order.entity.OrderAssurer">
+        select * from  order_assurer  where  1=1
+            and id = #{id}
+        for update
     </select>
 </mapper>

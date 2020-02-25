@@ -20,5 +20,6 @@
 		<if test="areaCode!=null and areaCode != '' ">
 			and area_code = #{areaCode}
 		</if>
+		for update
 	</select>
 </mapper>

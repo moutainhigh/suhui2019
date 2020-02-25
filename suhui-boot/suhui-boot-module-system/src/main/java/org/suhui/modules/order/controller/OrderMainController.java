@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.suhui.common.api.vo.Result;
@@ -104,6 +106,7 @@ public class OrderMainController {
     @AutoLog(value = "创建订单-app")
     @ApiOperation(value = "创建订单-app", notes = "创建订单-app")
     @PostMapping(value = "/add")
+    @Transactional
     public Result<Object> add(HttpServletRequest request,
                               @RequestParam(name = "userNo") String userNo,
                               @RequestParam(name = "userName") String userName,
@@ -139,6 +142,8 @@ public class OrderMainController {
             return result;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+
             result.error500("操作失败");
         }
         return result;
@@ -151,6 +156,7 @@ public class OrderMainController {
     @ApiOperation(value = "订单分配承兑商-后台", notes = "订单分配承兑商-后台")
     @PostMapping(value = "/dispatchOrder")
     @RequiresPermissions("order:admin")
+    @Transactional
     public Result<Object> dispatchOrder(HttpServletRequest request,
                                         @RequestBody JSONObject jsonObject) {
         Result<Object> result = new Result<Object>();
@@ -159,6 +165,7 @@ public class OrderMainController {
             result = orderMainService.dispatchOrderAdmin(jsonObject.getString("orderId"), jsonObject.getString("assurerId"),accessToken);
             return result;
         } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             log.error(e.getMessage(), e);
             result.error500("操作失败");
         }
@@ -171,6 +178,7 @@ public class OrderMainController {
     @AutoLog(value = "用户确认已支付")
     @ApiOperation(value = "用户确认已支付", notes = "用户确认已支付")
     @PostMapping(value = "/userPay")
+    @Transactional
     public Result<Object> userPay(HttpServletRequest request, @RequestParam(name = "orderId", required = true) String orderId
                                     , @RequestParam(name = "voucher", required = true) String voucher) {
         Result<Object> result = new Result<Object>();
@@ -179,6 +187,7 @@ public class OrderMainController {
             return result;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             result.error500("操作失败");
         }
         return result;
@@ -191,12 +200,14 @@ public class OrderMainController {
     @AutoLog(value = "承兑商确认已收款")
     @ApiOperation(value = "承兑商确认已收款", notes = "承兑商确认已收款")
     @PostMapping(value = "/assurerCollection")
+    @Transactional
     public Result<Object> assurerCollection(HttpServletRequest request, @RequestBody JSONObject jsonObject) {
         Result<Object> result = new Result<Object>();
         try {
             result = orderMainService.assurerCollectionConfirm(jsonObject.getString("orderIds"));
             return result;
         } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             log.error(e.getMessage(), e);
             result.error500("操作失败");
         }
@@ -209,12 +220,14 @@ public class OrderMainController {
     @AutoLog(value = "承兑商确认已兑付")
     @ApiOperation(value = "承兑商确认已兑付", notes = "承兑商确认已兑付")
     @PostMapping(value = "/assurerPay")
+    @Transactional
     public Result<Object> assurerPay(HttpServletRequest request, @RequestBody JSONObject jsonObject) {
         Result<Object> result = new Result<Object>();
         try {
             result = orderMainService.assurerPayConfirm(jsonObject.getString("orderId"),jsonObject.getString("fileList"));
             return result;
         } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             log.error(e.getMessage(), e);
             result.error500("操作失败");
         }
@@ -228,12 +241,14 @@ public class OrderMainController {
     @AutoLog(value = "用户确认已收款-订单完成")
     @ApiOperation(value = "用户确认已收款-订单完成", notes = "用户确认已收款-订单完成")
     @PostMapping(value = "/userCollection")
+    @Transactional
     public Result<Object> userCollection(HttpServletRequest request, @RequestParam(name = "orderId", required = true) String orderId) {
         Result<Object> result = new Result<Object>();
         try {
             result = orderMainService.userCollectionConfirm(orderId);
             return result;
         } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             log.error(e.getMessage(), e);
             result.error500("操作失败");
         }
@@ -246,12 +261,14 @@ public class OrderMainController {
     @AutoLog(value = "取消订单")
     @ApiOperation(value = "取消订单", notes = "取消订单")
     @PostMapping(value = "/revokeOrder")
+    @Transactional
     public Result<Object> revokeOrder(HttpServletRequest request, @RequestParam(name = "orderId", required = true) String orderId) {
         Result<Object> result = new Result<Object>();
         try {
             result = orderMainService.revokeOrderAdmin(orderId);
             return result;
         } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             log.error(e.getMessage(), e);
             result.error500("操作失败");
         }
