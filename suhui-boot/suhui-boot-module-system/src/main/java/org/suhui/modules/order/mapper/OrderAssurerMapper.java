@@ -19,4 +19,6 @@ public interface OrderAssurerMapper extends BaseMapper<OrderAssurer> {
 
     OrderAssurer getAssurerByUserNo(@Param("userNo") String userNo);
 
+    OrderAssurer getByIdForUpdate(@Param("id") String id);
+
 }

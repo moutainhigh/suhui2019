@@ -3,9 +3,11 @@ package org.suhui.modules.order.schedule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.suhui.common.api.vo.Result;
 import org.suhui.modules.order.entity.OrderAssurer;
 import org.suhui.modules.order.entity.OrderAssurerMoneyChange;
+import org.suhui.modules.order.mapper.OrderAssurerMapper;
 import org.suhui.modules.order.mapper.OrderAssurerMoneyChangeMapper;
 import org.suhui.modules.order.service.impl.OrderAssurerMoneyChangeServiceImpl;
 import org.suhui.modules.order.service.impl.OrderAssurerServiceImpl;
@@ -22,14 +24,18 @@ public class OrderScheduleService {
     OrderAssurerServiceImpl orderAssurerService;
 
     @Autowired
+    OrderAssurerMapper orderAssurerMapper;
+
+    @Autowired
     OrderAssurerMoneyChangeServiceImpl orderAssurerMoneyChangeService;
     // 每5000毫秒执行一次
     @Scheduled(fixedRate = 5000)
+    @Transactional
     public void reportCurrentTime() throws IllegalAccessException {
         List<OrderAssurerMoneyChange> orderAssurerMoneyChangeList = orderAssurerMoneyChangeService.getInitData();
         if (BaseUtil.Base_HasValue(orderAssurerMoneyChangeList)) {
             for (OrderAssurerMoneyChange orderAssurerMoneyChange : orderAssurerMoneyChangeList) {
-                OrderAssurer orderAssurer = orderAssurerService.getById(orderAssurerMoneyChange.getAssurerId());
+                OrderAssurer orderAssurer = orderAssurerMapper.getByIdForUpdate(orderAssurerMoneyChange.getAssurerId());
                 String classChange = orderAssurerMoneyChange.getChangeClass();
                 String typeChange = orderAssurerMoneyChange.getChangeType();
                 Double changeMoney = orderAssurerMoneyChange.getChangeMoney()*100;
