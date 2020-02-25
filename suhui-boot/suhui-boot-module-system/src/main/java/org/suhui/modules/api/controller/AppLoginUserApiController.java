@@ -340,21 +340,21 @@ public class AppLoginUserApiController {
 
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
-        String id = params.get("id")+"" ;
+        String id = params.get("id") + "" ;
 
-        String userName = params.get("userName")+"" ; //用户真实姓名
-        String cardType = params.get("cardType")+"" ;//证件类型 1-身份证 2-军官证 3-护照
-        String cardNo = params.get("cardNo")+"" ; //证件号码
+        String userName = params.get("userName") + "" ; //用户真实姓名
+        String cardType = params.get("cardType") + "" ;//证件类型 1-身份证 2-军官证 3-护照
+        String cardNo = params.get("cardNo") + "" ; //证件号码
 //        String phoneNo = params.get("phoneNo")+"" ;
-        String email = params.get("email")+"" ;
-        String sex = params.get("sex")+"" ;
-        String birthday = params.get("birthday")+"" ;
+        String email = params.get("email") + "" ;
+        String sex = params.get("sex") + "" ;
+        String birthday = params.get("birthday") + "" ;
 
-        String cardCheck = params.get("cardCheck")+"" ;
-        String phoneCheck = params.get("phoneCheck")+"" ;
-        String emailCheck = params.get("emailCheck")+"" ;
+        String cardCheck = params.get("cardCheck") + "" ;
+        String phoneCheck = params.get("phoneCheck") + "" ;
+        String emailCheck = params.get("emailCheck") + "" ;
 
-        String userLevel = params.get("userLevel")+"" ;
+        String userLevel = params.get("userLevel") + "" ;
 
         PayUserLogin payUserLogin = iPayUserLoginService.getById(id) ;
         if(payUserLogin == null){
@@ -527,7 +527,7 @@ public class AppLoginUserApiController {
 
 
     /**
-     * 通过电话 区域代码 查询用户详细信息
+     * 通过电话 区域代码 设置用户详细信息
      * @param params
      * @return
      */
@@ -536,11 +536,11 @@ public class AppLoginUserApiController {
 
         Result<JSONObject> result = new Result<JSONObject>();
         JSONObject obj = new JSONObject();
-        String phone = params.get("phone")+"" ;
-        String areacode = params.get("areacode")+"" ;
+        String phone = params.get("phone") + "" ;
+        String areacode = params.get("areacode") + "" ;
 
         PayUserLogin payUserLogin = iPayUserLoginService.getUserByPhone(phone , areacode) ;
-        if(payUserLogin == null){
+        if(payUserLogin == null) {
             result.setResult(obj);
             result.success("cannot find this user");
             result.setCode(517);
@@ -554,11 +554,11 @@ public class AppLoginUserApiController {
         payUserInfo.setUserType(usertype);
         PayUserInfo payUserInfoDb = iPayUserInfoService.getUserByObj(payUserInfo) ;
 
-        if(payUserInfoDb==null) {
+        if (payUserInfoDb == null) {            
             result.setResult(obj);
-            result.success("has no user");
+            result.success("cannot find this user");
             result.setCode(517);
-        }else{
+        } else {
             Map map = new HashMap() ;
             map.put("userName" ,payUserInfoDb.getUserName()) ;
             map.put("cardType" ,payUserInfoDb.getCardType()) ;
@@ -567,6 +567,8 @@ public class AppLoginUserApiController {
             map.put("email" ,payUserInfoDb.getEmail()) ;
             map.put("sex" ,payUserInfoDb.getSex()) ;
             map.put("birthday" ,payUserInfoDb.getBirthday()) ;
+
+            // save the info into DB
 
             obj.put("userinfo" , map) ;
             result.setResult(obj);
