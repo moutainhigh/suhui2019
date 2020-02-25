@@ -566,10 +566,28 @@ public class AppLoginUserApiController {
             result.setCode(517);
         } else {
 
-            payUserInfoDb.setUserName(userName); ; //real name
-            payUserInfoDb.setBirthday(birthday);
-            payUserInfoDb.setSex(Integer.parseInt(sex));
-            payUserInfoDb.setEmail(email);
+            // only when inputs are valid, change the value in DB
+
+            if(userName == null || userName.equals("")|| userName.equals("null")){
+            } else {
+                payUserInfoDb.setUserName(userName); ; //real name
+            }
+
+            if(birthday == null || birthday.equals("")|| birthday.equals("null")){
+            } else {
+                payUserInfoDb.setBirthday(birthday);
+            }
+
+            if(sex == null || sex.equals("")|| sex.equals("null")){
+            } else {
+                payUserInfoDb.setSex(Integer.parseInt(sex)) ;
+            }
+
+            if(email == null || email.equals("")|| email.equals("null")){
+            } else {
+                payUserInfoDb.setEmail(email);
+            }
+
             iPayUserInfoService.updateById(payUserInfoDb) ;
 
             Map map = new HashMap();
