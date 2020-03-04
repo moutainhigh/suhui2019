@@ -94,6 +94,11 @@ public class OrderAssurer implements Serializable {
     private java.lang.Double leaseMoney;
     private java.lang.Double ensureProportion;
     private java.lang.String assurerPicture;
+    private java.lang.String cardType;
+    private java.lang.String cardNo;
+    private java.lang.String cardFrontPicture;
+    private java.lang.String cardBackPicture;
+    private java.lang.String cardHoldPicture;
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -317,5 +322,45 @@ public class OrderAssurer implements Serializable {
 
     public void setAssurerPicture(String assurerPicture) {
         this.assurerPicture = assurerPicture;
+    }
+
+    public String getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
+    }
+
+    public String getCardNo() {
+        return cardNo;
+    }
+
+    public void setCardNo(String cardNo) {
+        this.cardNo = cardNo;
+    }
+
+    public String getCardFrontPicture() {
+        return cardFrontPicture;
+    }
+
+    public void setCardFrontPicture(String cardFrontPicture) {
+        this.cardFrontPicture = cardFrontPicture;
+    }
+
+    public String getCardBackPicture() {
+        return cardBackPicture;
+    }
+
+    public void setCardBackPicture(String cardBackPicture) {
+        this.cardBackPicture = cardBackPicture;
+    }
+
+    public String getCardHoldPicture() {
+        return cardHoldPicture;
+    }
+
+    public void setCardHoldPicture(String cardHoldPicture) {
+        this.cardHoldPicture = cardHoldPicture;
     }
 }

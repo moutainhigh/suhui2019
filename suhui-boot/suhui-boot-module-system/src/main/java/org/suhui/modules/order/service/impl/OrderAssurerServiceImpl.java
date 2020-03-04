@@ -263,6 +263,26 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
                 check = false;
                 break;
             }
+            if(!BaseUtil.Base_HasValue(orderAssurer.getCardType())){
+                result = Result.error(515, "承兑商总缺少实名认证信息");
+                check = false;
+                break;
+            }
+            if(!BaseUtil.Base_HasValue(orderAssurer.getCardNo())){
+                result = Result.error(515, "承兑商总缺少实名认证信息");
+                check = false;
+                break;
+            }
+            if(!BaseUtil.Base_HasValue(orderAssurer.getCardFrontPicture())){
+                result = Result.error(515, "承兑商总缺少实名认证信息");
+                check = false;
+                break;
+            }
+            if(!BaseUtil.Base_HasValue(orderAssurer.getCardBackPicture())){
+                result = Result.error(515, "承兑商总缺少实名认证信息");
+                check = false;
+                break;
+            }
             orderAssurer.setAssurerState("normal");
             updateById(orderAssurer);
         }

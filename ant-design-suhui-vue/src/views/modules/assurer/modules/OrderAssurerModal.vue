@@ -103,6 +103,51 @@
             </a-form-item>
           </a-col>
         </a-row>
+        <a-row>
+          <a-col :span="12" :gutter="8">
+            <a-form-item
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              label="证件类型">
+              <a-select style="width: 100%" disabled v-model="model.cardType">
+                <a-select-option value="1">身份证</a-select-option>
+                <a-select-option value="2">军官证</a-select-option>
+                <a-select-option value="3">护照</a-select-option>
+                <a-select-option value="4">驾照</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12" :gutter="8">
+            <a-form-item
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              label="证件号码">
+              <a-input placeholder="证件号码" disabled v-decorator="['cardNo', {} ]"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="12" :gutter="8">
+            <a-form-item
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              label="证件正面照">
+              <div class="img-model">
+              <img @click="handlePreview(model.cardFrontPicture)" :src="model.cardFrontPicture"/>
+              </div>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12" :gutter="8">
+            <a-form-item
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              label="证件反面照">
+              <div class="img-model">
+                <img @click="handlePreview(model.cardBackPicture)" :src="model.cardBackPicture"/>
+              </div>
+            </a-form-item>
+          </a-col>
+        </a-row>
         <!--<a-row>-->
         <!--<a-col :span="12" :gutter="8">-->
         <!--<a-form-item-->
@@ -224,7 +269,9 @@
 
         </a-tab-pane>
       </a-tabs>
-
+      <a-modal :visible="previewVisible" :footer="null" @cancel="cancelPreview">
+        <img alt="example" style="width: 100%" :src="previewImage" />
+      </a-modal>
     </a-spin>
   </a-modal>
 </template>
@@ -243,6 +290,8 @@
     data() {
       return {
         accountTypeDictOptions: [],
+        previewVisible: false,
+        previewImage: '',
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 0,
         validatorRules: {
@@ -368,10 +417,17 @@
       }
     },
     methods: {
+      cancelPreview () {
+        this.previewVisible = false
+      },
+      handlePreview (url) {
+        this.previewImage = url;
+        this.previewVisible = true
+      },
       /** 调用完edit()方法之后会自动调用此方法 */
       editAfter() {
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model, 'userNo', 'assurerName','ensureProportion' ,'openBank', 'openBankBranch', 'countryCode', 'onlineState', 'assurerState', 'assurerRate', 'canUseLimit', 'usedLimit', 'totalLimit', 'assurerStrategy', 'payLockMoney', 'delFlag'))
+          this.form.setFieldsValue(pick(this.model, 'cardType','cardNo','cardFrontPicture','cardBackPicture','userNo', 'assurerName','ensureProportion' ,'openBank', 'openBankBranch', 'countryCode', 'onlineState', 'assurerState', 'assurerRate', 'canUseLimit', 'usedLimit', 'totalLimit', 'assurerStrategy', 'payLockMoney', 'delFlag'))
           // 时间格式化
         })
         // 加载子表数据
@@ -395,4 +451,14 @@
 </script>
 
 <style scoped>
+  .img-model{
+    margin-bottom: 10px;
+  }
+  .img-model  img{
+    display: inline-block;
+    max-width: 150px;
+    max-height: 150px;
+    margin-right: 8px;
+    cursor: pointer;
+  }
 </style>
