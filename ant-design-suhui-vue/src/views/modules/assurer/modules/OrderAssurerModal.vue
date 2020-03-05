@@ -114,6 +114,7 @@
                 <a-select-option value="2">军官证</a-select-option>
                 <a-select-option value="3">护照</a-select-option>
                 <a-select-option value="4">驾照</a-select-option>
+                <a-select-option value="5">其它</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
