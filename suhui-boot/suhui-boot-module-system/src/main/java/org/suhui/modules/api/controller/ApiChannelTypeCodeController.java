@@ -122,7 +122,8 @@ public class ApiChannelTypeCodeController {
 
         result.setResult(obj);
         result.success("get ChannelTypeCodeList success");
-        result.setCode(CommonConstant.SC_OK_200);
+        //result.setCode(CommonConstant.SC_OK_200);
+        result.setCode("YCC_200");
         return result;
     }
 
