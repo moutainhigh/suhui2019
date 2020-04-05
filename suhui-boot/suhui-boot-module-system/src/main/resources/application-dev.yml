@@ -93,9 +93,9 @@ spring:
           #username: hqkk
           #password: 123456
 
-          url: jdbc:mysql://35.232.204.22:3306/suhui?characterEncoding=UTF-8&useUnicode=true&useSSL=false
+          url: jdbc:mysql://127.0.0.1:3306/suhui?characterEncoding=UTF-8&useUnicode=true&useSSL=false
           username: root
-          password: suhui2019Test2019
+          password: caishanshan
           driver-class-name: com.mysql.jdbc.Driver
           # 多数据源配置
           #multi-datasource1:
