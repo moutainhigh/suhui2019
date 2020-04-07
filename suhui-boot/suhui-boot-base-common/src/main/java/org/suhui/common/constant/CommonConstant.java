@@ -77,4 +77,12 @@ public interface CommonConstant {
     public static String PRIORITY_L  = "L";
     public static String PRIORITY_M  = "M ";
     public static String PRIORITY_H  = "H";
+
+
+    //usertype用户类型
+    public static Integer usertype_app = 0;//APP 终端用户
+    public static Integer usertype_toC_enterpriseUser = 1;//企业用户
+    public static Integer usertype_toC_acceptor = 3;//承兑商
+    public static Integer usertype_toB_merchant = 4;//toB商户
+    public static Integer usertype_toB_acceptor = 5;//toB承兑商
 }
