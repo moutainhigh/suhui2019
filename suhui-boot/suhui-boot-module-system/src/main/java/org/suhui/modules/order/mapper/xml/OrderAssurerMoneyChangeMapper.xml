@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.suhui.modules.order.mapper.OrderAssurerMoneyChangeMapper">
-    <select id="getInitListData" resultType="org.suhui.modules.order.entity.OrderAssurerMoneyChange">
-        select * from  order_assurer_money_change  where  1=1
-         and flag = 'init' order by create_time asc limit 0,1  for
-        update
-    </select>
-</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.suhui.modules.toB.mapper.PayUserInfoMapper">
+
+    <!-- 根据用户名查询 -->
+    <select id="getUserByObj" resultType="org.suhui.modules.toB.entity.PayUserInfo">
+        select * from  pay_user_info  where user_no = #{userNo} and user_type = #{userType}
+    </select>
+
+
+    <!-- 根据areacode + phone查询 -->
+    <select id="getUserByPhoneInfo" resultType="org.suhui.modules.toB.entity.PayUserInfo">
+        select * from  pay_user_info  where  1=1
+        <if test="phone!=null and phone != '' ">
+            and login_name = #{phone}
+        </if>
+        <if test="areacode!=null and areacode != '' ">
+            and areacode=#{areacode}
+        </if>
+
+    </select>
+</mapper>
