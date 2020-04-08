@@ -36,4 +36,12 @@ public interface IOrderAssurerService extends IService<OrderAssurer> {
      * @return
      */
     Result<Object> changeAssurerMoney(JSONObject jsonObject);
+
+    /**
+     * 承兑商基本信息（userNo）
+     *
+     * @param
+     * @return
+     */
+    OrderAssurer getAssurerByUserNo(String userNo);
 }

@@ -36,4 +36,12 @@ public interface IOrderMerchantService extends IService<OrderMerchant> {
      * @return
      */
     Result<Object> changeMerchantMoney(JSONObject jsonObject);
+
+    /**
+     * 商户基本信息（userNo）
+     *
+     * @param
+     * @return
+     */
+    OrderMerchant getMerchantByUserNo(String userNo);
 }

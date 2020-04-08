@@ -18,6 +18,12 @@ public interface OrderAssurerMapper extends BaseMapper<OrderAssurer> {
 
     List<OrderAssurer> getAssurerByOrderData(Map<String,Object> map);
 
+    /**
+     * 承兑商基本信息（userNo）
+     *
+     * @param
+     * @return
+     */
     OrderAssurer getAssurerByUserNo(@Param("userNo") String userNo);
 
     OrderAssurer getByIdForUpdate(@Param("id") String id);

@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.suhui.modules.toB.mapper.OrderMerchantMapper">
+    <select id="getMerchantByOrderData" resultType="org.suhui.modules.toB.entity.OrderMerchant" parameterType="map">
+        SELECT
+        a.*
+        FROM
+        order_merchant a
+        WHERE 1 = 1 AND a.merchant_state = 'normal' and a.online_state = 1 and a.del_flag = 0
+        <if test="order_money!=null and order_money!=''">
+            AND a.can_use_limit >= #{order_money}
+        </if>
+        for update
+    </select>
 
+    <select id="getMerchantByUserNo" resultType="org.suhui.modules.toB.entity.OrderMerchant">
+        select * from order_merchant where 1=1
+        <if test="userNo!=null and userNo != '' ">
+            and user_no = #{userNo}
+        </if>
+    </select>
+    <select id="getByIdForUpdate" resultType="org.suhui.modules.toB.entity.OrderMerchant">
+        select * from  order_merchant  where  1=1
+            and id = #{id}
+        for update
+    </select>
 </mapper>

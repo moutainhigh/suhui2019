@@ -38,6 +38,9 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
     @Autowired
     private IOrderAssurerMoneyChangeService iOrderAssurerMoneyChangeService;
 
+    @Autowired
+    private OrderAssurerMapper orderAssurerMapper;
+
     /**
      * 添加
      *
@@ -187,5 +190,16 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         return Result.ok("执行成功");
     }
 
+    /**
+     * 承兑商基本信息（userNo）
+     *
+     * @param
+     * @return
+     */
+    @Override
+    public OrderAssurer getAssurerByUserNo(String userNo) {
+        OrderAssurer orderAssurer = orderAssurerMapper.getAssurerByUserNo(userNo);
+        return orderAssurer;
+    }
 
 }

@@ -10,6 +10,7 @@ import org.suhui.common.util.PasswordUtil;
 import org.suhui.common.util.UUIDGenerator;
 import org.suhui.common.util.oConvertUtils;
 import org.suhui.modules.toB.entity.*;
+import org.suhui.modules.toB.mapper.OrderAssurerMapper;
 import org.suhui.modules.toB.mapper.OrderMerchantMapper;
 import org.suhui.modules.toB.service.*;
 import org.suhui.modules.utils.BaseUtil;
@@ -31,6 +32,10 @@ public class OrderMerchantServiceImp extends ServiceImpl<OrderMerchantMapper, Or
 
     @Autowired
     private IOrderMerchantMoneyChangeService iOrderMerchantMoneyChangeService;
+
+    @Autowired
+    private OrderMerchantMapper orderMerchantMapper;
+
     /**
      * 添加商户
      *
@@ -175,5 +180,16 @@ public class OrderMerchantServiceImp extends ServiceImpl<OrderMerchantMapper, Or
         return Result.ok("执行成功");
     }
 
+    /**
+     * 商户基本信息（userNo）
+     *
+     * @param
+     * @return
+     */
+    @Override
+    public OrderMerchant getMerchantByUserNo(String userNo) {
+        OrderMerchant orderMerchant = orderMerchantMapper.getMerchantByUserNo(userNo);
+        return orderMerchant;
+    }
 
 }

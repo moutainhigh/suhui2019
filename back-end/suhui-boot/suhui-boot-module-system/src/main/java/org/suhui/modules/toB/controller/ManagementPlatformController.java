@@ -36,6 +36,7 @@ import java.util.List;
 public class ManagementPlatformController {
     @Autowired
     private IOrderAssurerService orderAssurerService;
+
     @Autowired
     private IOrderMerchantService orderMerchantService;
 
