@@ -123,7 +123,7 @@ public class ApiChannelTypeCodeController {
         result.setResult(obj);
         result.success("get ChannelTypeCodeList success");
         //result.setCode(CommonConstant.SC_OK_200);
-        result.setCode(100200);
+        result.setCode(200);
         return result;
     }
 
