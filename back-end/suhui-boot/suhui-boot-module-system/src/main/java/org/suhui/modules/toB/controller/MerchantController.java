@@ -1,16 +1,20 @@
 package org.suhui.modules.toB.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.suhui.common.api.vo.Result;
+import org.suhui.common.aspect.annotation.AutoLog;
 import org.suhui.modules.toB.entity.OrderAssurer;
 import org.suhui.modules.toB.entity.OrderMerchant;
 import org.suhui.modules.toB.service.IOrderAssurerService;
 import org.suhui.modules.toB.service.IOrderMerchantService;
+import org.suhui.modules.utils.BaseUtil;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 类说明：商户业务
@@ -25,12 +29,8 @@ public class MerchantController {
     @Autowired
     private IOrderMerchantService orderMerchantService;
 
-    /**
-     * 商户基本信息（userNo）
-     *
-     * @param
-     * @return
-     */
+    @AutoLog(value = "商户-根据userNo获取基本信息")
+    @ApiOperation(value = "商户-根据userNo获取基本信息", notes = "商户-根据userNo获取基本信息")
     @PostMapping(value = "/queryMerchantByUserNo")
     public Result<OrderMerchant> queryMerchantByUserNo(@RequestBody OrderMerchant data) {
         Result<OrderMerchant> result = new Result<OrderMerchant>();

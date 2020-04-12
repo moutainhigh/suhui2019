@@ -2,6 +2,7 @@ package org.suhui.modules.toB.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 import org.suhui.modules.toB.entity.PayUserInfo;
 
 /**
@@ -10,14 +11,10 @@ import org.suhui.modules.toB.entity.PayUserInfo;
  * @author: 蔡珊珊
  * @create: 2020-04-08 11:55
  */
+@Repository
 public interface PayUserInfoMapper extends BaseMapper<PayUserInfo> {
 
     public PayUserInfo getUserByObj(PayUserInfo payUserInfo);
 
-    /**
-     * 通过用户账号查询用户信息
-     * @param username
-     * @return
-     */
-    public PayUserInfo getUserByPhoneInfo(@Param("phone") String phone , @Param("areacode") String areacode);
+    public PayUserInfo getUserByPhoneInfo(@Param("phone") String phone, @Param("areacode") String areacode);
 }

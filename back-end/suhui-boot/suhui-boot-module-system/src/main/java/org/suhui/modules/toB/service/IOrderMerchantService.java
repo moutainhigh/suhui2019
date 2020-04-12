@@ -9,39 +9,19 @@ import org.suhui.modules.toB.entity.OrderMerchant;
  * 类说明：商户相关
  *
  * @author: 蔡珊珊
- * @create:  2020-04-07 23:10
+ * @create: 2020-04-07 23:10
  **/
 public interface IOrderMerchantService extends IService<OrderMerchant> {
 
-    /**
-     * 添加商户
-     *
-     * @param
-     * @return
-     */
+    //添加商户
     OrderMerchant addMerchant(JSONObject data);
 
-    /**
-     * 批量审核
-     *
-     * @param
-     * @return
-     */
+    //批量审核
     Result<Object> auditPassMerchant(String ids);
 
-    /**
-     * 更改 保证金、租赁金
-     *
-     * @param
-     * @return
-     */
+    //更改 保证金、租赁金
     Result<Object> changeMerchantMoney(JSONObject jsonObject);
 
-    /**
-     * 商户基本信息（userNo）
-     *
-     * @param
-     * @return
-     */
+    //商户基本信息（userNo）
     OrderMerchant getMerchantByUserNo(String userNo);
 }

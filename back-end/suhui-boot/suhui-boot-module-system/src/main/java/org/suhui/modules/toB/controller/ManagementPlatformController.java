@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.suhui.common.api.vo.Result;
+import org.suhui.common.aspect.annotation.AutoLog;
 import org.suhui.common.system.query.QueryGenerator;
 import org.suhui.modules.toB.entity.OrderAssurer;
 import org.suhui.modules.toB.service.IOrderAssurerService;
@@ -40,14 +41,11 @@ public class ManagementPlatformController {
     @Autowired
     private IOrderMerchantService orderMerchantService;
 
-    /**
-     * 添加承兑商
-     *
-     * @param
-     * @return
-     */
+    //<editor-fold desc="承兑商相关">
+
+    @AutoLog(value = "承兑商-新增")
+    @ApiOperation(value = "承兑商-新增", notes = "承兑商-新增")
     @PostMapping(value = "/addAcceptor")
-    @ApiOperation(value = "添加承兑商", notes = "添加承兑商", response = OrderAssurer.class)
     public Result<OrderAssurer> addAssurer(@ApiParam(value = "承兑商对象", required = true) @RequestBody JSONObject jsonObject) {
         Result<OrderAssurer> result = new Result<OrderAssurer>();
         OrderAssurer orderAssurer = orderAssurerService.addAssurerMain(jsonObject);
@@ -60,12 +58,8 @@ public class ManagementPlatformController {
         return result;
     }
 
-    /**
-     * 承兑商 批量审核
-     *
-     * @param
-     * @return
-     */
+    @AutoLog(value = "承兑商-批量审核")
+    @ApiOperation(value = "承兑商-批量审核", notes = "承兑商-批量审核")
     @PostMapping(value = "/auditPassAssurer")
     public Result<Object> auditPassAssurer(@RequestBody JSONObject jsonObject) {
         Result<Object> result = new Result<Object>();
@@ -79,12 +73,8 @@ public class ManagementPlatformController {
         return result;
     }
 
-    /**
-     * 更改 保证金、租赁金
-     *
-     * @param
-     * @return
-     */
+    @AutoLog(value = "承兑商-更改 保证金、租赁金")
+    @ApiOperation(value = "承兑商-更改 保证金、租赁金", notes = "承兑商-更改 保证金、租赁金")
     @PostMapping(value = "/changeAssurerMoney")
     @Transactional
     public Result<Object> changeAssurerMoney(@RequestBody JSONObject data) {
@@ -93,16 +83,9 @@ public class ManagementPlatformController {
         return result;
     }
 
-    /**
-     * 分页列表查询
-     *
-     * @param orderAssurer
-     * @param pageNo
-     * @param pageSize
-     * @param req
-     * @return
-     */
-    @GetMapping(value = "/assurerList")
+    @AutoLog(value = "承兑商-分页列表")
+    @ApiOperation(value = "承兑商-分页列表", notes = "承兑商-分页列表")
+    @PostMapping(value = "/assurerList")
     public Result<IPage<OrderAssurer>> queryPageList(OrderAssurer orderAssurer,
                                                      @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                                      @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
@@ -121,15 +104,12 @@ public class ManagementPlatformController {
         result.setResult(pageList);
         return result;
     }
+    //</editor-fold>
 
+    //<editor-fold desc="商户相关">
 
-
-    /**
-     * 添加商户
-     *
-     * @param
-     * @return
-     */
+    @AutoLog(value = "商户-新增")
+    @ApiOperation(value = "商户-新增", notes = "商户-新增")
     @PostMapping(value = "/addMerchant")
     public Result<OrderMerchant> addMerchant(@RequestBody JSONObject jsonObject) {
         Result<OrderMerchant> result = new Result<OrderMerchant>();
@@ -143,12 +123,8 @@ public class ManagementPlatformController {
         return result;
     }
 
-    /**
-     * 商户 批量审核
-     *
-     * @param
-     * @return
-     */
+    @AutoLog(value = "商户-批量审核")
+    @ApiOperation(value = "商户-批量审核", notes = "商户-批量审核")
     @PostMapping(value = "/auditPassMerchant")
     public Result<Object> auditPassMerchant(@RequestBody JSONObject jsonObject) {
         Result<Object> result = new Result<Object>();
@@ -162,12 +138,8 @@ public class ManagementPlatformController {
         return result;
     }
 
-    /**
-     * 更改 保证金、租赁金
-     *
-     * @param
-     * @return
-     */
+    @AutoLog(value = "商户-更改 保证金、租赁金")
+    @ApiOperation(value = "商户-更改 保证金、租赁金", notes = "商户-更改 保证金、租赁金")
     @PostMapping(value = "/changeAssurerMoney")
     @Transactional
     public Result<Object> changeMerchantMoney(@RequestBody JSONObject data) {
@@ -176,16 +148,9 @@ public class ManagementPlatformController {
         return result;
     }
 
-    /**
-     * 分页列表查询
-     *
-     * @param orderAssurer
-     * @param pageNo
-     * @param pageSize
-     * @param req
-     * @return
-     */
-    @GetMapping(value = "/assurerList")
+    @AutoLog(value = "商户-分页列表")
+    @ApiOperation(value = "商户-分页列表", notes = "商户-分页列表")
+    @PostMapping(value = "/merchantList")
     public Result<IPage<OrderMerchant>> queryPageList(OrderMerchant orderMerchant,
                                                      @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                                      @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
@@ -204,4 +169,5 @@ public class ManagementPlatformController {
         result.setResult(pageList);
         return result;
     }
+    //</editor-fold>
 }

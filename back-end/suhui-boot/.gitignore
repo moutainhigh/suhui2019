@@ -10,10 +10,3 @@
 **/dist/
 **.log
 **/build/
-/suhui-boot-base-common/module_suhui-boot-base-common.xml
-/suhui-boot-module-system/module_suhui-boot-module-system.xml
-/module_suhui-boot-parent.xml
-/suhui-boot-parent.xml
-/suhui-boot-parent.properties
-/out/
-/META-INF/

@@ -1,6 +1,7 @@
 package org.suhui.modules.toB.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Repository;
 import org.suhui.modules.toB.entity.OrderAssurerMoneyChange;
 
 import java.util.List;
@@ -11,12 +12,8 @@ import java.util.List;
  * @author: 蔡珊珊
  * @create: 2020-04-08 22:03
  **/
+@Repository
 public interface OrderAssurerMoneyChangeMapper extends BaseMapper<OrderAssurerMoneyChange> {
-    /**
-     * 列表
-     *
-     * @param
-     * @return
-     */
+    //列表
     public List<OrderAssurerMoneyChange> getInitListData();
 }
