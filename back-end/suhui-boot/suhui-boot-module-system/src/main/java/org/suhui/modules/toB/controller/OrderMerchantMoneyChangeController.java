@@ -33,17 +33,8 @@ public class OrderMerchantMoneyChangeController {
     @Autowired
     private IOrderMerchantMoneyChangeService orderMerchantMoneyChangeService;
 
-    /**
-     * 分页列表查询
-     *
-     * @param orderMerchantMoneyChange
-     * @param pageNo
-     * @param pageSize
-     * @param req
-     * @return
-     */
-    @AutoLog(value = "商户金额变动-分页列表查询")
-    @ApiOperation(value = "商户金额变动-分页列表查询", notes = "商户金额变动-分页列表查询")
+    @AutoLog(value = "商户金额变动-分页列表")
+    @ApiOperation(value = "商户金额变动-分页列表", notes = "商户金额变动-分页列表")
     @GetMapping(value = "/list")
     public Result<IPage<OrderMerchantMoneyChange>> queryPageList(OrderMerchantMoneyChange orderMerchantMoneyChange,
                                                                 @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,

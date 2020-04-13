@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.suhui.modules.toB.mapper.PayIdentityChannelAccountMapper">
+
+
+    <select id="getChannelAccountInfoByUserNo" resultType="map" parameterType="map">
+        SELECT
+        channel_account_no ,channel_account_name ,areacode ,channel_type
+        FROM
+        pay_identity_channel_account pica
+        LEFT JOIN pay_identity_info pii ON pica.identity_no = pii.identity_no
+        AND pica.identity_type = pii.identity_type
+        where
+        pii.user_no =#{userno}
+        and pii.user_type = #{usertype}
+
+        <if test="channeltype!=null and channeltype!=''">
+            and pica.channel_type =#{channeltype}
+        </if>
+
+    </select>
+
+</mapper>

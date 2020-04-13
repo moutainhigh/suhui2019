@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.suhui.modules.toB.mapper.PayCurrencyRateMapper">
+
+    <select id="getCurrencyRateValue" resultType="map" parameterType="map">
+        SELECT             source_currency_code,
+            target_currency_code,
+            	rate_now ,id
+        FROM
+            pay_currency_rate
+            where  source_currency_code = #{source_currency_code}
+            and target_currency_code = #{target_currency_code}
+            order by rate_time desc LIMIT 1
+
+    </select>
+
+
+</mapper>

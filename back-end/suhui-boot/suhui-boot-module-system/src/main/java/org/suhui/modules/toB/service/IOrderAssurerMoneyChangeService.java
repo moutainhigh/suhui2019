@@ -12,12 +12,7 @@ import java.util.List;
  * @create: 2020-04-08 22:06
  **/
 public interface IOrderAssurerMoneyChangeService extends IService<OrderAssurerMoneyChange> {
-    /**
-     * 列表
-     *
-     * @param
-     * @return
-     */
+    //列表
     List<OrderAssurerMoneyChange> getInitData();
 }
 

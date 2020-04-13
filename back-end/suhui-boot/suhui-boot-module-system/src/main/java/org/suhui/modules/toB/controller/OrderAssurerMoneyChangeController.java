@@ -34,17 +34,8 @@ public class OrderAssurerMoneyChangeController {
     @Autowired
     private IOrderAssurerMoneyChangeService orderAssurerMoneyChangeService;
 
-    /**
-     * 分页列表查询
-     *
-     * @param orderAssurerMoneyChange
-     * @param pageNo
-     * @param pageSize
-     * @param req
-     * @return
-     */
-    @AutoLog(value = "承兑商金额变动-分页列表查询")
-    @ApiOperation(value = "承兑商金额变动-分页列表查询", notes = "承兑商金额变动-分页列表查询")
+    @AutoLog(value = "承兑商金额变动-分页列表")
+    @ApiOperation(value = "承兑商金额变动-分页列表", notes = "承兑商金额变动-分页列表")
     @GetMapping(value = "/list")
     public Result<IPage<OrderAssurerMoneyChange>> queryPageList(OrderAssurerMoneyChange orderAssurerMoneyChange,
                                                                 @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,

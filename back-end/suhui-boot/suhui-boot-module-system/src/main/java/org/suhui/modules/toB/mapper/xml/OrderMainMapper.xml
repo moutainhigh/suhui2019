@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.suhui.modules.toB.mapper.OrderMainMapper">
+    <select id="sumAssurerNotFinishMoney" resultType="Double">
+        select sum(target_currency_money) from  order_main  where  1=1
+         and assurer_id = #{assurerId}
+         and order_state != '6' and order_state != '0'
+    </select>
+    <select id="findByUserId" resultType="org.suhui.modules.toB.entity.OrderMain" parameterType="map">
+        SELECT
+        a.*
+        FROM
+        order_main a
+        WHERE 1 = 1
+        <if test="userId!=null and userId!=''">
+            AND a.user_no = #{userId}
+        </if>
+        order by a.create_time desc
+    </select>
+    <select id="queryByOrderNo" resultType="org.suhui.modules.toB.entity.OrderMain" parameterType="map">
+        SELECT
+        a.*
+        FROM
+        order_main a
+        WHERE a.order_code = #{orderNo}
+        order by a.create_time desc
+    </select>
+</mapper>
