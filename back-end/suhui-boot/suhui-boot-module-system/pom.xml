@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>suhui-boot-module-system</artifactId>
 	<version>2.0.1</version>
@@ -13,13 +13,13 @@
 
 	<repositories>
 		<repository>
-            <id>mvn</id>
-            <name>maven2 Repository</name>
-            <url>http://repo.maven.apache.org/maven2/</url>
-            <snapshots>
+			<id>mvn</id>
+			<name>maven2 Repository</name>
+			<url>https://repo.maven.apache.org/maven2/</url>
+			<snapshots>
 				<enabled>false</enabled>
-		</snapshots>
-        </repository>	
+			</snapshots>
+		</repository>
 		<repository>
 			<id>aliyun</id>
 			<name>aliyun Repository</name>
@@ -37,7 +37,7 @@
 			</snapshots>
 		</repository>
 	</repositories>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.jeecgframework.boot</groupId>
@@ -84,7 +84,7 @@
 			<version>4.5.9</version>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
