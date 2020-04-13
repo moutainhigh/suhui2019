@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
  **/
 
 @Slf4j
-@Api(tags = "承兑商金额变动")
+@Api(tags = "承兑商/商户平台")
 @RestController
 @RequestMapping("/assurerMoneyChange")
 public class OrderAssurerMoneyChangeController {

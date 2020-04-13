@@ -224,7 +224,23 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         return Result.ok("操作成功");
     }
 
-
+    /**
+     * 用户确认已收款-订单完成
+     */
+    @Override
+    public Result<Object> userCollectionConfirm(String orderId) {
+        OrderMain orderMain = getById(orderId);
+        if (!BaseUtil.Base_HasValue(orderMain)) {
+            return Result.error(523, "订单不存在");
+        }
+        if (!orderMain.getOrderState().equals("5")) {
+            return Result.error(524, "订单状态异常");
+        }
+        orderMain.setOrderState("6");
+        orderMain.setUserCollectionTime(new Date());
+        updateById(orderMain);
+        return orderFinishChangeAussurerMoney(orderMain);
+    }
 
     //<editor-fold desc="辅助方法">
 
@@ -421,6 +437,55 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         return valueObj;
     }
 
+    /**
+     * 订单完成-释放承兑商锁定金额
+     */
+    public Result<Object> orderFinishChangeAussurerMoney(OrderMain orderMain) {
+        OrderAssurer orderAssurer = orderAssurerServiceImpl.getById(orderMain.getAssurerId());
+        OrderAssurerAccount oaac = orderAssurerAccountServiceImpl.getById(orderMain.getAssurerCollectionAccountId());
+        OrderAssurerAccount oaap = orderAssurerAccountServiceImpl.getById(orderMain.getAssurerPayAccountId());
+        if (!BaseUtil.Base_HasValue(orderAssurer)) {
+            return Result.error(525, "承兑商不存在");
+        }
+        if (!BaseUtil.Base_HasValue(oaac)) {
+            return Result.error(526, "承兑商收款账户不存在");
+        }
+        if (!BaseUtil.Base_HasValue(oaap)) {
+            return Result.error(527, "承兑商支付账户不存在");
+        }
+        Double orderMoney = orderMain.getAssurerCnyMoney();
+        // 更新已使用金额 = 已用金额+该订单金额
+        Double userdLimit = orderAssurer.getUsedLimit() + orderMoney;
+        // 更新锁定金额
+        Double payLockMoney = orderAssurer.getPayLockMoney() - orderMoney;
+        if (userdLimit + orderAssurer.getCanUseLimit() + payLockMoney != orderAssurer.getTotalLimit()) {
+            return Result.error(528, "承兑商金额异常(已用金额+可用金额+锁定金额不等于总金额)");
+        }
+        orderAssurer.setUsedLimit(userdLimit);
+        orderAssurer.setPayLockMoney(payLockMoney);
+        orderAssurerServiceImpl.updateById(orderAssurer);
+        // 目前支付宝账户才进行锁定金额
+        if ("alipay".equals(oaap.getAccountType())) {
+            // 更新账户已使用金额 = 已用金额+该订单金额
+            Double usedLimitAccount = oaap.getPayUsedLimit() + orderMoney;
+            // 更新账户锁定金额
+            Double payLockMoneyAccount = oaap.getPayLockMoney() - orderMoney;
+            if (usedLimitAccount + oaap.getPayCanUseLimit() + oaap.getPayLockMoney() != oaap.getPayLimit()) {
+                return Result.error(529, "承兑商账户金额异常(已用金额+可用金额+锁定金额不等于总金额)");
+            }
+            oaap.setPayLockMoney(payLockMoneyAccount);
+            oaap.setPayUsedLimit(usedLimitAccount);
+        }
+        // 收款账户已用金额增加
+        if (oaac.getId().equals(oaap.getId())) {
+            oaap.setCollectionUsedLimit(oaac.getCollectionUsedLimit() + orderMoney);
+        } else {
+            oaac.setCollectionUsedLimit(oaac.getCollectionUsedLimit() + orderMoney);
+            orderAssurerAccountServiceImpl.updateById(oaac);
+        }
+        orderAssurerAccountServiceImpl.updateById(oaap);
+        return Result.ok("操作成功");
+    }
 
     public static synchronized String getOrderNoByUUID() {
         Integer uuidHashCode = UUID.randomUUID().toString().hashCode();

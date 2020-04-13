@@ -9,5 +9,5 @@ swagger:
   production: false
   basic:
     enable: true
-    username: suhui
-    password: suhui1314
+    username: root
+    password: root

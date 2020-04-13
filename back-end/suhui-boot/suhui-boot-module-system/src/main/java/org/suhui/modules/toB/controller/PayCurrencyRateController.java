@@ -22,10 +22,10 @@ import java.util.Map;
  * @author: 蔡珊珊
  * @create: 2020-04-12 15:26
  **/
+@Slf4j
+@Api(tags = "货币种类")
 @RestController
 @RequestMapping("/payCurrencyRate")
-@Api(tags = "货币种类")
-@Slf4j
 public class PayCurrencyRateController {
     @Autowired
     private IPayCurrencyRateService iPayCurrencyRateService;

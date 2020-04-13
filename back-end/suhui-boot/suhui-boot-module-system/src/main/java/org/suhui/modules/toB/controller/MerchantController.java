@@ -1,6 +1,7 @@
 package org.suhui.modules.toB.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +23,10 @@ import javax.servlet.http.HttpServletRequest;
  * @author: 蔡珊珊
  * @create: 2020-04-07 22:55
  **/
+@Slf4j
+@Api(tags="承兑商/商户平台")
 @RestController
 @RequestMapping("/merchant")
-@Slf4j
 public class MerchantController {
     @Autowired
     private IOrderMerchantService orderMerchantService;

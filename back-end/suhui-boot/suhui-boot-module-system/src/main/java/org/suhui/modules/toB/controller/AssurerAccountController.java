@@ -1,5 +1,6 @@
 package org.suhui.modules.toB.controller;
 
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,10 @@ import org.suhui.modules.toB.service.IOrderAssurerAccountService;
  * @author: 蔡珊珊
  * @create: 2020-04-10 9:12
  */
+@Slf4j
+@Api(tags="账户类型")
 @RestController
 @RequestMapping("/assurer/account")
-@Slf4j
 public class AssurerAccountController {
     @Autowired
     private IOrderAssurerAccountService orderAssurerAccountService;

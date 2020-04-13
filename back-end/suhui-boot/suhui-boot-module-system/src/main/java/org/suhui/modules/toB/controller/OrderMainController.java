@@ -171,6 +171,23 @@ public class OrderMainController {
         return result;
     }
 
+    @AutoLog(value = "用户确认已收款-订单完成")
+    @ApiOperation(value = "用户确认已收款-订单完成", notes = "用户确认已收款-订单完成")
+    @PostMapping(value = "/userCollection")
+    @Transactional
+    public Result<Object> userCollection(HttpServletRequest request, @RequestParam(name = "orderId", required = true) String orderId) {
+        Result<Object> result = new Result<Object>();
+        try {
+            result = orderMainService.userCollectionConfirm(orderId);
+            return result;
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            log.error(e.getMessage(), e);
+            result.error500("操作失败");
+        }
+        return result;
+    }
+
     @AutoLog(value = "订单表-通过id查询")
     @ApiOperation(value = "订单表-通过id查询", notes = "订单表-通过id查询")
     @PostMapping(value = "/order")

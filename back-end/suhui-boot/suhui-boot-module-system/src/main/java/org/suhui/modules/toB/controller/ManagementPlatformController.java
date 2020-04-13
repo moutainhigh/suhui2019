@@ -29,11 +29,10 @@ import java.util.List;
  * @author: 蔡珊珊
  * @create: 2020-04-07 22:14
  **/
-
+@Slf4j
+@Api(tags="管理平台业务")
 @RestController
 @RequestMapping("/managementPlatform")
-@Slf4j
-@Api(tags = "管理平台业务",description="接口说明")
 public class ManagementPlatformController {
     @Autowired
     private IOrderAssurerService orderAssurerService;
@@ -140,7 +139,7 @@ public class ManagementPlatformController {
 
     @AutoLog(value = "商户-更改 保证金、租赁金")
     @ApiOperation(value = "商户-更改 保证金、租赁金", notes = "商户-更改 保证金、租赁金")
-    @PostMapping(value = "/changeAssurerMoney")
+    @PostMapping(value = "/changeMerchantMoney")
     @Transactional
     public Result<Object> changeMerchantMoney(@RequestBody JSONObject data) {
         Result<Object> result = new Result<Object>();

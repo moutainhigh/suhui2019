@@ -22,7 +22,7 @@ import java.util.Map;
  **/
 
 @Slf4j
-@Api(tags="channel_type_code")
+@Api(tags="账户类型")
 @RestController
 @RequestMapping("/api/login/ChannelTypeCode")
 public class ApiChannelTypeCodeController {

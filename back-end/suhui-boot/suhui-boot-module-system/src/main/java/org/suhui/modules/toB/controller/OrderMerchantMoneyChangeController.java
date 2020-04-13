@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  * @create: 2020-04-08 22:51
  **/
 @Slf4j
-@Api(tags = "商户金额变动")
+@Api(tags = "承兑商/商户平台")
 @RestController
 @RequestMapping("/merchantMoneyChange")
 public class OrderMerchantMoneyChangeController {

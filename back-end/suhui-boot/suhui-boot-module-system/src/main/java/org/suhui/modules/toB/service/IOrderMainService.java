@@ -27,4 +27,7 @@ public interface IOrderMainService extends IService<OrderMain> {
     //承兑商确认已兑付
     Result<Object> assurerPayConfirm(String orderId, String fileList);
 
+    //用户确认已收款
+    Result<Object> userCollectionConfirm(String orderId);
+
 }

@@ -1,5 +1,6 @@
 package org.suhui.modules.toB.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,10 @@ import org.suhui.modules.toB.service.IOrderAssurerService;
  * @author: 蔡珊珊
  * @create: 2020-04-07 22:11
  **/
+@Slf4j
+@Api(tags="承兑商/商户平台")
 @RestController
 @RequestMapping("/assurer")
-@Slf4j
 public class AssurerController {
     @Autowired
     private IOrderAssurerService orderAssurerService;
