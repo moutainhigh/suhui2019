@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.suhui.common.api.vo.Result;
 import org.suhui.common.aspect.annotation.AutoLog;
 import org.suhui.modules.toB.entity.OrderMain;
+import org.suhui.modules.toB.mapper.OrderMainMapper;
 import org.suhui.modules.toB.service.IOrderMainService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,8 @@ import javax.servlet.http.HttpServletRequest;
 public class OrderMainController {
     @Autowired
     private IOrderMainService orderMainService;
+    @Autowired
+    private OrderMainMapper orderMainMapper;
 
     @AutoLog(value = "创建订单")
     @ApiOperation(value = "创建订单", notes = "创建订单")
@@ -84,6 +87,22 @@ public class OrderMainController {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             log.error(e.getMessage(), e);
             result.error500("操作失败");
+        }
+        return result;
+    }
+
+    @AutoLog(value = "订单表-通过OrderNo查询")
+    @ApiOperation(value = "订单表-通过OrderNo查询", notes = "订单表-通过OrderNo查询")
+    @PostMapping(value = "/queryByOrderNo")
+    public Result<OrderMain> queryByOrderNo(@RequestParam(name = "orderNo", required = true) String orderNo) {
+        Result<OrderMain> result = new Result<OrderMain>();
+        OrderMain orderMain = orderMainMapper.queryByOrderNo(orderNo);
+        if (orderMain == null) {
+            result.error500("未找到对应实体");
+        } else {
+            orderMain.changeMoneyToBig();
+            result.setResult(orderMain);
+            result.setSuccess(true);
         }
         return result;
     }

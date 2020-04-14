@@ -125,3 +125,38 @@ CREATE TABLE `tob_order_main`  (
 
 SET FOREIGN_KEY_CHECKS = 1;
 
+
+-- 商户账户
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for order_merchant_account
+-- ----------------------------
+DROP TABLE IF EXISTS `tob_order_merchant_account`;
+CREATE TABLE `tob_order_merchant_account`  (
+  `id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `merchant_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '商户ID',
+  `account_type` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'alipay' COMMENT '账户类型(支付宝(alipay)、银行卡(bank_card))',
+  `account_no` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '账户',
+  `open_bank` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '开户行',
+  `open_bank_branch` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '开户网点',
+  `area_code` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '区号',
+  `real_name` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '真实姓名',
+  `use_type` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'pay_collection' COMMENT '使用方式 (支付(pay)、收款(collection)、支付+收款(pay_collection))',
+  `pay_limit` double(11, 0) NOT NULL DEFAULT 0 COMMENT '每日支付限额',
+  `pay_used_limit` double(11, 0) NOT NULL DEFAULT 0 COMMENT '支付已用额度',
+  `pay_can_use_limit` double(11, 0) NOT NULL DEFAULT 0 COMMENT '支付可用额度(日)',
+  `collection_used_limit` double(11, 0) NOT NULL DEFAULT 0 COMMENT '收款已用额度(日)',
+  `pay_lock_money` double(11, 0) NOT NULL DEFAULT 0 COMMENT '支付锁定金额',
+  `create_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '更新人',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+  `del_flag` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0' COMMENT '删除状态（0，正常，1已删除）',
+  `sub_account` int(11) NULL DEFAULT 1 COMMENT '是否自动分账 1 是 0 否',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
