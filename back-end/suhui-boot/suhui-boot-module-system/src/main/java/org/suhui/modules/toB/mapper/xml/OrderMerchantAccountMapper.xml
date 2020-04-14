@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.suhui.modules.toB.mapper.OrderMerchantAccountMapper">
+    <select id="getAccountByMerchantId" resultType="org.suhui.modules.toB.entity.OrderMerchantAccount">
+        select * from  tob_order_merchant_account  where  1=1
+        and merchant_id = #{merchantId} and area_code = #{areaCode}
+        for update
+    </select>
+</mapper>

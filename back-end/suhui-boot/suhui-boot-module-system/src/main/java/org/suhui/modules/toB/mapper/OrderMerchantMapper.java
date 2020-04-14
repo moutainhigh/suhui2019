@@ -15,5 +15,7 @@ import org.suhui.modules.toB.entity.OrderMerchant;
 public interface OrderMerchantMapper extends BaseMapper<OrderMerchant> {
     //商户基本信息（userNo）
     OrderMerchant getMerchantByUserNo(@Param("userNo") String userNo);
+    //商户基本信息（id）
+    OrderMerchant getMerchantById(@Param("id") String id);
 
 }

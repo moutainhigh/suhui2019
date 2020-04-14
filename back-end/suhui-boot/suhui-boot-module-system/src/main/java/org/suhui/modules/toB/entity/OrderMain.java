@@ -25,7 +25,7 @@ import java.util.Date;
 @TableName("tob_order_main")
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value = "order_main对象", description = "订单表")
+@ApiModel(value = "tob_order_main对象", description = "订单表")
 public class OrderMain {
     /**
      * id
@@ -49,21 +49,24 @@ public class OrderMain {
     /**
      * userNo
      */
-    @Excel(name = "userNo", width = 15)
-    @ApiModelProperty(value = "userNo")
-    private String userNo;
+    @Excel(name = "商户编号", width = 15)
+    @ApiModelProperty(value = "商户编号")
+    private String merchantId;
     /**
      * 用户姓名
      */
-    @Excel(name = "用户姓名", width = 15)
-    @ApiModelProperty(value = "用户姓名")
-    private String userName;
+    @Excel(name = "商户姓名", width = 15)
+    @ApiModelProperty(value = "商户姓名")
+    private String merchantName;
     /**
      * 用户联系方式
      */
-    @Excel(name = "用户联系方式", width = 15)
-    @ApiModelProperty(value = "用户联系方式")
-    private String userContact;
+    @Excel(name = "商户联系方式", width = 15)
+    @ApiModelProperty(value = "商户联系方式")
+    private String merchantContact;
+
+    @ApiModelProperty(value = "商户账户")
+    private String merchantAccountId;
     /**
      * 源币种
      */
@@ -101,6 +104,7 @@ public class OrderMain {
     @ApiModelProperty(value = "用户支付方式(支付宝alipay、银行卡bank_card)")
     private String userPayMethod;
     private String userPayAccount;
+    private String userPayAccountId;
     private String userPayAccountUser;
     private String userPayBank;
     private String userPayBankBranch;
@@ -149,6 +153,35 @@ public class OrderMain {
      * 确认收款之后，商户的回调地址
      */
     private String notifyUrl;
+
+
+
+    /**
+     * 用户收款方式(支付宝alipay、银行卡bank_card)
+     */
+    @Excel(name = "用户收款方式(支付宝alipay、银行卡bank_card)", width = 15)
+    @ApiModelProperty(value = "用户收款方式(支付宝alipay、银行卡bank_card)")
+    private java.lang.String userCollectionMethod;
+    /**
+     * 用户收款账号
+     */
+    @Excel(name = "用户收款账号", width = 15)
+    @ApiModelProperty(value = "用户收款账号")
+    private java.lang.String userCollectionAccount;
+    /**
+     * 用户确认收款时间
+     */
+    @Excel(name = "用户确认收款时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value = "用户确认收款时间")
+    private java.util.Date merchantCollectionTime;
+
+    private java.lang.String merchantCollectionBank;
+    private java.lang.String merchantCollectionBankBranch;
+    private java.lang.String merchantCollectionAreaCode;
+
+
     public String getNotifyUrl() {
         return notifyUrl;
     }
@@ -182,28 +215,28 @@ public class OrderMain {
         this.orderState = orderState;
     }
 
-    public String getUserNo() {
-        return userNo;
+    public String getMerchantId() {
+        return merchantId;
     }
 
-    public void setUserNo(String userNo) {
-        this.userNo = userNo;
+    public void setMerchantId(String merchantId) {
+        this.merchantId = merchantId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getMerchantName() {
+        return merchantName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setMerchantName(String merchantName) {
+        this.merchantName = merchantName;
     }
 
-    public String getUserContact() {
-        return userContact;
+    public String getMerchantContact() {
+        return merchantContact;
     }
 
-    public void setUserContact(String userContact) {
-        this.userContact = userContact;
+    public void setMerchantContact(String merchantContact) {
+        this.merchantContact = merchantContact;
     }
 
     public String getSourceCurrency() {
@@ -324,6 +357,14 @@ public class OrderMain {
     public void setUserPayAreaCode(String userPayAreaCode) {
         this.userPayAreaCode = userPayAreaCode;
     }
+    public String getUserPayAccountId() {
+        return userPayAccountId;
+    }
+
+    public void setUserPayAccountId(String userPayAccountId) {
+        this.userPayAccountId = userPayAccountId;
+    }
+
     public String getUserPayAccountUser() {
         return userPayAccountUser;
     }
@@ -340,6 +381,60 @@ public class OrderMain {
         this.targetCurrencyMoney = targetCurrencyMoney;
     }
 
+    public String getUserCollectionMethod() {
+        return userCollectionMethod;
+    }
+
+    public void setUserCollectionMethod(String userCollectionMethod) {
+        this.userCollectionMethod = userCollectionMethod;
+    }
+
+    public String getUserCollectionAccount() {
+        return userCollectionAccount;
+    }
+
+    public void setUserCollectionAccount(String userCollectionAccount) {
+        this.userCollectionAccount = userCollectionAccount;
+    }
+
+    public Date getMerchantCollectionTime() {
+        return merchantCollectionTime;
+    }
+
+    public void setMmerchantCollectionTime(Date userCollectionTime) {
+        this.merchantCollectionTime = userCollectionTime;
+    }
+
+
+    public String getMmerchantCollectionBank() {
+        return merchantCollectionBank;
+    }
+
+    public void setMmerchantCollectionBank(String merchantCollectionBank) {
+        this.merchantCollectionBank = merchantCollectionBank;
+    }
+
+    public String getMmerchantCollectionBankBranch() {
+        return merchantCollectionBankBranch;
+    }
+
+    public void setMmerchantCollectionBankBranch(String merchantCollectionBankBranch) {
+        this.merchantCollectionBankBranch = merchantCollectionBankBranch;
+    }
+    public String getMmerchantCollectionAreaCode() {
+        return merchantCollectionAreaCode;
+    }
+
+    public void setMmerchantCollectionAreaCode(String userCollectionAreaCode) {
+        this.merchantCollectionAreaCode = userCollectionAreaCode;
+    }
+    public String getMerchantAccountId() {
+        return merchantAccountId;
+    }
+
+    public void setMerchantAccountId(String merchantAccountId) {
+        this.merchantAccountId = merchantAccountId;
+    }
 
     public void changeMoneyToPoints() {
         if (BaseUtil.Base_HasValue(this.targetCurrencyMoney) && this.targetCurrencyMoney > 0) {
@@ -361,14 +456,14 @@ public class OrderMain {
 
     public String checkCreateRequireValue() {
         String message = "";
-        if (!BaseUtil.Base_HasValue(this.userNo)) {
-            message += "缺少值用户编号,";
+        if (!BaseUtil.Base_HasValue(this.merchantId)) {
+            message += "缺少值商户编号,";
         }
-        if (!BaseUtil.Base_HasValue(this.userName)) {
-            message += "缺少值用户姓名,";
+        if (!BaseUtil.Base_HasValue(this.merchantName)) {
+            message += "缺少值商户姓名,";
         }
-        if (!BaseUtil.Base_HasValue(this.userContact)) {
-            message += "缺少值用户联系方式,";
+        if (!BaseUtil.Base_HasValue(this.merchantContact)) {
+            message += "缺少值商户联系方式,";
         }
         if (!BaseUtil.Base_HasValue(this.sourceCurrency)) {
             message += "缺少值源币种,";

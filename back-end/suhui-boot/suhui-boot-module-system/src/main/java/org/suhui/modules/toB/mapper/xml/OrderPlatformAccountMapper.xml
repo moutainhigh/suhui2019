@@ -7,4 +7,13 @@
             and area_code = #{areaCode}
         </if>
     </select>
+    <select id="getAccountByAreaCodeAndAccountNo" resultType="org.suhui.modules.toB.entity.OrderPlatformAccount" parameterType="map">
+        select * from order_platform_account where 1=1 and account_state = 1 and del_flag = 0
+        <if test="areaCode!=null and areaCode != '' ">
+            and area_code = #{areaCode}
+        </if>
+        <if test="accountNo!=null and accountNo != '' ">
+            and account_no = #{accountNo}
+        </if>
+    </select>
 </mapper>

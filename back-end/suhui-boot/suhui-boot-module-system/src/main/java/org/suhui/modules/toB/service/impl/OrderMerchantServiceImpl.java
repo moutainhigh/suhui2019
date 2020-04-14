@@ -9,10 +9,15 @@ import org.suhui.common.constant.CommonConstant;
 import org.suhui.common.util.PasswordUtil;
 import org.suhui.common.util.UUIDGenerator;
 import org.suhui.common.util.oConvertUtils;
-import org.suhui.modules.toB.entity.*;
-import org.suhui.modules.toB.mapper.OrderAssurerMapper;
+import org.suhui.modules.toB.entity.OrderMerchant;
+import org.suhui.modules.toB.entity.OrderMerchantMoneyChange;
+import org.suhui.modules.toB.entity.PayUserInfo;
+import org.suhui.modules.toB.entity.PayUserLogin;
 import org.suhui.modules.toB.mapper.OrderMerchantMapper;
-import org.suhui.modules.toB.service.*;
+import org.suhui.modules.toB.service.IOrderMerchantMoneyChangeService;
+import org.suhui.modules.toB.service.IOrderMerchantService;
+import org.suhui.modules.toB.service.IPayUserInfoService;
+import org.suhui.modules.toB.service.IPayUserLoginService;
 import org.suhui.modules.utils.BaseUtil;
 
 /**
@@ -22,7 +27,7 @@ import org.suhui.modules.utils.BaseUtil;
  * @create:  2020-04-07 23:10
  **/
 @Service
-public class OrderMerchantServiceImp extends ServiceImpl<OrderMerchantMapper, OrderMerchant> implements IOrderMerchantService {
+public class OrderMerchantServiceImpl extends ServiceImpl<OrderMerchantMapper, OrderMerchant> implements IOrderMerchantService {
 
     @Autowired
     private IPayUserLoginService iPayUserLoginService;

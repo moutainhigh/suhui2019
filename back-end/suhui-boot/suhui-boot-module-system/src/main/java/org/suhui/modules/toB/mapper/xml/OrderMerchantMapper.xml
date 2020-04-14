@@ -19,7 +19,7 @@
             and user_no = #{userNo}
         </if>
     </select>
-    <select id="getByIdForUpdate" resultType="org.suhui.modules.toB.entity.OrderMerchant">
+    <select id="getMerchantById" resultType="org.suhui.modules.toB.entity.OrderMerchant">
         select * from  order_merchant  where  1=1
             and id = #{id}
         for update
