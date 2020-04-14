@@ -85,4 +85,8 @@ public interface CommonConstant {
     public static Integer usertype_toC_acceptor = 3;//承兑商
     public static Integer usertype_toB_merchant = 4;//toB商户
     public static Integer usertype_toB_acceptor = 5;//toB承兑商
+
+
+
+    public static final Integer SC_O = 200;
 }

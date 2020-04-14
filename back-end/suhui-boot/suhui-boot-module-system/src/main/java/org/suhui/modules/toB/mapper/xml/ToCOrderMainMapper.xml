@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.suhui.modules.toB.mapper.OrderMainMapper">
-    <select id="queryByUserId" resultType="org.suhui.modules.toB.entity.OrderMain" parameterType="map">
+<mapper namespace="org.suhui.modules.toB.mapper.ToCOrderMainMapper">
+    <select id="sumAssurerNotFinishMoney" resultType="Double">
+        select sum(target_currency_money) from  order_main  where  1=1
+         and assurer_id = #{assurerId}
+         and order_state != '6' and order_state != '0'
+    </select>
+    <select id="findByUserId" resultType="org.suhui.modules.toB.entity.ToCOrderMain" parameterType="map">
         SELECT
         a.*
         FROM
@@ -12,7 +17,7 @@
         </if>
         order by a.create_time desc
     </select>
-    <select id="queryByOrderNo" resultType="org.suhui.modules.toB.entity.OrderMain" parameterType="map">
+    <select id="queryByOrderNo" resultType="org.suhui.modules.toB.entity.ToCOrderMain" parameterType="map">
         SELECT
         a.*
         FROM

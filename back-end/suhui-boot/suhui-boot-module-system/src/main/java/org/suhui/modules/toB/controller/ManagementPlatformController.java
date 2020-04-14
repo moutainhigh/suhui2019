@@ -44,7 +44,7 @@ public class ManagementPlatformController {
 
     @AutoLog(value = "承兑商-新增")
     @ApiOperation(value = "承兑商-新增", notes = "承兑商-新增")
-    @PostMapping(value = "/addAcceptor")
+    @PostMapping(value = "/addAssurer")
     public Result<OrderAssurer> addAssurer(@ApiParam(value = "承兑商对象", required = true) @RequestBody JSONObject jsonObject) {
         Result<OrderAssurer> result = new Result<OrderAssurer>();
         OrderAssurer orderAssurer = orderAssurerService.addAssurerMain(jsonObject);

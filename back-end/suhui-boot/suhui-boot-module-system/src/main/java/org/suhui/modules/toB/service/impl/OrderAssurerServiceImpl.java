@@ -11,7 +11,7 @@ import org.suhui.common.util.UUIDGenerator;
 import org.suhui.common.util.oConvertUtils;
 import org.suhui.modules.toB.entity.*;
 import org.suhui.modules.toB.mapper.OrderAssurerMapper;
-import org.suhui.modules.toB.mapper.OrderMainMapper;
+import org.suhui.modules.toB.mapper.ToCOrderMainMapper;
 import org.suhui.modules.toB.service.IOrderAssurerMoneyChangeService;
 import org.suhui.modules.toB.service.IOrderAssurerService;
 import org.suhui.modules.toB.service.IPayUserInfoService;
@@ -44,7 +44,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
     @Autowired
     private OrderAssurerAccountServiceImpl orderAssurerAccountServiceImpl;
     @Autowired
-    private OrderMainMapper orderMainMapper;
+    private ToCOrderMainMapper toCOrderMainMapper;
 
     /**
      * 添加
@@ -106,8 +106,8 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         String[] idArr = ids.split(",");
         Result<Object> result = new Result<>();
         boolean check = true;
-        for (String orderId : idArr) {
-            OrderAssurer orderAssurer = getById(orderId);
+        for (String id : idArr) {
+            OrderAssurer orderAssurer = getById(id);
             if (!BaseUtil.Base_HasValue(orderAssurer)) {
                 result = Result.error(513, "承兑商不存在");
                 check = false;
@@ -215,10 +215,10 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
      * @return
      */
     @Override
-    public Map<String, Object> getAssurerByOrder(OrderMain orderMain) {
+    public Map<String, Object> getAssurerByOrder(ToCOrderMain toCOrderMain) {
         Map<String, Object> resultMap = new HashMap<>();
         Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("order_money", orderMain.getAssurerCnyMoney());
+        paramMap.put("order_money", toCOrderMain.getAssurerCnyMoney());
         // 选择多个合适的承兑商
         List<OrderAssurer> orderAssurers = orderAssurerMapper.getAssurerByOrderData(paramMap);
         if (!BaseUtil.Base_HasValue(orderAssurers)) {
@@ -234,9 +234,9 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         for (int i = 0; i < orderAssurers.size(); i++) {
             OrderAssurer assurer = orderAssurers.get(i);
             // 为承兑商选择一个支付账号,同时排除掉没有账号得承兑商和账号支付宝金额不足的承兑商
-            OrderAssurerAccount account = orderAssurerAccountServiceImpl.getAssurerAccountByOrderPay(assurer.getId(), orderMain.getAssurerCnyMoney(), orderMain.getUserCollectionMethod(), orderMain.getUserCollectionAreaCode());
+            OrderAssurerAccount account = orderAssurerAccountServiceImpl.getAssurerAccountByOrderPay(assurer.getId(), toCOrderMain.getAssurerCnyMoney(), toCOrderMain.getUserCollectionMethod(), toCOrderMain.getUserCollectionAreaCode());
             if (BaseUtil.Base_HasValue(account)) {
-                if (checkAssurerLeaseEnsure(orderMain, assurer)) {
+                if (checkAssurerLeaseEnsure(toCOrderMain, assurer)) {
                     if (!BaseUtil.Base_HasValue(useList)) {
                         useList.add(assurer);
                     } else if (assurer.getAssurerRate().equals(useList.get(0).getAssurerRate())) {
@@ -248,7 +248,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         }
         if (BaseUtil.Base_HasValue(useList)) {
             orderAssurer = useList.get(BaseUtil.getRandomInt(0, useList.size()));
-            orderAssurerAccount = orderAssurerAccountServiceImpl.getAssurerAccountByOrderPay(orderAssurer.getId(), orderMain.getAssurerCnyMoney(), orderMain.getUserCollectionMethod(), orderMain.getUserCollectionAreaCode());
+            orderAssurerAccount = orderAssurerAccountServiceImpl.getAssurerAccountByOrderPay(orderAssurer.getId(), toCOrderMain.getAssurerCnyMoney(), toCOrderMain.getUserCollectionMethod(), toCOrderMain.getUserCollectionAreaCode());
         }
         // 如果没找到账号,说明没有承兑商合适
         if (!BaseUtil.Base_HasValue(orderAssurerAccount)) {
@@ -257,7 +257,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
             return resultMap;
         }
         // 为承兑商选择一个收款账户
-        OrderAssurerAccount orderAssurerAccountCollection = orderAssurerAccountServiceImpl.getAssurerAccountByOrderCollection(orderAssurer.getId(), orderMain.getUserPayMethod(), orderMain.getUserPayAreaCode());
+        OrderAssurerAccount orderAssurerAccountCollection = orderAssurerAccountServiceImpl.getAssurerAccountByOrderCollection(orderAssurer.getId(), toCOrderMain.getUserPayMethod(), toCOrderMain.getUserPayAreaCode());
         resultMap.put("state", "success");
         resultMap.put("orderAssurer", orderAssurer);
         resultMap.put("orderAssurerAccountPay", orderAssurerAccount);
@@ -284,19 +284,19 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
     /**
      * 判断承兑商保证金及租赁金是否足够
      */
-    public Boolean checkAssurerLeaseEnsure(OrderMain orderMain, OrderAssurer assurer) {
+    public Boolean checkAssurerLeaseEnsure(ToCOrderMain toCOrderMain, OrderAssurer assurer) {
         // 租赁金需扣减金额
-        Double leaseMoney = BaseUtil.mul(orderMain.getAssurerCnyMoney(), assurer.getAssurerRate(), 0);
+        Double leaseMoney = BaseUtil.mul(toCOrderMain.getAssurerCnyMoney(), assurer.getAssurerRate(), 0);
         if (assurer.getLeaseMoney() < leaseMoney) {
             return false;
         }
         // 承兑商未完成订单总金额
-        Double notFinishOrderMoney = orderMainMapper.sumAssurerNotFinishMoney(assurer.getId());
+        Double notFinishOrderMoney = toCOrderMainMapper.sumAssurerNotFinishMoney(assurer.getId());
         if (!BaseUtil.Base_HasValue(notFinishOrderMoney)) {
             notFinishOrderMoney = 0.0;
         }
         // 如果未完成订单金额+该订单金额>承兑商保证金，承兑商不能接这单
-        if (BaseUtil.add(notFinishOrderMoney, orderMain.getAssurerCnyMoney(), 0) > assurer.getEnsureMoney()) {
+        if (BaseUtil.add(notFinishOrderMoney, toCOrderMain.getAssurerCnyMoney(), 0) > assurer.getEnsureMoney()) {
             return false;
         }
         return true;

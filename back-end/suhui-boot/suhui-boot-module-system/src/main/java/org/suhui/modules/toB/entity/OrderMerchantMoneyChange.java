@@ -21,7 +21,7 @@ import java.util.Date;
  * @create: 2020-04-08 21:56
  **/
 @Data
-@TableName("order_merchant_money_change")
+@TableName("tob_order_merchant_money_change")
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @ApiModel(value = "order_merchant_money_change对象", description = "商户金额变动")

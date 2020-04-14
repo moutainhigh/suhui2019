@@ -19,7 +19,7 @@ import java.util.Date;
  **/
 
 @Data
-@TableName("order_merchant")
+@TableName("tob_order_merchant")
 public class OrderMerchant implements Serializable {
     private static final long serialVersionUID = 1L;
 
