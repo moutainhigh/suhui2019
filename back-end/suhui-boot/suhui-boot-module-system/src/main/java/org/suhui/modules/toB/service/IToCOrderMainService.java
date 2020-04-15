@@ -12,7 +12,7 @@ import org.suhui.modules.toB.entity.ToCOrderMain;
  **/
 public interface IToCOrderMainService extends IService<ToCOrderMain> {
     //创建订单
-    Result<Object> manageOrderByAuto(ToCOrderMain toCOrderMain);
+    //Result<Object> manageOrderByAuto(ToCOrderMain toCOrderMain);
 
     //取消订单
     Result<Object> revokeOrderAdmin(String orderId);

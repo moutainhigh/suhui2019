@@ -36,52 +36,52 @@ public class ToCOrderMainController {
     private IToCOrderMainService orderMainService;
     @Autowired
     private ToCOrderMainMapper toCOrderMainMapper;
-
-    @AutoLog(value = "订单表-创建订单")
-    @ApiOperation(value = "订单表-创建订单", notes = "订单表-创建订单")
-    @PostMapping(value = "/add")
-    @Transactional
-    public Result<Object> add(
-            @RequestParam(name = "userNo") String userNo,
-            @RequestParam(name = "userName") String userName,
-            @RequestParam(name = "userContact") String userContact,
-            @RequestParam(name = "sourceCurrency") String sourceCurrency,
-            @RequestParam(name = "targetCurrency") String targetCurrency,
-            @RequestParam(name = "exchangeRate") String exchangeRate,
-            @RequestParam(name = "targetCurrencyMoney") String targetCurrencyMoney,
-            @RequestParam(name = "userPayMethod") String userPayMethod,
-            @RequestParam(name = "userPayAccount") String userPayAccount,
-            @RequestParam(name = "userPayBank") String userPayBank,
-            @RequestParam(name = "userPayBankBranch") String userPayBankBranch,
-            @RequestParam(name = "userPayAreaCode") String userPayAreaCode,
-            @RequestParam(name = "userPayAccountUser") String userPayAccountUser) {
-        Result<Object> result = new Result<Object>();
-//        String accessToken = request.getHeader("X-Access-Token");
-        ToCOrderMain toCOrderMain = new ToCOrderMain();
-        toCOrderMain.setUserNo(userNo);
-        toCOrderMain.setUserName(userName);
-        toCOrderMain.setUserContact(userContact);
-        toCOrderMain.setSourceCurrency(sourceCurrency);
-        toCOrderMain.setTargetCurrency(targetCurrency);
-        toCOrderMain.setExchangeRate(Double.parseDouble(exchangeRate));
-        toCOrderMain.setTargetCurrencyMoney(Double.parseDouble(targetCurrencyMoney));
-        toCOrderMain.setUserPayMethod(userPayMethod);
-        toCOrderMain.setUserPayAccount(userPayAccount);
-        toCOrderMain.setUserPayBank(userPayBank);
-        toCOrderMain.setUserPayBankBranch(userPayBankBranch);
-        toCOrderMain.setUserPayAreaCode(userPayAreaCode);
-        toCOrderMain.setUserPayAccountUser(userPayAccountUser);
-        try {
-            result = orderMainService.manageOrderByAuto(toCOrderMain);
-            return result;
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-
-            result.error500("操作失败");
-        }
-        return result;
-    }
+    //
+    //@AutoLog(value = "订单表-创建订单")
+    //@ApiOperation(value = "订单表-创建订单", notes = "订单表-创建订单")
+    //@PostMapping(value = "/add")
+    //@Transactional
+//    public Result<Object> add(
+//            @RequestParam(name = "userNo") String userNo,
+//            @RequestParam(name = "userName") String userName,
+//            @RequestParam(name = "userContact") String userContact,
+//            @RequestParam(name = "sourceCurrency") String sourceCurrency,
+//            @RequestParam(name = "targetCurrency") String targetCurrency,
+//            @RequestParam(name = "exchangeRate") String exchangeRate,
+//            @RequestParam(name = "targetCurrencyMoney") String targetCurrencyMoney,
+//            @RequestParam(name = "userPayMethod") String userPayMethod,
+//            @RequestParam(name = "userPayAccount") String userPayAccount,
+//            @RequestParam(name = "userPayBank") String userPayBank,
+//            @RequestParam(name = "userPayBankBranch") String userPayBankBranch,
+//            @RequestParam(name = "userPayAreaCode") String userPayAreaCode,
+//            @RequestParam(name = "userPayAccountUser") String userPayAccountUser) {
+//        Result<Object> result = new Result<Object>();
+////        String accessToken = request.getHeader("X-Access-Token");
+//        ToCOrderMain toCOrderMain = new ToCOrderMain();
+//        toCOrderMain.setUserNo(userNo);
+//        toCOrderMain.setUserName(userName);
+//        toCOrderMain.setUserContact(userContact);
+//        toCOrderMain.setSourceCurrency(sourceCurrency);
+//        toCOrderMain.setTargetCurrency(targetCurrency);
+//        toCOrderMain.setExchangeRate(Double.parseDouble(exchangeRate));
+//        toCOrderMain.setTargetCurrencyMoney(Double.parseDouble(targetCurrencyMoney));
+//        toCOrderMain.setUserPayMethod(userPayMethod);
+//        toCOrderMain.setUserPayAccount(userPayAccount);
+//        toCOrderMain.setUserPayBank(userPayBank);
+//        toCOrderMain.setUserPayBankBranch(userPayBankBranch);
+//        toCOrderMain.setUserPayAreaCode(userPayAreaCode);
+//        toCOrderMain.setUserPayAccountUser(userPayAccountUser);
+//        try {
+//            result = orderMainService.manageOrderByAuto(toCOrderMain);
+//            return result;
+//        } catch (Exception e) {
+//            log.error(e.getMessage(), e);
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//
+//            result.error500("操作失败");
+//        }
+//        return result;
+//    }
 
     @AutoLog(value = "订单表-取消订单")
     @ApiOperation(value = "订单表-取消订单", notes = "订单表-取消订单")

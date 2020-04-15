@@ -32,11 +32,11 @@ public class OrderMainController {
     @Autowired
     private OrderMainMapper orderMainMapper;
 
-    @AutoLog(value = "创建订单")
-    @ApiOperation(value = "创建订单", notes = "创建订单")
+    @AutoLog(value = "创建收款订单")
+    @ApiOperation(value = "创建收款订单", notes = "创建收款订单")
     @PostMapping(value = "/add")
     @Transactional
-    public Result<Object> add(
+    public Result<Object> createPaymentOrder(
             @RequestParam(name = "merchantId") String merchantId,
             @RequestParam(name = "merchantName") String merchantName,
             @RequestParam(name = "merchantContact") String merchantContact,
@@ -44,10 +44,9 @@ public class OrderMainController {
             @RequestParam(name = "targetCurrency") String targetCurrency,
             @RequestParam(name = "exchangeRate") String exchangeRate,
             @RequestParam(name = "targetCurrencyMoney") String targetCurrencyMoney,
-            @RequestParam(name = "userPayMethod") String userPayMethod,
+            @RequestParam(name = "payMethod") String payMethod,
             @RequestParam(name = "orderText") String orderText,
-            @RequestParam(name = "notifyUrl") String notifyUrl,
-            @RequestParam(name = "payMethod") String payMethod
+            @RequestParam(name = "notifyUrl") String notifyUrl
             ) {
         Result<Object> result = new Result<Object>();
         OrderMain orderMain = new OrderMain();
@@ -58,12 +57,11 @@ public class OrderMainController {
         orderMain.setTargetCurrency(targetCurrency);
         orderMain.setExchangeRate(Double.parseDouble(exchangeRate));
         orderMain.setTargetCurrencyMoney(Double.parseDouble(targetCurrencyMoney));
-        orderMain.setUserPayMethod(userPayMethod);
-        orderMain.setOrderText(orderText);
-        orderMain.setUserPayBank(notifyUrl);
         orderMain.setUserPayMethod(payMethod);
+        orderMain.setOrderText(orderText);
+        orderMain.setNotifyUrl(notifyUrl);
         try {
-            result = orderMainService.add(orderMain);
+            result = orderMainService.createPaymentOrder(orderMain);
             return result;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -106,4 +104,64 @@ public class OrderMainController {
         }
         return result;
     }
+
+    @AutoLog(value = "创建提款订单")
+    @ApiOperation(value = "创建提款订单", notes = "创建提款订单")
+    @PostMapping(value = "/add")
+    @Transactional
+    public Result<Object> createWithdrawalOrder(
+            @RequestParam(name = "merchantId") String merchantId,
+            @RequestParam(name = "merchantName") String merchantName,
+            @RequestParam(name = "merchantContact") String merchantContact,
+            @RequestParam(name = "sourceCurrency") String sourceCurrency,
+            @RequestParam(name = "targetCurrency") String targetCurrency,
+            @RequestParam(name = "targetCurrencyMoney") String targetCurrencyMoney,
+            @RequestParam(name = "collectionMethod") String collectionMethod,
+            @RequestParam(name = "collectionAccount") String collectionAccount,
+            @RequestParam(name = "collectionAccountUser") String collectionAccountUser,
+            @RequestParam(name = "orderText") String orderText,
+            @RequestParam(name = "notifyUrl") String notifyUrl
+    ) {
+        Result<Object> result = new Result<Object>();
+        OrderMain orderMain = new OrderMain();
+        orderMain.setMerchantId(merchantId);
+        orderMain.setMerchantName(merchantName);
+        orderMain.setMerchantContact(merchantContact);
+        orderMain.setSourceCurrency(sourceCurrency);
+        orderMain.setTargetCurrency(targetCurrency);
+        orderMain.setTargetCurrencyMoney(Double.parseDouble(targetCurrencyMoney));
+        orderMain.setMerchantCollectionMethod(collectionMethod);
+        orderMain.setMerchantCollectionAccount(collectionAccount);
+        orderMain.setMerchantCollectionAccountUser(collectionAccountUser);
+        orderMain.setOrderText(orderText);
+        orderMain.setNotifyUrl(notifyUrl);
+        try {
+            result = orderMainService.createWithdrawalOrder(orderMain);
+            return result;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+
+            result.error500("操作失败");
+        }
+        return result;
+    }
+
+    @AutoLog(value = "确认已处理")
+    @ApiOperation(value = "确认已处理", notes = "确认已处理")
+    @PostMapping(value = "/confirmProcessed")
+    @Transactional
+    public Result<Object> confirmProcessed (HttpServletRequest request, @RequestBody JSONObject jsonObject){
+        Result<Object> result = new Result<Object>();
+        try {
+            result = orderMainService.confirmProcessed(jsonObject.getString("orderIds"));
+            return result;
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            log.error(e.getMessage(), e);
+            result.error500("操作失败");
+        }
+        return result;
+    }
+
 }

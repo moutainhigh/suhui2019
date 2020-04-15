@@ -3,7 +3,7 @@
 <mapper namespace="org.suhui.modules.toB.mapper.PayCurrencyRateMapper">
 
     <select id="getCurrencyRateValue" resultType="map" parameterType="map">
-        SELECT             source_currency_code,
+        SELECT source_currency_code,
             target_currency_code,
             	rate_now ,id
         FROM

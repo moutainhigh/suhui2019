@@ -1,18 +1,9 @@
 package org.suhui.modules.toB.service.impl;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 import org.suhui.common.api.vo.Result;
 import org.suhui.modules.toB.entity.OrderAssurer;
 import org.suhui.modules.toB.entity.OrderAssurerAccount;
@@ -24,7 +15,10 @@ import org.suhui.modules.utils.BaseUtil;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * 类说明：订单相关
@@ -45,49 +39,49 @@ public class ToCOrderMainServiceImpl extends ServiceImpl<ToCOrderMainMapper, ToC
     @Autowired
     private OrderAssurerMoneyChangeServiceImpl orderAssurerMoneyChangeServiceImpl;
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-
-    /**
-     * 创建订单主方法
-     *
-     * @param
-     * @return
-     */
-    @Override
-    @Transactional
-    public Result<Object> manageOrderByAuto(ToCOrderMain toCOrderMain) {
-        Result<Object> result = new Result<Object>();
-        JSONObject obj = new JSONObject();
-        // 判断必填项是否有值
-        String checkValue = toCOrderMain.checkCreateRequireValue();
-        if (BaseUtil.Base_HasValue(checkValue)) {
-            return Result.error(531, checkValue);
-        }
-        // 转换金额为最小单位
-        toCOrderMain.changeMoneyToPoints();
-        //通过源货币和目标货币获取汇率计算金额
-        JSONObject rateObj = this.getUserPayMoney(toCOrderMain.getSourceCurrency(), toCOrderMain.getTargetCurrency(), toCOrderMain.getTargetCurrencyMoney().toString());
-        if (BaseUtil.Base_HasValue(rateObj)) {
-            toCOrderMain.setSourceCurrencyMoney(rateObj.getDouble("money"));
-            toCOrderMain.setExchangeRate(rateObj.getDouble("rate"));
-        }
-        setAssurerCnyMoney(toCOrderMain);
-        //查询用户收款账号
-        toCOrderMain = this.getUserCollectionAccount(toCOrderMain);
-        if (!BaseUtil.Base_HasValue(toCOrderMain)) {
-            return Result.error(532, "获取用户收款账户失败");
-        }
-        // 为订单选择最优承兑商
-        Map resutMap = orderAssurerServiceImpl.getAssurerByOrder(toCOrderMain);
-        if (BaseUtil.Base_HasValue(resutMap) && resutMap.get("state").equals("success")) {
-            dispatchAssurerToOrder(toCOrderMain, resutMap);
-        } else {
-            dispatchAssurerToOrder(toCOrderMain, resutMap);
-        }
-        toCOrderMain.changeMoneyToBig();
-        result.setResult(toCOrderMain);
-        result.success("订单创建成功");
-        return result;
-    }
+    //
+    ///**
+    // * 创建订单主方法
+    // *
+    // * @param
+    // * @return
+    // */
+    //@Override
+    //@Transactional
+    //public Result<Object> manageOrderByAuto(ToCOrderMain toCOrderMain) {
+    //    Result<Object> result = new Result<Object>();
+    //    JSONObject obj = new JSONObject();
+    //    // 判断必填项是否有值
+    //    String checkValue = toCOrderMain.checkCreateRequireValue();
+    //    if (BaseUtil.Base_HasValue(checkValue)) {
+    //        return Result.error(531, checkValue);
+    //    }
+    //    // 转换金额为最小单位
+    //    toCOrderMain.changeMoneyToPoints();
+    //    //通过源货币和目标货币获取汇率计算金额
+    //    JSONObject rateObj = this.getUserPayMoney(toCOrderMain.getSourceCurrency(), toCOrderMain.getTargetCurrency(), toCOrderMain.getTargetCurrencyMoney().toString());
+    //    if (BaseUtil.Base_HasValue(rateObj)) {
+    //        toCOrderMain.setSourceCurrencyMoney(rateObj.getDouble("money"));
+    //        toCOrderMain.setExchangeRate(rateObj.getDouble("rate"));
+    //    }
+    //    setAssurerCnyMoney(toCOrderMain);
+    //    //查询用户收款账号
+    //    toCOrderMain = this.getUserCollectionAccount(toCOrderMain);
+    //    if (!BaseUtil.Base_HasValue(toCOrderMain)) {
+    //        return Result.error(532, "获取用户收款账户失败");
+    //    }
+    //    // 为订单选择最优承兑商
+    //    Map resutMap = orderAssurerServiceImpl.getAssurerByOrder(toCOrderMain);
+    //    if (BaseUtil.Base_HasValue(resutMap) && resutMap.get("state").equals("success")) {
+    //        dispatchAssurerToOrder(toCOrderMain, resutMap);
+    //    } else {
+    //        dispatchAssurerToOrder(toCOrderMain, resutMap);
+    //    }
+    //    toCOrderMain.changeMoneyToBig();
+    //    result.setResult(toCOrderMain);
+    //    result.success("订单创建成功");
+    //    return result;
+    //}
 
     /**
      * 取消订单
@@ -260,111 +254,111 @@ public class ToCOrderMainServiceImpl extends ServiceImpl<ToCOrderMainMapper, ToC
             toCOrderMain.setAssurerCnyMoney(toCOrderMain.getTargetCurrencyMoney());
         }
     }
-
-    /**
-     * 获取用户收款账号
-     */
-    ToCOrderMain getUserCollectionAccount(ToCOrderMain toCOrderMain) {
-        Map map = new HashMap();
-        map.put("userno", toCOrderMain.getUserNo());
-        map.put("usertype", 0);
-        Map keyMap = new HashMap();
-        keyMap.put("CNY", "+86");
-        keyMap.put("KRW", "+82");
-        keyMap.put("USD", "+1");
-        if (!BaseUtil.Base_HasValue(keyMap.get(toCOrderMain.getTargetCurrency()))) {
-            return null;
-        }
-        String collectionArea = keyMap.get(toCOrderMain.getTargetCurrency()).toString();
-        // 查询用户支付通道
-        List<Map> mapDb = iPayIdentityChannelAccountServiceImpl.getChannelAccountInfoByUserNo(map);
-        if (BaseUtil.Base_HasValue(mapDb)) {
-            Map payAccountMap = new HashMap();
-            for (int i = 0; i < mapDb.size(); i++) {
-                Map map1 = mapDb.get(i);
-                if (map1.get("areacode").toString().equals(collectionArea)) {
-                    payAccountMap = map1;
-                }
-            }
-            if (!BaseUtil.Base_HasValue(payAccountMap)) {
-                return null;
-            }
-            Integer type = Integer.parseInt(payAccountMap.get("channel_type").toString());
-            toCOrderMain.setUserCollectionAreaCode(payAccountMap.get("areacode").toString());
-            if (type > 100) {
-                toCOrderMain.setUserCollectionMethod("bank_card");
-                // 获取账号开户行
-                RestTemplate restTemplate = new RestTemplate();
-                String url = "http://localhost:3333/api/login/ChannelTypeCode/getList";
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-//                headers.add("X-Access-Token", token);
-                MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
-                HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(paramMap, headers);
-                ResponseEntity<JSONObject> response = restTemplate.postForEntity(url, request, JSONObject.class);
-                if (response.getBody().getInteger("code") == 200) {
-                    JSONObject result = response.getBody().getJSONObject("result");
-                    JSONArray dataArr = result.getJSONArray("channelList");
-                    if (BaseUtil.Base_HasValue(dataArr)) {
-                        for (int i = 0; i < dataArr.size(); i++) {
-                            JSONObject jsonObject = JSONObject.parseObject(dataArr.get(i).toString());
-                            if (jsonObject.getInteger("channelType").equals(type)) {
-                                toCOrderMain.setUserCollectionBank(jsonObject.getString("channelNameLong"));
-                                toCOrderMain.setUserCollectionBankBranch("");
-                            }
-                        }
-                    }
-                }
-            } else if (type < 100) {
-                toCOrderMain.setUserCollectionMethod("alipay");
-            }
-            toCOrderMain.setUserCollectionAccount(payAccountMap.get("channel_account_no").toString());
-            toCOrderMain.setUserCollectionAccountUser(payAccountMap.get("channel_account_name").toString());
-        }
-        return toCOrderMain;
-    }
-
-    /**
-     * 给订单分配一个承兑商和账户
-     */
-    public void dispatchAssurerToOrder(ToCOrderMain toCOrderMain, Map resutMap) {
-        OrderAssurer orderAssurer = (OrderAssurer) resutMap.get("orderAssurer");
-        OrderAssurerAccount pay = (OrderAssurerAccount) resutMap.get("orderAssurerAccountPay");
-        OrderAssurerAccount collection = (OrderAssurerAccount) resutMap.get("orderAssurerAccountCollection");
-        if (BaseUtil.Base_HasValue(orderAssurer) && BaseUtil.Base_HasValue(pay) && BaseUtil.Base_HasValue(collection)) {
-            toCOrderMain.setAssurerId(orderAssurer.getId());
-            toCOrderMain.setAssurerName(orderAssurer.getAssurerName());
-            toCOrderMain.setAssurerCollectionAccount(collection.getAccountNo());
-            toCOrderMain.setAssurerCollectionAccountId(collection.getId());
-            toCOrderMain.setAssurerCollectionMethod(collection.getAccountType());
-            toCOrderMain.setAssurerCollectionBank(collection.getOpenBank());
-            toCOrderMain.setAssurerCollectionBankBranch(collection.getOpenBankBranch());
-            toCOrderMain.setAssurerPayAccountId(pay.getId());
-            toCOrderMain.setAssurerPayAccount(pay.getAccountNo());
-            toCOrderMain.setAssurerPayMethod(pay.getAccountType());
-            toCOrderMain.setAssurerPayBank(pay.getOpenBank());
-            toCOrderMain.setAssurerPayBankBranch(pay.getOpenBankBranch());
-            toCOrderMain.setOrderState("2");
-            toCOrderMain.setAssurerCollectionAccountUser(collection.getRealName());
-            toCOrderMain.setAssurerPayAccountUser(pay.getRealName());
-            // 锁定承兑商金额
-            lockAssurerMoney(toCOrderMain.getAssurerCnyMoney(), orderAssurer);
-            // 锁定承兑账户金额
-            lockAssurerAccountMoney(toCOrderMain.getAssurerCnyMoney(), pay);
-            // 减少承兑商租赁金
-            subAssurerLeaseMoney(toCOrderMain.getAssurerCnyMoney(), orderAssurer, toCOrderMain);
-        } else {
-            toCOrderMain.setOrderState("1");
-            toCOrderMain.setAutoDispatchState(1);
-            toCOrderMain.setAutoDispatchText(resutMap.get("message").toString());
-        }
-        if (!BaseUtil.Base_HasValue(toCOrderMain.getId())) {
-            toCOrderMain.setOrderCode(getOrderNoByUUID());
-            save(toCOrderMain);
-        } else {
-            updateById(toCOrderMain);
-        }
-    }
+//
+//    /**
+//     * 获取用户收款账号
+//     */
+//    ToCOrderMain getUserCollectionAccount(ToCOrderMain toCOrderMain) {
+//        Map map = new HashMap();
+//        map.put("userno", toCOrderMain.getUserNo());
+//        map.put("usertype", 0);
+//        Map keyMap = new HashMap();
+//        keyMap.put("CNY", "+86");
+//        keyMap.put("KRW", "+82");
+//        keyMap.put("USD", "+1");
+//        if (!BaseUtil.Base_HasValue(keyMap.get(toCOrderMain.getTargetCurrency()))) {
+//            return null;
+//        }
+//        String collectionArea = keyMap.get(toCOrderMain.getTargetCurrency()).toString();
+//        // 查询用户支付通道
+//        List<Map> mapDb = iPayIdentityChannelAccountServiceImpl.getChannelAccountInfoByUserNo(map);
+//        if (BaseUtil.Base_HasValue(mapDb)) {
+//            Map payAccountMap = new HashMap();
+//            for (int i = 0; i < mapDb.size(); i++) {
+//                Map map1 = mapDb.get(i);
+//                if (map1.get("areacode").toString().equals(collectionArea)) {
+//                    payAccountMap = map1;
+//                }
+//            }
+//            if (!BaseUtil.Base_HasValue(payAccountMap)) {
+//                return null;
+//            }
+//            Integer type = Integer.parseInt(payAccountMap.get("channel_type").toString());
+//            toCOrderMain.setUserCollectionAreaCode(payAccountMap.get("areacode").toString());
+//            if (type > 100) {
+//                toCOrderMain.setUserCollectionMethod("bank_card");
+//                // 获取账号开户行
+//                RestTemplate restTemplate = new RestTemplate();
+//                String url = "http://localhost:3333/api/login/ChannelTypeCode/getList";
+//                HttpHeaders headers = new HttpHeaders();
+//                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+////                headers.add("X-Access-Token", token);
+//                MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
+//                HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(paramMap, headers);
+//                ResponseEntity<JSONObject> response = restTemplate.postForEntity(url, request, JSONObject.class);
+//                if (response.getBody().getInteger("code") == 200) {
+//                    JSONObject result = response.getBody().getJSONObject("result");
+//                    JSONArray dataArr = result.getJSONArray("channelList");
+//                    if (BaseUtil.Base_HasValue(dataArr)) {
+//                        for (int i = 0; i < dataArr.size(); i++) {
+//                            JSONObject jsonObject = JSONObject.parseObject(dataArr.get(i).toString());
+//                            if (jsonObject.getInteger("channelType").equals(type)) {
+//                                toCOrderMain.setUserCollectionBank(jsonObject.getString("channelNameLong"));
+//                                toCOrderMain.setUserCollectionBankBranch("");
+//                            }
+//                        }
+//                    }
+//                }
+//            } else if (type < 100) {
+//                toCOrderMain.setUserCollectionMethod("alipay");
+//            }
+//            toCOrderMain.setUserCollectionAccount(payAccountMap.get("channel_account_no").toString());
+//            toCOrderMain.setUserCollectionAccountUser(payAccountMap.get("channel_account_name").toString());
+//        }
+//        return toCOrderMain;
+//    }
+//
+//    /**
+//     * 给订单分配一个承兑商和账户
+//     */
+//    public void dispatchAssurerToOrder(ToCOrderMain toCOrderMain, Map resutMap) {
+//        OrderAssurer orderAssurer = (OrderAssurer) resutMap.get("orderAssurer");
+//        OrderAssurerAccount pay = (OrderAssurerAccount) resutMap.get("orderAssurerAccountPay");
+//        OrderAssurerAccount collection = (OrderAssurerAccount) resutMap.get("orderAssurerAccountCollection");
+//        if (BaseUtil.Base_HasValue(orderAssurer) && BaseUtil.Base_HasValue(pay) && BaseUtil.Base_HasValue(collection)) {
+//            toCOrderMain.setAssurerId(orderAssurer.getId());
+//            toCOrderMain.setAssurerName(orderAssurer.getAssurerName());
+//            toCOrderMain.setAssurerCollectionAccount(collection.getAccountNo());
+//            toCOrderMain.setAssurerCollectionAccountId(collection.getId());
+//            toCOrderMain.setAssurerCollectionMethod(collection.getAccountType());
+//            toCOrderMain.setAssurerCollectionBank(collection.getOpenBank());
+//            toCOrderMain.setAssurerCollectionBankBranch(collection.getOpenBankBranch());
+//            toCOrderMain.setAssurerPayAccountId(pay.getId());
+//            toCOrderMain.setAssurerPayAccount(pay.getAccountNo());
+//            toCOrderMain.setAssurerPayMethod(pay.getAccountType());
+//            toCOrderMain.setAssurerPayBank(pay.getOpenBank());
+//            toCOrderMain.setAssurerPayBankBranch(pay.getOpenBankBranch());
+//            toCOrderMain.setOrderState("2");
+//            toCOrderMain.setAssurerCollectionAccountUser(collection.getRealName());
+//            toCOrderMain.setAssurerPayAccountUser(pay.getRealName());
+//            // 锁定承兑商金额
+//            lockAssurerMoney(toCOrderMain.getAssurerCnyMoney(), orderAssurer);
+//            // 锁定承兑账户金额
+//            lockAssurerAccountMoney(toCOrderMain.getAssurerCnyMoney(), pay);
+//            // 减少承兑商租赁金
+//            subAssurerLeaseMoney(toCOrderMain.getAssurerCnyMoney(), orderAssurer, toCOrderMain);
+//        } else {
+//            toCOrderMain.setOrderState("1");
+//            toCOrderMain.setAutoDispatchState(1);
+//            toCOrderMain.setAutoDispatchText(resutMap.get("message").toString());
+//        }
+//        if (!BaseUtil.Base_HasValue(toCOrderMain.getId())) {
+//            toCOrderMain.setOrderCode(getOrderNoByUUID());
+//            save(toCOrderMain);
+//        } else {
+//            updateById(toCOrderMain);
+//        }
+//    }
 
     /**
      * 锁定承运商支付金额

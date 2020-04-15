@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.suhui.common.api.vo.Result;
 import org.suhui.modules.toB.entity.OrderAssurer;
-import org.suhui.modules.toB.entity.ToCOrderMain;
+import org.suhui.modules.toB.entity.OrderMain;
 
 import java.util.Map;
 
@@ -28,5 +28,5 @@ public interface IOrderAssurerService extends IService<OrderAssurer> {
     OrderAssurer getAssurerByUserNo(String userNo);
 
     //为订单查询最优承兑商及支付账户
-    Map<String, Object> getAssurerByOrder(ToCOrderMain toCOrderMain);
+    Map<String, Object> getAssurerByOrder(OrderMain orderMain);
 }

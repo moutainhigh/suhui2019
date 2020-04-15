@@ -11,8 +11,12 @@ import org.suhui.modules.toB.entity.OrderMain;
  * @create: 2020-04-14 13:47
  */
 public interface IOrderMainService extends IService<OrderMain> {
-    //创建订单
-    Result<Object> add(OrderMain orderMain);
+    //创建收款订单
+    Result<Object> createPaymentOrder(OrderMain orderMain);
     //确认已收款
     Result<Object> confirmReceivedMoney(String orderId);
+    //创建提款订单
+    Result<Object> createWithdrawalOrder(OrderMain orderMain);
+    //确认已处理
+    Result<Object> confirmProcessed(String orderId);
 }
