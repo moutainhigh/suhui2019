@@ -14,9 +14,9 @@ public interface IOrderMainService extends IService<OrderMain> {
     //创建收款订单
     Result<Object> createPaymentOrder(OrderMain orderMain);
     //确认已收款
-    Result<Object> confirmReceivedMoney(String orderId);
+    Result<Object> confirmPaymentOrder(String orderId);
     //创建提款订单
     Result<Object> createWithdrawalOrder(OrderMain orderMain);
     //确认已处理
-    Result<Object> confirmProcessed(String orderId);
+    Result<Object> confirmWithdrawalOrder(String orderId);
 }

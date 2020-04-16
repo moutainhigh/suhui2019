@@ -34,7 +34,7 @@ public class OrderMainController {
 
     @AutoLog(value = "创建收款订单")
     @ApiOperation(value = "创建收款订单", notes = "创建收款订单")
-    @PostMapping(value = "/add")
+    @PostMapping(value = "/createPaymentOrder")
     @Transactional
     public Result<Object> createPaymentOrder(
             @RequestParam(name = "merchantId") String merchantId,
@@ -74,12 +74,12 @@ public class OrderMainController {
 
     @AutoLog(value = "确认已收款")
     @ApiOperation(value = "确认已收款", notes = "确认已收款")
-    @PostMapping(value = "/confirmReceivedMoney")
+    @PostMapping(value = "/confirmPaymentOrder")
     @Transactional
-    public Result<Object> confirmReceivedMoney (HttpServletRequest request, @RequestBody JSONObject jsonObject) {
+    public Result<Object> confirmPaymentOrder (HttpServletRequest request, @RequestBody JSONObject jsonObject) {
         Result<Object> result = new Result<Object>();
         try {
-            result = orderMainService.confirmReceivedMoney(jsonObject.getString("orderIds"));
+            result = orderMainService.confirmPaymentOrder(jsonObject.getString("orderIds"));
             return result;
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -149,12 +149,12 @@ public class OrderMainController {
 
     @AutoLog(value = "确认已处理")
     @ApiOperation(value = "确认已处理", notes = "确认已处理")
-    @PostMapping(value = "/confirmProcessed")
+    @PostMapping(value = "/confirmWithdrawalOrder")
     @Transactional
-    public Result<Object> confirmProcessed (HttpServletRequest request, @RequestBody JSONObject jsonObject){
+    public Result<Object> confirmWithdrawalOrder (HttpServletRequest request, @RequestBody JSONObject jsonObject){
         Result<Object> result = new Result<Object>();
         try {
-            result = orderMainService.confirmProcessed(jsonObject.getString("orderIds"));
+            result = orderMainService.confirmWithdrawalOrder(jsonObject.getString("orderIds"));
             return result;
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
