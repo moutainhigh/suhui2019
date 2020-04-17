@@ -5,7 +5,7 @@
         SELECT
         a.*
         FROM
-        order_main a
+        tob_order_main a
         WHERE 1 = 1
         <if test="userId!=null and userId!=''">
             AND a.user_no = #{userId}
@@ -16,8 +16,13 @@
         SELECT
         a.*
         FROM
-        order_main a
+        tob_order_main a
         WHERE a.order_code = #{orderNo}
         order by a.create_time desc
+    </select>
+    <select id="sumAssurerNotFinishMoney" resultType="Double">
+        select sum(target_currency_money) from  tob_order_main  where  1=1
+        and assurer_id = #{assurerId}
+        and order_state != '6' and order_state != '0'
     </select>
 </mapper>

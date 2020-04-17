@@ -32,19 +32,20 @@ public class OrderAssurerAccountServiceImpl extends ServiceImpl<OrderAssurerAcco
      * @return
      */
     @Override
-    public OrderAssurerAccount getAssurerAccountByOrderPay(String assurerId, Double orderMoney, String userCollectionMethod, String userCollectionAreaCode) {
+    public OrderAssurerAccount getAssurerAccountByOrderPay(String assurerId, Double orderMoney, String merchantCollectionMethod, String merchantCollectionAreaCode) {
         OrderAssurerAccount orderAssurerAccount = null;
-        List<OrderAssurerAccount> list = orderAssurerAccountMapper.selectByMainId(assurerId, userCollectionMethod, userCollectionAreaCode);
+        List<OrderAssurerAccount> list = orderAssurerAccountMapper.selectByMainId(assurerId, merchantCollectionMethod, merchantCollectionAreaCode);
         if (!BaseUtil.Base_HasValue(list)) {
             return null;
         }
         // 收款方式是支付宝
-        if (userCollectionMethod.equals("alipay")) {
+        if (merchantCollectionMethod.equals("alipay")) {
             // 按当日可用额度排序
 //            list = orderAssurerAccounts(list);
             List<OrderAssurerAccount> useList = new ArrayList<>();
             for (int i = 0; i < list.size(); i++) {
                 OrderAssurerAccount account = list.get(i);
+                //支付可用金额小于订单金额，不能接单
                 if (account.getPayCanUseLimit() > orderMoney) {
                     useList.add(account);
                 }
@@ -53,7 +54,7 @@ public class OrderAssurerAccountServiceImpl extends ServiceImpl<OrderAssurerAcco
                 return null;
             }
             orderAssurerAccount = useList.get(BaseUtil.getRandomInt(0,useList.size()));
-        } else if (userCollectionMethod.equals("bank_card")) {
+        } else if (merchantCollectionMethod.equals("bank_card")) {
             // 获取随机数
             int n = BaseUtil.getRandomInt(0, list.size());
             orderAssurerAccount = list.get(n);

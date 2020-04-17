@@ -696,21 +696,21 @@ public class OrderMain {
      */
     public String checkPaymentOrderRequireValue() {
         String message = "";
-        if (!BaseUtil.Base_HasValue(this.merchantId)) {
-            message += "缺少值商户编号,";
-        }
-        if (!BaseUtil.Base_HasValue(this.merchantName)) {
-            message += "缺少值商户姓名,";
-        }
+        //if (!BaseUtil.Base_HasValue(this.merchantId)) {
+        //    message += "缺少值商户编号,";
+        //}
+        //if (!BaseUtil.Base_HasValue(this.merchantName)) {
+        //    message += "缺少值商户姓名,";
+        //}
         if (!BaseUtil.Base_HasValue(this.merchantContact)) {
             message += "缺少值商户联系方式,";
         }
         if (!BaseUtil.Base_HasValue(this.sourceCurrency)) {
             message += "缺少值源币种,";
         }
-        if (!BaseUtil.Base_HasValue(this.exchangeRate)) {
-            message += "缺少值汇率,";
-        }
+        //if (!BaseUtil.Base_HasValue(this.exchangeRate)) {
+        //    message += "缺少值汇率,";
+        //}
         if (!BaseUtil.Base_HasValue(this.targetCurrency)) {
             message += "缺少值目标币种,";
         }
@@ -734,12 +734,12 @@ public class OrderMain {
      */
     public String checkWithdrawalOrderRequireValue() {
         String message = "";
-        if (!BaseUtil.Base_HasValue(this.merchantId)) {
-            message += "缺少值商户编号,";
-        }
-        if (!BaseUtil.Base_HasValue(this.merchantName)) {
-            message += "缺少值商户姓名,";
-        }
+        //if (!BaseUtil.Base_HasValue(this.merchantId)) {
+        //    message += "缺少值商户编号,";
+        //}
+        //if (!BaseUtil.Base_HasValue(this.merchantName)) {
+        //    message += "缺少值商户姓名,";
+        //}
         if (!BaseUtil.Base_HasValue(this.merchantContact)) {
             message += "缺少值商户联系方式,";
         }

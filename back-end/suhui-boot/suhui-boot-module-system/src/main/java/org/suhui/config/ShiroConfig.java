@@ -97,6 +97,10 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/assurer/user/**", "anon");
 		filterChainDefinitionMap.put("/order/orderAssurer/**", "anon");
 		filterChainDefinitionMap.put("/order/assurerMoneyChange/**", "anon");
+		filterChainDefinitionMap.put("/order/createPaymentOrder", "anon");  //创建收款单
+		filterChainDefinitionMap.put("/order/queryByOrderNo", "anon");   //查询订单
+		filterChainDefinitionMap.put("/order/createWithdrawalOrder", "anon");   //创建提款单
+		filterChainDefinitionMap.put("/order/getCurrencyRateByRateCode", "anon");  //获取汇率
 
 		// 添加自己的过滤器并且取名为jwt
 		Map<String, Filter> filterMap = new HashMap<String, Filter>(1);

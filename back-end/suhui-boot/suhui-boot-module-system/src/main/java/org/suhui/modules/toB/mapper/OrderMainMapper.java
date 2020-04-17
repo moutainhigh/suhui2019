@@ -1,6 +1,7 @@
 package org.suhui.modules.toB.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import org.suhui.modules.toB.entity.OrderMain;
 
@@ -20,4 +21,7 @@ public interface OrderMainMapper extends BaseMapper<OrderMain> {
 
     //通过OrderNo查询
     OrderMain queryByOrderNo(String orderNo);
+
+    // 获取承兑商未完成订单总金额
+    Double sumAssurerNotFinishMoney(@Param("assurerId") String assurerId);
 }

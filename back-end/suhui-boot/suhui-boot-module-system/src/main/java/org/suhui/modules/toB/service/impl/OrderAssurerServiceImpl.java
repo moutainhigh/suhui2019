@@ -11,7 +11,7 @@ import org.suhui.common.util.UUIDGenerator;
 import org.suhui.common.util.oConvertUtils;
 import org.suhui.modules.toB.entity.*;
 import org.suhui.modules.toB.mapper.OrderAssurerMapper;
-import org.suhui.modules.toB.mapper.ToCOrderMainMapper;
+import org.suhui.modules.toB.mapper.OrderMainMapper;
 import org.suhui.modules.toB.service.IOrderAssurerMoneyChangeService;
 import org.suhui.modules.toB.service.IOrderAssurerService;
 import org.suhui.modules.toB.service.IPayUserInfoService;
@@ -44,7 +44,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
     @Autowired
     private OrderAssurerAccountServiceImpl orderAssurerAccountServiceImpl;
     @Autowired
-    private ToCOrderMainMapper toCOrderMainMapper;
+    private OrderMainMapper orderMainMapper;
 
     /**
      * 添加
@@ -236,6 +236,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
             // 为承兑商选择一个支付账号,同时排除掉没有账号得承兑商和账号支付宝金额不足的承兑商
             OrderAssurerAccount account = orderAssurerAccountServiceImpl.getAssurerAccountByOrderPay(assurer.getId(), orderMain.getAssurerCnyMoney(), orderMain.getMerchantCollectionMethod(), orderMain.getMerchantCollectionAreaCode());
             if (BaseUtil.Base_HasValue(account)) {
+                //判断承兑商保证金及租赁金是否足够
                 if (checkAssurerLeaseEnsure(orderMain, assurer)) {
                     if (!BaseUtil.Base_HasValue(useList)) {
                         useList.add(assurer);
@@ -257,7 +258,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
             return resultMap;
         }
         // 为承兑商选择一个收款账户
-        OrderAssurerAccount orderAssurerAccountCollection = orderAssurerAccountServiceImpl.getAssurerAccountByOrderCollection(orderAssurer.getId(), orderMain.getUserPayMethod(), orderMain.getUserPayAreaCode());
+        OrderAssurerAccount orderAssurerAccountCollection = orderAssurerAccountServiceImpl.getAssurerAccountByOrderCollection(orderAssurer.getId(), orderMain.getMerchantCollectionMethod(), orderMain.getMerchantCollectionAreaCode());
         resultMap.put("state", "success");
         resultMap.put("orderAssurer", orderAssurer);
         resultMap.put("orderAssurerAccountPay", orderAssurerAccount);
@@ -291,7 +292,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
             return false;
         }
         // 承兑商未完成订单总金额
-        Double notFinishOrderMoney = toCOrderMainMapper.sumAssurerNotFinishMoney(assurer.getId());
+        Double notFinishOrderMoney = orderMainMapper.sumAssurerNotFinishMoney(assurer.getId());
         if (!BaseUtil.Base_HasValue(notFinishOrderMoney)) {
             notFinishOrderMoney = 0.0;
         }

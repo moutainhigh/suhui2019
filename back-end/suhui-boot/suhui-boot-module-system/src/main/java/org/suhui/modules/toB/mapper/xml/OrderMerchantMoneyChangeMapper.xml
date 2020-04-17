@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.suhui.modules.toB.mapper.OrderAssurerMoneyChangeMapper">
     <select id="getInitListData" resultType="org.suhui.modules.toB.entity.OrderAssurerMoneyChange">
-        select * from  order_merchant_money_change  where  1=1
+        select * from  tob_order_merchant_money_change  where  1=1
          and flag = 'init' order by create_time asc limit 0,1  for
         update
     </select>

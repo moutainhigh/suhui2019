@@ -11,22 +11,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.suhui.common.api.vo.Result;
 import org.suhui.common.aspect.annotation.AutoLog;
-import org.suhui.modules.toB.entity.OrderAssurerAccount;
-import org.suhui.modules.toB.service.IOrderAssurerAccountService;
+import org.suhui.modules.toB.entity.OrderMerchantAccount;
+import org.suhui.modules.toB.service.IOrderMerchantAccountService;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * 类说明：承兑商账户明细
+ * 类说明：商户账户相关
  *
  * @author: 蔡珊珊
- * @create: 2020-04-10 9:12
+ * @create: 2020-04-17 10:46
  */
 @Slf4j
-@Api(tags="承兑商账户")
+@Api(tags="商户账户")
 @RestController
-@RequestMapping("/assurer/account")
-public class AssurerAccountController {
+@RequestMapping("/merchant/account")
+public class MerchantAccountController {
     @Autowired
-    private IOrderAssurerAccountService orderAssurerAccountService;
+    public HttpServletRequest request;
+    @Autowired
+    private IOrderMerchantAccountService orderMerchantAccountService;
 
     /**
      *   添加
@@ -36,12 +40,12 @@ public class AssurerAccountController {
     @AutoLog(value = "添加")
     @ApiOperation(value = "添加", notes = "添加")
     @PostMapping(value = "/add")
-    public Result<OrderAssurerAccount> add(@RequestBody OrderAssurerAccount orderAssurer) {
-        Result<OrderAssurerAccount> result = new Result<OrderAssurerAccount>();
+    public Result<OrderMerchantAccount> add(@RequestBody OrderMerchantAccount orderMerchant) {
+        Result<OrderMerchantAccount> result = new Result<OrderMerchantAccount>();
         try {
-            OrderAssurerAccount OrderAssurerAccount = new OrderAssurerAccount();
-            BeanUtils.copyProperties(orderAssurer, OrderAssurerAccount);
-            orderAssurerAccountService.save(OrderAssurerAccount);
+            OrderMerchantAccount orderMerchantAccount = new OrderMerchantAccount();
+            BeanUtils.copyProperties(orderMerchant, orderMerchantAccount);
+            orderMerchantAccountService.save(orderMerchantAccount);
             result.success("添加成功！");
         } catch (Exception e) {
             log.error(e.getMessage(),e);
@@ -49,4 +53,5 @@ public class AssurerAccountController {
         }
         return result;
     }
+
 }

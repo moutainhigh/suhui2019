@@ -12,11 +12,11 @@ import org.suhui.modules.toB.entity.OrderMain;
  */
 public interface IOrderMainService extends IService<OrderMain> {
     //创建收款订单
-    Result<Object> createPaymentOrder(OrderMain orderMain);
+    Result<Object> createPaymentOrder(OrderMain orderMain,String userNo);
     //确认已收款
-    Result<Object> confirmPaymentOrder(String orderId);
+    Result<Object> confirmPaymentOrder(String orderNos);
     //创建提款订单
-    Result<Object> createWithdrawalOrder(OrderMain orderMain);
+    Result<Object> createWithdrawalOrder(OrderMain orderMain,String userNo);
     //确认已处理
-    Result<Object> confirmWithdrawalOrder(String orderId);
+    Result<Object> confirmWithdrawalOrder(String orderNos);
 }
