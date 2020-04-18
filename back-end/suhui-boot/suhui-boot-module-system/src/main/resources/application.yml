@@ -11,3 +11,5 @@ swagger:
     enable: true
     username: root
     password: root
+#md5私钥
+appSecret: fc2ce7ee45ae45729932b25d6d2607b9

@@ -1,25 +1,67 @@
-/*
- Navicat Premium Data Transfer
-
- Source Server         : localhost
- Source Server Type    : MySQL
- Source Server Version : 80019
- Source Host           : localhost:3306
- Source Schema         : suhui
-
- Target Server Type    : MySQL
- Target Server Version : 80019
- File Encoding         : 65001
-
- Date: 10/04/2020 21:38:47
-*/
-
--- 商户表
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
+-- ----------------------------
+-- Table structure for tob_order_main
+-- ----------------------------
+DROP TABLE IF EXISTS `tob_order_main`;
+CREATE TABLE `tob_order_main` (
+  `id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `order_type` int(11) NOT NULL COMMENT '订单类型 1 支付请求 2 提款请求',
+  `order_code` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '订单编号',
+  `order_state` varchar(3) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '1' COMMENT '联合order_type字段使用\r\n支付—订单状态(1 创建、2 待确认收款、3 已确认收款、0、已作废0)\r\n提款—订单状态(1 创建、2 待处理、3 已处理、0、已作废0)',
+  `order_finish_time` datetime DEFAULT NULL COMMENT '订单完成时间',
+  `merchant_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '商户账户Id 关联tob_order_merchant',
+  `merchant_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '商户姓名',
+  `merchant_contact` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '商户联系方式',
+  `merchant_account_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '商户账户 关联tob_order_merchant_account',
+  `source_currency` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '源币种',
+  `target_currency` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '目标币种',
+  `source_currency_money` double NOT NULL DEFAULT '0' COMMENT '源币种金额',
+  `target_currency_money` double NOT NULL DEFAULT '0' COMMENT '目标币种兑付金额',
+  `exchange_rate` double NOT NULL DEFAULT '0' COMMENT '汇率',
+  `user_pay_method` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '用户支付方式(支付宝alipay、银行卡bank_card)',
+  `user_pay_area_code` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '用户支付区域区号',
+  `user_pay_account_id` varchar(32) DEFAULT NULL COMMENT '平台账户Id 关联order_platform_account',
+  `user_pay_account` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '用户支付账号',
+  `user_pay_account_user` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '用户支付账号真实姓名',
+  `user_pay_bank` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '用户支付账号开户行',
+  `user_pay_bank_branch` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '用户支付账号开户网点',
+  `order_text` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '备注',
+  `create_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '更新人',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `del_flag` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0' COMMENT '删除状态（0，正常，1已删除）',
+  `notify_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '确认收款之后，商户的回调地址',
+  `merchant_collection_method` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '商户收款方式(支付宝alipay、银行卡bank_card)',
+  `merchant_collection_account` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '商户收款账号',
+  `merchant_collection_account_user` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '商户收款账号真实姓名',
+  `merchant_collection_bank` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '商户收款账号开户行',
+  `merchant_collection_bank_branch` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '商户收款账号开户网点',
+  `merchant_collection_area_code` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '商户收款区域区号',
+  `assurer_cny_money` double DEFAULT NULL COMMENT '承兑商需支付的人民币金额',
+  `assurer_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '承兑商ID',
+  `assurer_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '承兑商名称',
+  `assurer_collection_method` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '承兑商收款方式(支付宝alipay、银行卡bank_card)',
+  `assurer_collection_account_id` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '承兑商收款账号ID',
+  `assurer_collection_account` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '承兑商收款账号',
+  `assurer_collection_account_user` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '承兑商收款账号真实姓名',
+  `assurer_collection_bank` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '承兑商收款账号开户行',
+  `assurer_collection_bank_branch` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '承兑商收款账号开户网点',
+  `assurer_collection_time` datetime DEFAULT NULL COMMENT '承兑商确认收款时间',
+  `assurer_pay_method` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '承兑商支付方式(支付宝alipay、银行卡bank_card)',
+  `assurer_pay_account_id` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '承兑商支付账号id',
+  `assurer_pay_account_user` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '承兑商支付账号真实姓名',
+  `assurer_pay_account` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '承兑商支付账号',
+  `assurer_pay_voucher` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '承兑商支付凭证(图片url,中文逗号分隔)',
+  `assurer_pay_bank` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '承兑商支付账号开户行',
+  `assurer_pay_bank_branch` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '承兑商支付账号开户网点',
+  `assurer_pay_time` datetime DEFAULT NULL COMMENT '承兑商兑付时间',
+  `auto_dispatch_state` int(11) DEFAULT NULL COMMENT '自动分配承兑商状态 0 成功 1失败 ',
+  `auto_dispatch_text` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '自动分配失败说明',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for order_merchant
+-- Table structure for tob_order_merchant
 -- ----------------------------
 DROP TABLE IF EXISTS `tob_order_merchant`;
 CREATE TABLE `tob_order_merchant` (
@@ -27,7 +69,7 @@ CREATE TABLE `tob_order_merchant` (
   `user_no` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户编号',
   `merchant_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '商户名称',
   `country_code` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '商户国家码',
-  `online_state` int DEFAULT '0' COMMENT '在线状态  0 离线 1在线',
+  `online_state` int(11) DEFAULT '0' COMMENT '在线状态  0 离线 1在线',
   `merchant_state` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'to_audit' COMMENT '商户状态(待审核(to_audit)、正常接单(normal)、余额不足(lack_balance)、禁止接单(ban_order))',
   `merchant_rate` double DEFAULT '0' COMMENT '费率',
   `can_use_limit` double(11,0) NOT NULL DEFAULT '0' COMMENT '可用额度',
@@ -53,16 +95,37 @@ CREATE TABLE `tob_order_merchant` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SET FOREIGN_KEY_CHECKS = 1;
-
-
--- 商户 金额变更表
-
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
+-- ----------------------------
+-- Table structure for tob_order_merchant_account
+-- ----------------------------
+DROP TABLE IF EXISTS `tob_order_merchant_account`;
+CREATE TABLE `tob_order_merchant_account` (
+  `id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `merchant_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '商户ID',
+  `account_type` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'alipay' COMMENT '账户类型(支付宝(alipay)、银行卡(bank_card))',
+  `account_no` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '账户',
+  `open_bank` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '开户行',
+  `open_bank_branch` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '开户网点',
+  `area_code` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '区号',
+  `real_name` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '真实姓名',
+  `use_type` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'pay_collection' COMMENT '使用方式 (支付(pay)、收款(collection)、支付+收款(pay_collection))',
+  `pay_limit` double(11,0) NOT NULL DEFAULT '0' COMMENT '每日支付限额',
+  `pay_used_limit` double(11,0) NOT NULL DEFAULT '0' COMMENT '支付已用额度',
+  `pay_can_use_limit` double(11,0) NOT NULL DEFAULT '0' COMMENT '支付可用额度(日)',
+  `collection_used_limit` double(11,0) NOT NULL DEFAULT '0' COMMENT '收款已用额度(日)',
+  `pay_lock_money` double(11,0) NOT NULL DEFAULT '0' COMMENT '支付锁定金额',
+  `create_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '创建人',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '更新人',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `del_flag` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0' COMMENT '删除状态（0，正常，1已删除）',
+  `sub_account` int(11) DEFAULT '1' COMMENT '是否自动分账 1 是 0 否',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uniq_merchantId_areaCode` (`merchant_id`,`area_code`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
--- Table structure for order_merchant_money_change
+-- Table structure for tob_order_merchant_money_change
 -- ----------------------------
 DROP TABLE IF EXISTS `tob_order_merchant_money_change`;
 CREATE TABLE `tob_order_merchant_money_change` (
@@ -85,78 +148,3 @@ CREATE TABLE `tob_order_merchant_money_change` (
   `error_text` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '报错异常',
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-SET FOREIGN_KEY_CHECKS = 1;
-
---订单表
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
-
--- ----------------------------
--- Table structure for tob_order_main
--- ----------------------------
-DROP TABLE IF EXISTS `tob_order_main`;
-CREATE TABLE `tob_order_main`  (
-  `id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `order_code` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '订单编号',
-  `order_state` varchar(3) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '1' COMMENT '订单状态(待分配1、待用户支付2、待承兑商收款3、待承兑商兑付4、待用户收款5、已完成6、已作废0)',
-  `user_no` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户编号',
-  `user_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户姓名',
-  `user_contact` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户联系方式',
-  `source_currency` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '源币种',
-  `target_currency` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '目标币种',
-  `source_currency_money` double NOT NULL DEFAULT 0 COMMENT '源币种金额',
-  `target_currency_money` double NOT NULL DEFAULT 0 COMMENT '目标币种兑付金额',
-  `exchange_rate` double NOT NULL DEFAULT 0 COMMENT '汇率',
-  `user_pay_method` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'alipay' COMMENT '用户支付方式(支付宝alipay、银行卡bank_card)',
-  `user_pay_area_code` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户支付区域区号',
-  `user_pay_account` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户支付账号',
-  `user_pay_account_user` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户支付账号真实姓名',
-  `user_pay_bank` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户支付账号开户行',
-  `user_pay_bank_branch` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户支付账号开户网点',
-  `order_text` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
-  `create_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
-  `update_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '更新人',
-  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  `del_flag` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0' COMMENT '删除状态（0，正常，1已删除）',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
-SET FOREIGN_KEY_CHECKS = 1;
-
-
--- 商户账户
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
-
--- ----------------------------
--- Table structure for order_merchant_account
--- ----------------------------
-DROP TABLE IF EXISTS `tob_order_merchant_account`;
-CREATE TABLE `tob_order_merchant_account`  (
-  `id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `merchant_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '商户ID',
-  `account_type` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'alipay' COMMENT '账户类型(支付宝(alipay)、银行卡(bank_card))',
-  `account_no` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '账户',
-  `open_bank` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '开户行',
-  `open_bank_branch` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '开户网点',
-  `area_code` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '区号',
-  `real_name` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '真实姓名',
-  `use_type` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'pay_collection' COMMENT '使用方式 (支付(pay)、收款(collection)、支付+收款(pay_collection))',
-  `pay_limit` double(11, 0) NOT NULL DEFAULT 0 COMMENT '每日支付限额',
-  `pay_used_limit` double(11, 0) NOT NULL DEFAULT 0 COMMENT '支付已用额度',
-  `pay_can_use_limit` double(11, 0) NOT NULL DEFAULT 0 COMMENT '支付可用额度(日)',
-  `collection_used_limit` double(11, 0) NOT NULL DEFAULT 0 COMMENT '收款已用额度(日)',
-  `pay_lock_money` double(11, 0) NOT NULL DEFAULT 0 COMMENT '支付锁定金额',
-  `create_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
-  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '更新人',
-  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  `del_flag` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0' COMMENT '删除状态（0，正常，1已删除）',
-  `sub_account` int(11) NULL DEFAULT 1 COMMENT '是否自动分账 1 是 0 否',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
-SET FOREIGN_KEY_CHECKS = 1;
-

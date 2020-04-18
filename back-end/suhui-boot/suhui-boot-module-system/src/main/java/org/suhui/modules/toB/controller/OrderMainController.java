@@ -6,11 +6,19 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.suhui.common.api.vo.Result;
 import org.suhui.common.aspect.annotation.AutoLog;
+import org.suhui.common.util.MD5Util;
 import org.suhui.modules.toB.entity.OrderMain;
 import org.suhui.modules.toB.mapper.OrderMainMapper;
 import org.suhui.modules.toB.service.IOrderMainService;
@@ -57,7 +65,11 @@ public class OrderMainController {
                                              @ApiParam(value = "订单描述")
                                              @RequestParam(name = "orderText") String orderText,
                                              @ApiParam(value = "回调地址")
-                                             @RequestParam(name = "notifyUrl") String notifyUrl
+                                             @RequestParam(name = "notifyUrl") String notifyUrl,
+                                             @ApiParam(value = "sign")
+                                             @RequestParam(name = "sign") String sign,
+                                             @ApiParam(value = "timestamp")
+                                             @RequestParam(name = "timestamp") String timestamp
     ) {
         Result<Object> result = new Result<Object>();
         OrderMain orderMain = new OrderMain();
@@ -137,7 +149,11 @@ public class OrderMainController {
             @ApiParam(value = "订单描述")
             @RequestParam(name = "orderText") String orderText,
             @ApiParam(value = "回调地址")
-            @RequestParam(name = "notifyUrl") String notifyUrl
+            @RequestParam(name = "notifyUrl") String notifyUrl,
+            @ApiParam(value = "sign")
+            @RequestParam(name = "sign") String sign,
+            @ApiParam(value = "timestamp")
+            @RequestParam(name = "timestamp") String timestamp
     ) {
         Result<Object> result = new Result<Object>();
         OrderMain orderMain = new OrderMain();
@@ -192,4 +208,48 @@ public class OrderMainController {
         params.put("targetCurrency", targetCurrency);
         return iPayCurrencyRateService.getCurrencyRateValue(params);
     }
+
+    @Value("${appSecret}")
+    private String appSecret;
+
+    @AutoLog(value = "md5SignTest")
+    @ApiOperation(value = "md5SignTest）", notes = "md5SignTest")
+    @PostMapping(value = "/md5SignTest")
+    public String md5SignTest() {
+//        try {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("userNo", "1");
+        map.put("merchantContact", "1");
+        map.put("sourceCurrency", "1");
+        map.put("targetCurrency", "1");
+        map.put("targetCurrencyMoney", "1");
+        map.put("payMethod", "1");
+        map.put("orderText", "1");
+        map.put("notifyUrl", "1");
+        map.put("timestamp", "1");
+
+        String sign = MD5Util.sign(map, appSecret);
+        return sign;
+//            RestTemplate restTemplate = new RestTemplate();
+//            String url = "http://localhost:3333/order/createPaymentOrder";
+//            HttpHeaders headers = new HttpHeaders();
+//            MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+//            multiValueMap.add("userNo", "");
+//            multiValueMap.add("merchantContact", "");
+//            multiValueMap.add("sourceCurrency", "");
+//            multiValueMap.add("targetCurrency", "");
+//            multiValueMap.add("targetCurrencyMoney", "");
+//            multiValueMap.add("payMethod", "");
+//            multiValueMap.add("orderText", "");
+//            multiValueMap.add("notifyUrl", "");
+//            multiValueMap.add("sign", sign);
+//            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(multiValueMap, headers);
+//            ResponseEntity<JSONObject> response = restTemplate.postForEntity(url, request, JSONObject.class);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            return Result.error(ex+"");
+//        }
+//        return Result.ok("成功");
+    }
+
 }
