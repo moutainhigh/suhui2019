@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URLEncoder;
 
 /**
- * 类说明：
+ * 类说明：MD5验签
  *
  * @author: 蔡珊珊
  * @create: 2020-04-16 17:25
@@ -48,7 +48,6 @@ public class SignFilter {
      */
     @After("execution(* org.suhui.modules.toB.controller.OrderMainController.createPaymentOrder(..))")
     public void afterInvoke() {
-
         log.debug("方法执行后");
     }
 
@@ -57,7 +56,6 @@ public class SignFilter {
      */
     @AfterReturning("execution(* org.suhui.modules.toB.controller.OrderMainController.createPaymentOrder(..))")
     public void afterReturning() {
-
         log.debug("==================方法执行完成");
     }
 
@@ -66,7 +64,6 @@ public class SignFilter {
      */
     @AfterThrowing("execution(* org.suhui.modules.toB.controller.OrderMainController.createPaymentOrder(..))")
     public void afterThrowing() {
-
         log.debug("==================方法执行报错");
     }
 }
