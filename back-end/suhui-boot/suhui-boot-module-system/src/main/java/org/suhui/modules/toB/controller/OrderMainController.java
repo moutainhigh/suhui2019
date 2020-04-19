@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -16,6 +17,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.suhui.common.api.vo.Result;
 import org.suhui.common.aspect.annotation.AutoLog;
 import org.suhui.common.util.MD5Util;
@@ -23,8 +26,23 @@ import org.suhui.modules.toB.entity.OrderMain;
 import org.suhui.modules.toB.mapper.OrderMainMapper;
 import org.suhui.modules.toB.service.IOrderMainService;
 import org.suhui.modules.toB.service.IPayCurrencyRateService;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,7 +95,7 @@ public class OrderMainController {
         orderMain.setSourceCurrency(sourceCurrency);
         orderMain.setTargetCurrency(targetCurrency);
         orderMain.setTargetCurrencyMoney(Double.parseDouble(targetCurrencyMoney));
-        orderMain.setUserPayMethod(payMethod);
+        orderMain.setPlatformCollectionMethod(payMethod);
         orderMain.setOrderText(orderText);
         orderMain.setNotifyUrl(notifyUrl);
         try {
@@ -216,40 +234,68 @@ public class OrderMainController {
     @ApiOperation(value = "md5SignTest）", notes = "md5SignTest")
     @PostMapping(value = "/md5SignTest")
     public String md5SignTest() {
-//        try {
         HashMap<String, String> map = new HashMap<>();
-        map.put("userNo", "1");
-        map.put("merchantContact", "1");
-        map.put("sourceCurrency", "1");
-        map.put("targetCurrency", "1");
-        map.put("targetCurrencyMoney", "1");
-        map.put("payMethod", "1");
-        map.put("orderText", "1");
-        map.put("notifyUrl", "1");
+//        map.put("userNo", "40288189719141800171914180380000");
+//        map.put("merchantContact", "18300000000");
+//        map.put("sourceCurrency", "USD");
+//        map.put("targetCurrency", "CNY");
+//        map.put("targetCurrencyMoney", "100");
+//        map.put("payMethod", "bank_card");
+//        map.put("orderText", "收款订单描述");
+//        map.put("notifyUrl", "http://localhost:3333/order/asynCallbackNotification");
+//        map.put("timestamp", "1");
+
+        map.put("userNo", "40288189719141800171914180380000");
+        map.put("collectionAccount", "61784350000000");
+        map.put("collectionAccountUser", "美国先生");
+        map.put("collectionMethod", "bank_card");
+        map.put("merchantContact", "18300000000");
+        map.put("notifyUrl", "http://localhost:3333/order/asynCallbackNotification");
+        map.put("orderText", "提款订单描述");
+        map.put("sourceCurrency", "USD");
+        map.put("targetCurrency", "CNY");
+        map.put("targetCurrencyMoney", "100");
         map.put("timestamp", "1");
 
         String sign = MD5Util.sign(map, appSecret);
         return sign;
-//            RestTemplate restTemplate = new RestTemplate();
-//            String url = "http://localhost:3333/order/createPaymentOrder";
-//            HttpHeaders headers = new HttpHeaders();
-//            MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
-//            multiValueMap.add("userNo", "");
-//            multiValueMap.add("merchantContact", "");
-//            multiValueMap.add("sourceCurrency", "");
-//            multiValueMap.add("targetCurrency", "");
-//            multiValueMap.add("targetCurrencyMoney", "");
-//            multiValueMap.add("payMethod", "");
-//            multiValueMap.add("orderText", "");
-//            multiValueMap.add("notifyUrl", "");
-//            multiValueMap.add("sign", sign);
-//            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(multiValueMap, headers);
-//            ResponseEntity<JSONObject> response = restTemplate.postForEntity(url, request, JSONObject.class);
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            return Result.error(ex+"");
-//        }
-//        return Result.ok("成功");
+
     }
+
+
+    @AutoLog(value = "sendAsynCallbackNotification")
+    @ApiOperation(value = "sendAsynCallbackNotification）", notes = "sendAsynCallbackNotification")
+    @PostMapping(value = "/sendAsynCallbackNotification")
+    public String sendAsynCallbackNotification() {
+
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:3333/order/asynCallbackNotification";
+        HttpHeaders headers = new HttpHeaders();
+        MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
+        paramMap.add("orderNO","1233");
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(paramMap, headers);
+        ResponseEntity<JSONObject> response = restTemplate.postForEntity(url, request, JSONObject.class);
+
+        return null;
+
+    }
+    @Autowired
+    HttpServletRequest request;
+
+    @AutoLog(value = "asynCallbackNotification")
+    @ApiOperation(value = "asynCallbackNotification）", notes = "asynCallbackNotification")
+    @PostMapping(value = "/asynCallbackNotification")
+    public String asynCallbackNotification() {
+
+        //解析对方发来的xml数据
+        Enumeration<String> enu = request.getParameterNames();
+        while (enu.hasMoreElements()) {
+            String paramName = enu.nextElement().trim();
+            log.debug(paramName+":"+request.getParameter(paramName));
+        }
+        return "success";
+
+    }
+
 
 }

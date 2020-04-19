@@ -60,6 +60,8 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         String areacode = data.getString("areacode");
         String countryCode = data.getString("countryCode");
         String assurerName = data.getString("assurerName");
+        String assurerRate = data.getString("assurerRate");
+        String totalLimit = data.getString("totalLimit");
         String ensureProportion = data.getString("ensureProportion");
 
         String userno = UUIDGenerator.generate();
@@ -87,7 +89,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         orderAssurer.setAssurerName(assurerName);
         orderAssurer.setCountryCode(countryCode);
         orderAssurer.setAssurerPhone(phone);
-        orderAssurer.setAssurerRate(data.getDouble("assurerRate"));
+        orderAssurer.setAssurerRate(data.getDouble(assurerRate));
         orderAssurer.setTotalLimit(data.getDouble("totalLimit") * 100);
         orderAssurer.setCanUseLimit(data.getDouble("totalLimit") * 100);
         orderAssurer.setEnsureProportion(data.getDouble("ensureProportion"));
@@ -123,22 +125,22 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
                 check = false;
                 break;
             }
-            if(!BaseUtil.Base_HasValue(orderAssurer.getCardType())){
+            if (!BaseUtil.Base_HasValue(orderAssurer.getCardType())) {
                 result = Result.error(515, "承兑商缺少实名认证信息");
                 check = false;
                 break;
             }
-            if(!BaseUtil.Base_HasValue(orderAssurer.getCardNo())){
+            if (!BaseUtil.Base_HasValue(orderAssurer.getCardNo())) {
                 result = Result.error(515, "承兑商缺少实名认证信息");
                 check = false;
                 break;
             }
-            if(!BaseUtil.Base_HasValue(orderAssurer.getCardFrontPicture())){
+            if (!BaseUtil.Base_HasValue(orderAssurer.getCardFrontPicture())) {
                 result = Result.error(515, "承兑商缺少实名认证信息");
                 check = false;
                 break;
             }
-            if(!BaseUtil.Base_HasValue(orderAssurer.getCardBackPicture())){
+            if (!BaseUtil.Base_HasValue(orderAssurer.getCardBackPicture())) {
                 result = Result.error(515, "承兑商缺少实名认证信息");
                 check = false;
                 break;
@@ -215,7 +217,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
      * @return
      */
     @Override
-    public Map<String, Object> getAssurerByOrder(OrderMain orderMain) {
+    public Map<String, Object> getAssurerByOrder(OrderMain orderMain, String targetAreaCode) {
         Map<String, Object> resultMap = new HashMap<>();
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("order_money", orderMain.getAssurerCnyMoney());
@@ -234,7 +236,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         for (int i = 0; i < orderAssurers.size(); i++) {
             OrderAssurer assurer = orderAssurers.get(i);
             // 为承兑商选择一个支付账号,同时排除掉没有账号得承兑商和账号支付宝金额不足的承兑商
-            OrderAssurerAccount account = orderAssurerAccountServiceImpl.getAssurerAccountByOrderPay(assurer.getId(), orderMain.getAssurerCnyMoney(), orderMain.getMerchantCollectionMethod(), orderMain.getMerchantCollectionAreaCode());
+            OrderAssurerAccount account = orderAssurerAccountServiceImpl.getAssurerAccountByOrderPay(assurer.getId(), orderMain.getAssurerCnyMoney(), orderMain.getMerchantCollectionMethod(), targetAreaCode);
             if (BaseUtil.Base_HasValue(account)) {
                 //判断承兑商保证金及租赁金是否足够
                 if (checkAssurerLeaseEnsure(orderMain, assurer)) {
@@ -249,7 +251,7 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
         }
         if (BaseUtil.Base_HasValue(useList)) {
             orderAssurer = useList.get(BaseUtil.getRandomInt(0, useList.size()));
-            orderAssurerAccount = orderAssurerAccountServiceImpl.getAssurerAccountByOrderPay(orderAssurer.getId(), orderMain.getAssurerCnyMoney(), orderMain.getMerchantCollectionMethod(), orderMain.getMerchantCollectionAreaCode());
+            orderAssurerAccount = orderAssurerAccountServiceImpl.getAssurerAccountByOrderPay(orderAssurer.getId(), orderMain.getAssurerCnyMoney(), orderMain.getMerchantCollectionMethod(), targetAreaCode);
         }
         // 如果没找到账号,说明没有承兑商合适
         if (!BaseUtil.Base_HasValue(orderAssurerAccount)) {
@@ -257,12 +259,12 @@ public class OrderAssurerServiceImpl extends ServiceImpl<OrderAssurerMapper, Ord
             resultMap.put("message", "未找到合适的承兑商账户");
             return resultMap;
         }
-        // 为承兑商选择一个收款账户
-        OrderAssurerAccount orderAssurerAccountCollection = orderAssurerAccountServiceImpl.getAssurerAccountByOrderCollection(orderAssurer.getId(), orderMain.getMerchantCollectionMethod(), orderMain.getMerchantCollectionAreaCode());
+//         为承兑商选择一个收款账户
+//        OrderAssurerAccount orderAssurerAccountCollection = orderAssurerAccountServiceImpl.getAssurerAccountByOrderCollection(orderAssurer.getId(), orderMain.getMerchantCollectionMethod(), orderMain.getMerchantCollectionAreaCode());
         resultMap.put("state", "success");
         resultMap.put("orderAssurer", orderAssurer);
         resultMap.put("orderAssurerAccountPay", orderAssurerAccount);
-        resultMap.put("orderAssurerAccountCollection", orderAssurerAccountCollection);
+//        resultMap.put("orderAssurerAccountCollection", orderAssurerAccountCollection);
         return resultMap;
     }
 

@@ -1,12 +1,20 @@
 package org.suhui.modules.toB.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.suhui.common.api.vo.Result;
 import org.suhui.modules.toB.entity.*;
 import org.suhui.modules.toB.mapper.OrderMainMapper;
@@ -79,15 +87,15 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         orderMain.setMerchantId(orderMerchant.getId());
         orderMain.setMerchantName(orderMerchant.getMerchantName());
 
-        //根据目标货币获取区域代码
-        String areaCode = getAreaCodeByCurrency(orderMain.getTargetCurrency());
-        if (!BaseUtil.Base_HasValue(areaCode)) {
+        //根据源货币获取区域代码
+        String sourceAreaCode = getAreaCodeByCurrency(orderMain.getSourceCurrency());
+        if (!BaseUtil.Base_HasValue(sourceAreaCode)) {
             return Result.error(603, "没有合适的区域代码");
         }
         //根据区域代码和商户Id获取商户的账户
-        OrderMerchantAccount orderMerchantAccount = orderMerchantAccountMapper.getAccountByMerchantId(orderMain.getMerchantId(), areaCode);
+        OrderMerchantAccount orderMerchantAccount = orderMerchantAccountMapper.getAccountByMerchantId(orderMain.getMerchantId(), sourceAreaCode);
         if (!BaseUtil.Base_HasValue(orderMerchantAccount)) {
-            return Result.error(602, "商户收款账户不存在");
+            return Result.error(602, "商户付款账户不存在");
         }
         //绑定商户账户Id 关联tob_order_merchant(为了方便在订单完成的变更账户金额)
         orderMain.setMerchantAccountId(orderMerchantAccount.getId());
@@ -104,11 +112,17 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             orderMain.setExchangeRate(rateObj.getDouble("rate"));
         }
         //<editor-fold desc="3.根据区域代码，获取平台支付账号">
+
+        //根据目标货币获取区域代码
+        String targetAreaCode = getAreaCodeByCurrency(orderMain.getTargetCurrency());
+        if (!BaseUtil.Base_HasValue(targetAreaCode)) {
+            return Result.error(603, "没有合适的区域代码");
+        }
         Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("areaCode", areaCode);
+        paramMap.put("areaCode", targetAreaCode);
         List<OrderPlatformAccount> platformAccountList = orderPlatformAccountServiceImpl.getAccountListByAreaCode(paramMap);
         if (!BaseUtil.Base_HasValue(platformAccountList)) {
-            return Result.error(532, "获取用户收款账户失败");
+            return Result.error(532, "获取平台收款账户失败");
         }
         OrderPlatformAccount platformAccount = platformAccountList.get(0);
         //</editor-fold>
@@ -146,12 +160,34 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             if (!finishResult.isSuccess()) {
                 check = false;
                 result = finishResult;
+                break;
             }
+
+            //<editor-fold desc="回调notify_url">
+            if (!BaseUtil.Base_HasValue(orderMain.getNotifyUrl())) {
+                check = false;
+                result = Result.error(608, "回调notify_url失败");
+                break;
+            }
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
+            paramMap.add("orderNo", orderMain.getOrderCode());
+            paramMap.add("orderState", orderMain.getOrderState());
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(paramMap, headers);
+            log.info("发起确认收款通知（" + orderMain.getOrderCode() + "）：NotifyUrl为" + orderMain.getNotifyUrl() + " paramMap为" + JSON.toJSONString(paramMap));
+            ResponseEntity<String> response = restTemplate.postForEntity(orderMain.getNotifyUrl(), request, String.class);
+            log.info("发起确认收款通知结果（" + orderMain.getOrderCode() + "）：" + JSON.toJSONString(response));
+            if (!response.getBody().equals("success")) {
+                check = false;
+                result = Result.error(608, "回调notify_url失败");
+                break;
+            }
+            //</editor-fold>
         }
         if (!check) {
             return result;
         }
-        //回调notify_url
 
         return Result.ok("操作成功");
     }
@@ -180,15 +216,15 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         orderMain.setMerchantId(orderMerchant.getId());
         orderMain.setMerchantName(orderMerchant.getMerchantName());
 
-        //根据目标货币获取区域代码
-        String areaCode = getAreaCodeByCurrency(orderMain.getTargetCurrency());
-        if (!BaseUtil.Base_HasValue(areaCode)) {
+        //根据源货币获取区域代码
+        String sourceAreaCode = getAreaCodeByCurrency(orderMain.getSourceCurrency());
+        if (!BaseUtil.Base_HasValue(sourceAreaCode)) {
             return Result.error(603, "没有合适的区域代码");
         }
         //赋值商户收款账户区域编码
-        orderMain.setMerchantCollectionAreaCode(areaCode);
+        orderMain.setMerchantCollectionAreaCode(sourceAreaCode);
         //根据区域代码和商户Id获取商户的账户
-        OrderMerchantAccount orderMerchantAccount = orderMerchantAccountMapper.getAccountByMerchantId(orderMain.getMerchantId(), areaCode);
+        OrderMerchantAccount orderMerchantAccount = orderMerchantAccountMapper.getAccountByMerchantId(orderMain.getMerchantId(), sourceAreaCode);
         if (!BaseUtil.Base_HasValue(orderMerchantAccount)) {
             return Result.error(602, "商户收款账户不存在");
         }
@@ -214,8 +250,14 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         //计算承兑商需支付的人民币金额
         setAssurerCnyMoney(orderMain);
 
+        //根据目标货币获取区域代码
+        String targetAreaCode = getAreaCodeByCurrency(orderMain.getTargetCurrency());
+        if (!BaseUtil.Base_HasValue(targetAreaCode)) {
+            return Result.error(603, "没有合适的区域代码");
+        }
+
         // 为订单选择最优承兑商
-        Map resutMap = orderAssurerServiceImpl.getAssurerByOrder(orderMain);
+        Map resutMap = orderAssurerServiceImpl.getAssurerByOrder(orderMain, targetAreaCode);
         if (BaseUtil.Base_HasValue(resutMap) && resutMap.get("state").equals("success")) {
             dispatchAssurerToOrder(orderMain, resutMap);
         } else {
@@ -281,12 +323,32 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
                 check = false;
                 result = finishResult;
             }
+
+            //<editor-fold desc="回调notify_url">
+            if (!BaseUtil.Base_HasValue(orderMain.getNotifyUrl())) {
+                check = false;
+                result = Result.error(608, "回调notify_url失败");
+                break;
+            }
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
+            paramMap.add("orderNo", orderMain.getOrderCode());
+            paramMap.add("orderState", orderMain.getOrderState());
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(paramMap, headers);
+            log.info("发起提款处理通知（" + orderMain.getOrderCode() + "）：NotifyUrl为" + orderMain.getNotifyUrl() + " paramMap为" + JSON.toJSONString(paramMap));
+            ResponseEntity<String> response = restTemplate.postForEntity(orderMain.getNotifyUrl(), request, String.class);
+            log.info("发起提款处理通知结果（" + orderMain.getOrderCode() + "）：" + JSON.toJSONString(response));
+            if (!response.getBody().equals("success")) {
+                check = false;
+                result = Result.error(608, "回调notify_url失败");
+                break;
+            }
+            //</editor-fold>
         }
         if (!check) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return result;
         }
-        //回调notify_url
 
         return Result.ok("操作成功");
     }
@@ -298,7 +360,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
      * 收款确认（变更平台账户、商户账户）
      */
     public Result<Object> orderPaymentFinish(OrderMain orderMain) {
-        OrderPlatformAccount orderPlatformAccount = orderPlatformAccountServiceImpl.getById(orderMain.getUserPayAccountId());
+        OrderPlatformAccount orderPlatformAccount = orderPlatformAccountServiceImpl.getById(orderMain.getPlatformCollectionAccountId());
         OrderMerchantAccount orderMerchantAccount = orderMerchantAccountServiceImpl.getById(orderMain.getMerchantAccountId());
         if (!BaseUtil.Base_HasValue(orderPlatformAccount)) {
             return Result.error(606, "平台账户不存在");
@@ -306,10 +368,11 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         if (!BaseUtil.Base_HasValue(orderMerchantAccount)) {
             return Result.error(607, "商户支付账户不存在");
         }
-        Double orderMoney = orderMain.getTargetCurrencyMoney();
+        Double targetOrderMoney = orderMain.getTargetCurrencyMoney();
+        Double sourceOrderMoney = orderMain.getSourceCurrencyMoney();
 
         //<editor-fold desc="1.平台账户变更内容（仅更新账户金额）">
-        Double accountMoney = orderPlatformAccount.getAccountMoney() + orderMoney;
+        Double accountMoney = orderPlatformAccount.getAccountMoney() + targetOrderMoney;
         orderPlatformAccount.setAccountMoney(accountMoney);
         orderPlatformAccountMapper.updateById(orderPlatformAccount);
         //</editor-fold>
@@ -319,8 +382,8 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         // 支付锁定金额pay_lock_money（仅支付宝）
         // 支付可用额度(日)pay_can_use_limit（不用管）
         // 每日支付限额pay_limit（不用管）
-        // 支付已用金额 = 已用金额+该订单金额
-        Double usedLimitAccount = orderMerchantAccount.getPayUsedLimit() + orderMoney;
+        // 收款已用金额 = 已用金额+该订单金额
+        Double collectionUsedLimit = orderMerchantAccount.getCollectionUsedLimit() + sourceOrderMoney;
 
         //<editor-fold desc="这里暂时不加锁定金额">
         //if ("alipay".equals(orderMerchantAccount.getAccountType())) {
@@ -332,7 +395,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         //    orderMerchantAccount.setPayLockMoney(payLockMoneyAccount);
         //}
         //</editor-fold>
-        orderMerchantAccount.setPayUsedLimit(usedLimitAccount);
+        orderMerchantAccount.setCollectionUsedLimit(collectionUsedLimit);
         orderMerchantAccountServiceImpl.updateById(orderMerchantAccount);
         //</editor-fold>
 
@@ -394,7 +457,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         //</editor-fold>
 
         //<editor-fold desc="3.商户账户金额增加">
-        orderMerchantAccount.setCollectionUsedLimit(orderMerchantAccount.getCollectionUsedLimit() + orderMoney);
+        orderMerchantAccount.setPayCanUseLimit(orderMerchantAccount.getPayUsedLimit() + orderMain.getSourceCurrencyMoney());
         orderMerchantAccountServiceImpl.updateById(orderMerchantAccount);
         //</editor-fold>
 
@@ -428,12 +491,12 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         orderMain.setOrderState("2"); //订单状态(1 创建、2 待确认收款、3 已确认收款、0、已作废0)
         orderMain.setOrderType(1); //订单类型
         //绑定平台账户Id 关联order_platform_account(为了方便在订单完成的变更账户金额)
-        orderMain.setUserPayAccountId(platformAccount.getId());
-        orderMain.setUserPayAccount(platformAccount.getAccountNo());
-        orderMain.setUserPayAccountUser(platformAccount.getRealName());
-        orderMain.setUserPayBank(platformAccount.getOpenBank());
-        orderMain.setUserPayBankBranch(platformAccount.getOpenBankBranch());
-        orderMain.setUserPayAreaCode(platformAccount.getAreaCode());
+        orderMain.setPlatformCollectionAccountId(platformAccount.getId());
+        orderMain.setPlatformCollectionAccount(platformAccount.getAccountNo());
+        orderMain.setPlatformCollectionAccountUser(platformAccount.getRealName());
+        orderMain.setPlatformCollectionBank(platformAccount.getOpenBank());
+        orderMain.setPlatformCollectionBankBranch(platformAccount.getOpenBankBranch());
+        orderMain.setPlatformCollectionAreaCode(platformAccount.getAreaCode());
         JSONObject data = new JSONObject();
         try {
             //4.保存订单
@@ -442,10 +505,10 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             //<editor-fold desc="接口返回信息">
             orderMain.changeMoneyToBig();
             JSONObject bank = new JSONObject();
-            bank.put("account_no", orderMain.getUserPayAccount());
-            bank.put("real_name", orderMain.getUserPayAccountUser());
-            bank.put("open_bank", orderMain.getUserPayBank());
-            bank.put("area_code", orderMain.getUserPayAreaCode());
+            bank.put("account_no", orderMain.getPlatformCollectionAccount());
+            bank.put("real_name", orderMain.getPlatformCollectionAccountUser());
+            bank.put("open_bank", orderMain.getPlatformCollectionBank());
+            bank.put("area_code", orderMain.getPlatformCollectionAreaCode());
 
             data.put("order_no", orderMain.getOrderCode());
             data.put("order_state", orderMain.getOrderState());
@@ -457,7 +520,7 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
             data.put("source_currency_money", orderMain.getSourceCurrencyMoney());
             data.put("target_currency_money", orderMain.getTargetCurrencyMoney());
             data.put("exchange_rate", orderMain.getExchangeRate());
-            data.put("user_pay_method", orderMain.getUserPayMethod());
+            data.put("user_pay_method", orderMain.getPlatformCollectionMethod());
             data.put("notify_url", orderMain.getNotifyUrl());
             data.put("bank_info", bank);
             //</editor-fold>
@@ -523,8 +586,9 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
     public void dispatchAssurerToOrder(OrderMain orderMain, Map resutMap) {
         OrderAssurer orderAssurer = (OrderAssurer) resutMap.get("orderAssurer");
         OrderAssurerAccount pay = (OrderAssurerAccount) resutMap.get("orderAssurerAccountPay");
-        OrderAssurerAccount collection = (OrderAssurerAccount) resutMap.get("orderAssurerAccountCollection");
-        if (BaseUtil.Base_HasValue(orderAssurer) && BaseUtil.Base_HasValue(pay) && BaseUtil.Base_HasValue(collection)) {
+//        OrderAssurerAccount collection = (OrderAssurerAccount) resutMap.get("orderAssurerAccountCollection");
+//        if (BaseUtil.Base_HasValue(orderAssurer) && BaseUtil.Base_HasValue(pay) && BaseUtil.Base_HasValue(collection)) {
+        if (BaseUtil.Base_HasValue(orderAssurer) && BaseUtil.Base_HasValue(pay)) {
             orderMain.setAssurerId(orderAssurer.getId());
             orderMain.setAssurerName(orderAssurer.getAssurerName());
             //orderMain.setAssurerCollectionAccount(collection.getAccountNo());

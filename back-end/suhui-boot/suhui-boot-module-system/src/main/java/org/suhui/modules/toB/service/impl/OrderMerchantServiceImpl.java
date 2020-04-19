@@ -53,6 +53,12 @@ public class OrderMerchantServiceImpl extends ServiceImpl<OrderMerchantMapper, O
         String phone = data.getString("phone");
         String pwd = data.getString("password");
         String areacode = data.getString("areacode");
+        String countryCode = data.getString("countryCode");
+        String merchantName = data.getString("merchantName");
+        String merchantRate = data.getString("merchantRate");
+        String totalLimit = data.getString("totalLimit");
+        String ensureProportion = data.getString("ensureProportion");
+
 
         String userno = UUIDGenerator.generate();
         // 盐值
@@ -76,11 +82,13 @@ public class OrderMerchantServiceImpl extends ServiceImpl<OrderMerchantMapper, O
         iPayUserInfoService.save(payUserInfo);
         OrderMerchant orderMerchant = new OrderMerchant();
         orderMerchant.setUserNo(userno);
-        orderMerchant.setMerchantName(phone);
+        orderMerchant.setMerchantName(merchantName);
+        orderMerchant.setCountryCode(countryCode);
         orderMerchant.setMerchantPhone(phone);
-        orderMerchant.setMerchantRate(data.getDouble("merchantRate"));
+        orderMerchant.setMerchantRate(data.getDouble(merchantRate));
         orderMerchant.setTotalLimit(data.getDouble("totalLimit") * 100);
         orderMerchant.setCanUseLimit(data.getDouble("totalLimit") * 100);
+        orderMerchant.setEnsureProportion(data.getDouble("ensureProportion"));
         this.save(orderMerchant);
         return orderMerchant;
     }

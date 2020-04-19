@@ -112,13 +112,13 @@ public class OrderMain {
      */
     @Excel(name = "用户支付方式(支付宝alipay、银行卡bank_card)", width = 15)
     @ApiModelProperty(value = "用户支付方式(支付宝alipay、银行卡bank_card)")
-    private String userPayMethod;
-    private String userPayAccount;
-    private String userPayAccountId;
-    private String userPayAccountUser;
-    private String userPayBank;
-    private String userPayBankBranch;
-    private String userPayAreaCode;
+    private String platformCollectionMethod;
+    private String platformCollectionAccount;
+    private String platformCollectionAccountId;
+    private String platformCollectionAccountUser;
+    private String platformCollectionBank;
+    private String platformCollectionBankBranch;
+    private String platformCollectionAreaCode;
     private Double assurerCnyMoney;
     /**
      * 备注
@@ -179,6 +179,10 @@ public class OrderMain {
     @Excel(name = "商户收款账号", width = 15)
     @ApiModelProperty(value = "用户收款账号")
     private java.lang.String merchantCollectionAccount;
+
+    @Excel(name = "商户收款账号Id", width = 15)
+    @ApiModelProperty(value = "用户收款账号Id")
+    private java.lang.String merchantCollectionAccountId;
 
     @Excel(name = "商户收款账号真实姓名", width = 15)
     @ApiModelProperty(value = "商户收款账号真实姓名")
@@ -348,12 +352,12 @@ public class OrderMain {
         this.sourceCurrencyMoney = sourceCurrencyMoney;
     }
 
-    public String getUserPayMethod() {
-        return userPayMethod;
+    public String getPlatformCollectionMethod() {
+        return platformCollectionMethod;
     }
 
-    public void setUserPayMethod(String userPayMethod) {
-        this.userPayMethod = userPayMethod;
+    public void setPlatformCollectionMethod(String platformCollectionMethod) {
+        this.platformCollectionMethod = platformCollectionMethod;
     }
 
 
@@ -405,15 +409,15 @@ public class OrderMain {
         this.delFlag = delFlag;
     }
 
-    public String getUserPayAccount() {
-        return userPayAccount;
+    public String getPlatformCollectionAccount() {
+        return platformCollectionAccount;
     }
 
-    public void setUserPayAccount(String userPayAccount) {
-        this.userPayAccount = userPayAccount;
+    public void setPlatformCollectionAccount(String platformCollectionAccount) {
+        this.platformCollectionAccount = platformCollectionAccount;
     }
-    public String getUserPayBank() {
-        return userPayBank;
+    public String getPlatformCollectionBank() {
+        return platformCollectionBank;
     }
 
     public String getAssurerCollectionAccountUser() {
@@ -476,38 +480,38 @@ public class OrderMain {
     public void setAssurerPayVoucher(String assurerPayVoucher) {
         this.assurerPayVoucher = assurerPayVoucher;
     }
-    public void setUserPayBank(String userPayBank) {
-        this.userPayBank = userPayBank;
+    public void setPlatformCollectionBank(String platformCollectionBank) {
+        this.platformCollectionBank = platformCollectionBank;
     }
 
-    public String getUserPayBankBranch() {
-        return userPayBankBranch;
+    public String getPlatformCollectionBankBranch() {
+        return platformCollectionBankBranch;
     }
 
-    public void setUserPayBankBranch(String userPayBankBranch) {
-        this.userPayBankBranch = userPayBankBranch;
+    public void setPlatformCollectionBankBranch(String platformCollectionBankBranch) {
+        this.platformCollectionBankBranch = platformCollectionBankBranch;
     }
-    public String getUserPayAreaCode() {
-        return userPayAreaCode;
-    }
-
-    public void setUserPayAreaCode(String userPayAreaCode) {
-        this.userPayAreaCode = userPayAreaCode;
-    }
-    public String getUserPayAccountId() {
-        return userPayAccountId;
+    public String getPlatformCollectionAreaCode() {
+        return platformCollectionAreaCode;
     }
 
-    public void setUserPayAccountId(String userPayAccountId) {
-        this.userPayAccountId = userPayAccountId;
+    public void setPlatformCollectionAreaCode(String platformCollectionAreaCode) {
+        this.platformCollectionAreaCode = platformCollectionAreaCode;
+    }
+    public String getPlatformCollectionAccountId() {
+        return platformCollectionAccountId;
     }
 
-    public String getUserPayAccountUser() {
-        return userPayAccountUser;
+    public void setPlatformCollectionAccountId(String platformCollectionAccountId) {
+        this.platformCollectionAccountId = platformCollectionAccountId;
     }
 
-    public void setUserPayAccountUser(String userPayAccountUser) {
-        this.userPayAccountUser = userPayAccountUser;
+    public String getPlatformCollectionAccountUser() {
+        return platformCollectionAccountUser;
+    }
+
+    public void setPlatformCollectionAccountUser(String platformCollectionAccountUser) {
+        this.platformCollectionAccountUser = platformCollectionAccountUser;
     }
 
     public String getAssurerPayBank() {
@@ -556,6 +560,15 @@ public class OrderMain {
     public void setMerchantCollectionAccount(String merchantCollectionAccount) {
         this.merchantCollectionAccount = merchantCollectionAccount;
     }
+
+    public String getMerchantCollectionAccountId() {
+        return merchantCollectionAccountId;
+    }
+
+    public void setMerchantCollectionAccountId(String merchantCollectionAccountId) {
+        this.merchantCollectionAccountId = merchantCollectionAccountId;
+    }
+
     public String getMerchantCollectionAccountUser() {
         return merchantCollectionAccountUser;
     }
@@ -717,7 +730,7 @@ public class OrderMain {
         if (!BaseUtil.Base_HasValue(this.targetCurrencyMoney)) {
             message += "缺少值目标币种金额,";
         }
-        if (!BaseUtil.Base_HasValue(this.userPayMethod)) {
+        if (!BaseUtil.Base_HasValue(this.platformCollectionMethod)) {
             message += "缺少值用户支付方式,";
         }
         if (!BaseUtil.Base_HasValue(this.notifyUrl)) {

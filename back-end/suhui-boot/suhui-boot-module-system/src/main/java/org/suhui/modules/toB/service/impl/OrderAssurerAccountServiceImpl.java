@@ -32,9 +32,9 @@ public class OrderAssurerAccountServiceImpl extends ServiceImpl<OrderAssurerAcco
      * @return
      */
     @Override
-    public OrderAssurerAccount getAssurerAccountByOrderPay(String assurerId, Double orderMoney, String merchantCollectionMethod, String merchantCollectionAreaCode) {
+    public OrderAssurerAccount getAssurerAccountByOrderPay(String assurerId, Double orderMoney, String merchantCollectionMethod, String targetreaCode) {
         OrderAssurerAccount orderAssurerAccount = null;
-        List<OrderAssurerAccount> list = orderAssurerAccountMapper.selectByMainId(assurerId, merchantCollectionMethod, merchantCollectionAreaCode);
+        List<OrderAssurerAccount> list = orderAssurerAccountMapper.selectByMainId(assurerId, merchantCollectionMethod, targetreaCode);
         if (!BaseUtil.Base_HasValue(list)) {
             return null;
         }

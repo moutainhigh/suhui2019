@@ -118,7 +118,7 @@ public class ManagementPlatformController {
             return result;
         }
         result.success("添加成功！");
-        result.setResult(orderMerchant);
+//        result.setResult(orderMerchant);
         return result;
     }
 

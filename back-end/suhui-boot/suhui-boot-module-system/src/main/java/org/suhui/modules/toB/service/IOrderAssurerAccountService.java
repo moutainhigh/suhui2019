@@ -13,7 +13,7 @@ import java.util.List;
  **/
 public interface IOrderAssurerAccountService extends IService<OrderAssurerAccount> {
     //为承兑商选择一个支付账户
-    OrderAssurerAccount getAssurerAccountByOrderPay(String assurerId, Double orderMoney, String userCollectionMethod, String userCollectionAreaCode);
+    OrderAssurerAccount getAssurerAccountByOrderPay(String assurerId, Double orderMoney, String userCollectionMethod, String targetAreaCode);
 
     //为承兑商选择一个收款账户-选择收款额度小的
     OrderAssurerAccount getAssurerAccountByOrderCollection(String assurerId, String userPayMethod, String userPayAreaCode);

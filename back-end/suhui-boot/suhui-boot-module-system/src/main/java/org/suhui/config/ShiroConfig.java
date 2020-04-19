@@ -102,6 +102,8 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/order/createWithdrawalOrder", "anon");   //创建提款单
 		filterChainDefinitionMap.put("/order/getCurrencyRateByRateCode", "anon");  //获取汇率
 		filterChainDefinitionMap.put("/order/md5SignTest", "anon");  //获取汇率
+		filterChainDefinitionMap.put("/order/sendAsynCallbackNotification", "anon");  //获取汇率
+		filterChainDefinitionMap.put("/order/asynCallbackNotification", "anon");  //获取汇率
 
 		// 添加自己的过滤器并且取名为jwt
 		Map<String, Filter> filterMap = new HashMap<String, Filter>(1);
